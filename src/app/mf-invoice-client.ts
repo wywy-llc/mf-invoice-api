@@ -6,15 +6,15 @@
 export class MfInvoiceClient {
   private baseUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private billings: any;
+  public billings: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private quotes: any;
+  public quotes: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private partners: any;
+  public partners: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private items: any;
+  public items: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private office: any;
+  public office: any;
 
   /**
    * コンストラクタ
@@ -266,15 +266,13 @@ export class MfInvoiceClient {
       throw new Error('CLIENT_SECRETが設定されていません。');
     }
     return OAuth2.createService('moneyforward-v3')
-      .setAuthorizationBaseUrl(
-        'https://invoice.moneyforward.com/oauth/authorize'
-      )
-      .setTokenUrl('https://invoice.moneyforward.com/oauth/token')
+      .setAuthorizationBaseUrl('https://api.biz.moneyforward.com/authorize')
+      .setTokenUrl('https://api.biz.moneyforward.com/token')
       .setClientId(clientId)
       .setClientSecret(clientSecret)
       .setCallbackFunction('mfCallback')
       .setPropertyStore(PropertiesService.getUserProperties())
-      .setScope('write');
+      .setScope('mfc/invoice/data.write');
   }
 
   getAccessToken() {
@@ -302,24 +300,6 @@ export class MfInvoiceClient {
   }
 }
 
-//テスト用
-
-// function testbillingsList() {
-//   Logger.log(createClient().quotes.list());
-// }
-
-// function testQuotesList() {
-//   Logger.log(createClient().quotes.list());
-// }
-
-// function testPartnersList() {
-//   Logger.log(createClient().partners.list());
-// }
-
-// function testItemList() {
-//   Logger.log(createClient().items.list());
-// }
-
 // function testSeachBillings() {
 //   const page = 1;
 //   const query = encodeURI('入金済み');
@@ -333,5 +313,3 @@ export class MfInvoiceClient {
 //   from = convertDateToString(from)
 //   Logger.log(JSON.stringify(createClient().billings.search(page, query, from, to)));
 // }
-
-

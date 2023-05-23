@@ -258,7 +258,7 @@ declare class OAuth2Service {
   public getAuthorizationUrl(): string;
   public getAccessToken(): string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public handleCallback(request: anyhandleCallback): string;
+  public handleCallback(request: any): string;
   public reset(): void;
 }
 

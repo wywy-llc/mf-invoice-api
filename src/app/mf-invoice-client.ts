@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 /**
  * マネーフォワード請求API用クライアント
  * ■ Money Forward Invoice API
@@ -34,7 +35,7 @@ export class MfInvoiceClient {
       /**
        * 一覧取得
        */
-      list: (): Billings => {
+      list: (): BillingsResponse => {
         const reqUrl = this.baseUrl + 'billings';
         const method: GoogleAppsScript.URL_Fetch.HttpMethod = 'get';
         const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
@@ -100,7 +101,7 @@ export class MfInvoiceClient {
       /**
        * 一覧取得
        */
-      list: (): Quotes => {
+      list: (): QuotesResponse => {
         const reqUrl = this.baseUrl + 'quotes';
         const method: GoogleAppsScript.URL_Fetch.HttpMethod = 'get';
         const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
@@ -147,7 +148,7 @@ export class MfInvoiceClient {
       /**
        * 一覧取得
        */
-      list: (page = 1, perPage = 100) => {
+      list: (page = 1, perPage = 100): PartnersResponse => {
         const reqUrl =
           this.baseUrl + `partners?page=${page}&per_page=${perPage}`;
         const method: GoogleAppsScript.URL_Fetch.HttpMethod = 'get';
@@ -297,6 +298,21 @@ export class MfInvoiceClient {
 
   logout() {
     this.getService().reset();
+  }
+
+  getAllPartners(): Partner[] {
+    let partners: Partner[] = [];
+    let page = 1;
+    while (true) {
+      const partnersRes = this.partners.list(page);
+      if (partnersRes.data.length === 0) {
+        break;
+      }
+      partners = partners.concat(partnersRes.data);
+      page += 1;
+    }
+    Logger.log(partners);
+    return partners;
   }
 }
 

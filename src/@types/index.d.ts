@@ -97,7 +97,7 @@ declare class Billing {
  * https://invoice.moneyforward.com/docs/api/v3/index.html#/operations/get-billings
  *
  */
-declare class Billings {
+declare class BillingsResponse {
   public data: BillingData[];
   public pagination: PaginationData;
 }
@@ -160,7 +160,7 @@ declare class Quote {
  * https://invoice.moneyforward.com/docs/api/v3/index.html#/operations/get-quotes
  */
 
-declare class Quotes {
+declare class QuotesResponse {
   public data: Quote[];
   public pagination: Pagination;
 }
@@ -239,6 +239,48 @@ declare class Office {
   public registration_code: string;
   public created_at: string;
   public updated_at: string;
+}
+
+/**
+ * Department
+ * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/Department
+ */
+declare class department {
+  public id: string;
+  public zip: string;
+  public tel: string;
+  public prefecture: string;
+  public address1: string;
+  public address2: string;
+  public person_name: string;
+  public person_title: string;
+  public person_dept: string;
+  public email: string;
+  public cc_emails: string;
+  public office_member_id: string;
+  public office_member_name: string;
+  public created_at: string;
+  public updated_at: string;
+}
+/**
+ * Partner
+ * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/Partner
+ */
+declare class Partner {
+  public id: string;
+  public code: string;
+  public name: string;
+  public name_kana: string;
+  public name_suffix: string;
+  public memo: string;
+  public created_at: string;
+  public updated_at: string;
+  public departments: Department[];
+}
+
+declare class PartnersResponse {
+  public data: Partner[];
+  public pagination: Pagination;
 }
 
 /**

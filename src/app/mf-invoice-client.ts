@@ -311,8 +311,29 @@ export class MfInvoiceClient {
       partners = partners.concat(partnersRes.data);
       page += 1;
     }
-    Logger.log(partners);
+    Logger.log(partners.length + '件の取引先取得に成功。');
     return partners;
+  }
+
+  /**
+   * MF請求書API認証ダイアログを表示します。
+   */
+  showApiAuthDialog() {
+    const result = Browser.msgBox(
+      '認証処理を開始してよろしいでしょうか？',
+      Browser.Buttons.OK_CANCEL
+    );
+    if (result === 'cancel') {
+      return;
+    }
+    this.logout();
+    const htmlOutput = HtmlService.createHtmlOutput(
+      `<p><a href="${this.getAuthorizationUrl()}" target="blank">こちらをクリックして認証処理を継続してください</a>
+      <br>＊認証が完了したらこちらのウィンドウは閉じてください。</p>`
+    )
+      .setWidth(250)
+      .setHeight(300);
+    SpreadsheetApp.getUi().showModelessDialog(htmlOutput, 'MF請求API認証');
   }
 }
 

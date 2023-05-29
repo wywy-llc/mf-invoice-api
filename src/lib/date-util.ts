@@ -36,7 +36,7 @@ export class DateUtil {
 
   /**
    * 現在時刻の文字列を取得します。
-   * @return {string} 本日日付((YYYY-MM-DD hh:mm:dd)
+   * @return {string} 本日日付(YYYY-MM-DD hh:mm:dd)
    */
   static getNow() {
     const today = new Date();
@@ -62,14 +62,24 @@ export class DateUtil {
   }
 
   /**
-   * 今月の指定日の文字列を取得します。
+   * 今月の指定日の文字列(YYYY-MM-DD)を取得します。
    * @param dateNum 指定日
+   * @param number 出力パターン
+   *  1: YYYY-MM-DD
+   *  2: YYYYMM
    * @returns
    */
-  static getThisMonthDay(dateNum: number) {
+  static getThisMonthDay(dateNum: number, type = 1) {
     const today = new Date();
     const date = new Date(today.getFullYear(), today.getMonth() + 1, dateNum);
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    switch (type) {
+      case 1:
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+      case 2:
+        return `${date.getFullYear()}${date.getMonth()}`;
+      default:
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    }
   }
 
   /**
@@ -91,8 +101,8 @@ export class DateUtil {
   static getNextMonthLastDay() {
     const today = new Date();
     const nextMonthLastDay = new Date(
-      today.getFullYear() + 2,
-      today.getMonth(),
+      today.getFullYear(),
+      today.getMonth() + 2,
       0
     );
     return `${nextMonthLastDay.getFullYear()}-${

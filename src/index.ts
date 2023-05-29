@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { MfInvoiceClient } from './app/mf-invoice-client';
+import { MfInvoiceClient } from './lib/mf-invoice-client';
 
 //== 基本的な関数 ==//
 

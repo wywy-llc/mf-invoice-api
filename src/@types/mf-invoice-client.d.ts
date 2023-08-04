@@ -162,7 +162,7 @@ declare class Quote {
 
 declare class QuotesResponse {
   public data: Quote[];
-  public pagination: Pagination;
+  public pagination: PaginationData;
 }
 
 /**
@@ -280,7 +280,7 @@ declare class Partner {
 
 declare class PartnersResponse {
   public data: Partner[];
-  public pagination: Pagination;
+  public pagination: PaginationData;
 }
 
 /**

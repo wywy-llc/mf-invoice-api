@@ -1,130 +1,115 @@
+/**
+ * 日付ユーティリティクラス
+ */
 export class DateUtil {
-  /**
-   * 日付オブジェクトを文字列に変換します。
-   * @param {string} date
-   */
-  static convertDateToString(date: Date) {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  private baseDate: Date;
+  constructor(baseDate: Date) {
+    this.baseDate = baseDate;
   }
 
   /**
-   * 日付オブジェクト(時間)を文字列に変換します。
-   * @param {string} date
-   */
-  static convertDateTimeToString(date: Date) {
-    return `${date.getFullYear()}-${
-      date.getMonth() + 1
-    }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  }
-
-  /**
-   * 日付文字列(時間)を整形します。
-   * @param {string} date 日付文字列(時間)
-   */
-  static formatDateTimeString(date: string) {
-    return date.replace('.000+09:00', '').replace('T', ' ');
-  }
-
-  /**
-   * 本日日付の文字列を取得します。
-   * @return {string} 本日日付((YYYY-MM-DD)
-   */
-  static getTodayString() {
-    const today = new Date();
-    return `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-  }
-
-  /**
-   * 現在時刻の文字列を取得します。
-   * @return {string} 本日日付(YYYY-MM-DD hh:mm:dd)
-   */
-  static getNow() {
-    const today = new Date();
-    return `${today.getFullYear()}-${
-      today.getMonth() + 1
-    }-${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-  }
-
-  /**
-   * 今月末の文字列を取得します。
-   * @return {string} 今月末日付((YYYY-MM-DD)
-   */
-  static getThisMonthLastDay() {
-    const today = new Date();
-    const nextMonthLastDay = new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
-      0
-    );
-    return `${nextMonthLastDay.getFullYear()}-${
-      nextMonthLastDay.getMonth() + 1
-    }-${nextMonthLastDay.getDate()}`;
-  }
-
-  /**
-   * 今月の指定日の文字列(YYYY-MM-DD)を取得します。
-   * @param dateNum 指定日
-   * @param number 出力パターン
+   * 日付文字列を取得します。
+   * @param type 出力パターン
    *  1: YYYY-MM-DD
    *  2: YYYYMM
+   *  3: YYYY年MM月
    * @returns
    */
-  static getThisMonthDay(dateNum: number, type = 1) {
-    const today = new Date();
-    const date = new Date(today.getFullYear(), today.getMonth() + 1, dateNum);
+  getDateString(type = 1): string {
+    const year = this.baseDate.getFullYear();
+    const month = this.baseDate.getMonth() + 1;
+    const date = this.baseDate.getDate();
     switch (type) {
       case 1:
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        return `${year}-${month.toString().padStart(2, '0')}-${date
+          .toString()
+          .padStart(2, '0')}`;
       case 2:
-        return `${date.getFullYear()}${date.getMonth()}`;
+        return `${year}${month.toString().padStart(2, '0')}`;
+      case 3:
+        return `${year}年${month}月`;
       default:
-        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        return `${year}-${month.toString().padStart(2, '0')}-${date
+          .toString()
+          .padStart(2, '0')}`;
     }
   }
 
   /**
-   * 先月末の文字列を取得します。
+   * 時刻文字列を取得します。
+   * @return {string} 本日日付(YYYY-MM-DD hh:mm:dd)
+   */
+  getTimeString(): string {
+    const year = this.baseDate.getFullYear();
+    const month = this.baseDate.getMonth() + 1;
+    const date = this.baseDate.getDate();
+    const hours = this.baseDate.getHours();
+    const minutes = this.baseDate.getMinutes();
+    const seconds = this.baseDate.getSeconds();
+    return `${year}-${month.toString().padStart(2, '0')}-${date
+      .toString()
+      .padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  /**
+   * 月末日付の文字列を取得します。
    * @return {string} 今月末日付((YYYY-MM-DD)
    */
-  static getLastMonthLastDay(): string {
-    const today = new Date();
-    const lastMonthLastDay = new Date(today.getFullYear(), today.getMonth(), 0);
-    return `${lastMonthLastDay.getFullYear()}-${
+  getEndDateBaseMonth(): string {
+    const nextMonthLastDay = new Date(
+      this.baseDate.getFullYear(),
+      this.baseDate.getMonth() + 1,
+      0
+    );
+    return `${nextMonthLastDay.getFullYear()}-${(
+      nextMonthLastDay.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0')}-${nextMonthLastDay
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
+  }
+
+  /**
+   * 先月末の文字列を取得します。
+   * @return {string} 先月末日付((YYYY-MM-DD)
+   */
+  getEndDateLastMonth(): string {
+    const lastMonthLastDay = new Date(
+      this.baseDate.getFullYear(),
+      this.baseDate.getMonth(),
+      0
+    );
+    return `${lastMonthLastDay.getFullYear()}-${(
       lastMonthLastDay.getMonth() + 1
-    }-${lastMonthLastDay.getDate()}`;
+    )
+      .toString()
+      .padStart(2, '0')}-${lastMonthLastDay
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
   }
 
   /**
    * 来月末日付の文字列を取得します。
    * @return {string} 来月末日付(YYYY-MM-DD)
    */
-  static getNextMonthLastDay() {
-    const today = new Date();
+  getEndDateNextMonth() {
     const nextMonthLastDay = new Date(
-      today.getFullYear(),
-      today.getMonth() + 2,
+      this.baseDate.getFullYear(),
+      this.baseDate.getMonth() + 2,
       0
     );
-    return `${nextMonthLastDay.getFullYear()}-${
+    return `${nextMonthLastDay.getFullYear()}-${(
       nextMonthLastDay.getMonth() + 1
-    }-${nextMonthLastDay.getDate()}`;
-  }
-  /**
-   * 請求番号を作成します。
-   * パターン1：YYYYMMDD-hhmmdd
-   * パターン2：YYYY-MMDD-hhmmdd
-   * @return {string} 請求番号(YYYYMMDD-hhmmdd)
-   */
-  static getBillingNumber(pattern = 1) {
-    const today = new Date();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const date = today.getDate().toString().padStart(2, '0');
-    const hours = today.getHours().toString().padStart(2, '0');
-    const minutes = today.getMinutes().toString().padStart(2, '0');
-    const seconds = today.getSeconds().toString().padStart(2, '0');
-    if (pattern === 2) {
-      return `${today.getFullYear()}-${month}${date}-${hours}${minutes}${seconds}`;
-    }
-    return `${today.getFullYear()}${month}${date}-${hours}${minutes}${seconds}`;
+    )
+      .toString()
+      .padStart(2, '0')}-${nextMonthLastDay
+      .getDate()
+      .toString()
+      .padStart(2, '0')}`;
   }
 }

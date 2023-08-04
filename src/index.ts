@@ -6,9 +6,22 @@ import { MfOAuthUtil } from './lib/mf-oauth-util';
 
 //== 基本的な関数 ==//
 
-function getMfClient_() {
+/**
+ * MF請求書APIクライアントを生成します。
+ * @returns {MfInvoiceClient}
+ */
+function createClient(): MfInvoiceClient {
   const accessToken = MfOAuthUtil.createService().getAccessToken();
   return new MfInvoiceClient(accessToken);
+}
+
+/**
+ * 日付操作用のユーティリティクラスを生成します。
+ * @param baseDate 基準日
+ * @returns {DateUtil} 日付操作用のユーティリティクラス
+ */
+function getDateUtil(baseDate: Date): DateUtil {
+  return new DateUtil(baseDate);
 }
 
 /**
@@ -70,17 +83,22 @@ function testbillingsList() {
   const to = dateUtil.getEndDateNextMonth();
   const from = dateUtil.getEndDateLastMonth();
   const query = '入金済み';
-  Logger.log(getMfClient_().billings.getBillings(from, to, query));
+  Logger.log(createClient().billings.getBillings(from, to, query));
 }
 
-// function testQuotesList() {
-//   Logger.log(getMfClient_().quotes.list());
-// }
+function testQuotesList() {
+  const baseDate = new Date();
+  const dateUtil: DateUtil = new DateUtil(baseDate);
+  const to = dateUtil.getEndDateNextMonth();
+  const from = dateUtil.getEndDateLastMonth();
+  const query = '';
+  Logger.log(createClient().quotes.getQuotes(from, to, query));
+}
 
-// function testPartnersList() {
-//   Logger.log(getMfClient_().partners.list());
-// }
+function testPartnersList() {
+  Logger.log(createClient().partners.getPartners());
+}
 
-// function testItemList() {
-//   Logger.log(getMfClient_().items.list());
-// }
+function testItemList() {
+  Logger.log(createClient().items.getItems());
+}

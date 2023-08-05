@@ -45,18 +45,6 @@ function mfCallback(request: any) {
 }
 
 /**
- * シンプルトリガー
- * スプレッドシート、をユーザーが開く時に呼び出される関数です。
- */
-function onOpen() {
-  const ui = SpreadsheetApp.getUi();
-  const menu = ui
-    .createMenu('MF請求書API連携')
-    .addItem('認証処理を開始する', 'showMfApiAuthDialog');
-  menu.addToUi();
-}
-
-/**
  * MF請求書API認証ダイアログを表示します。
  */
 function showMfApiAuthDialog() {

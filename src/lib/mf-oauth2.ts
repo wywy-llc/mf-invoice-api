@@ -12,7 +12,7 @@ export class MfOAuth2 {
         'スクリプトプロパティにCLIENT_SECRETを設定してください。'
       );
     }
-    return OAuth2.createService('moneyforward-v3')
+    return OAuth2.createService('mf-invoice-client-v3')
       .setAuthorizationBaseUrl('https://api.biz.moneyforward.com/authorize')
       .setTokenUrl('https://api.biz.moneyforward.com/token')
       .setClientId(clientId)

@@ -63,7 +63,7 @@ function showMfApiAuthDialog() {
   }
 
   const htmlOutput = HtmlService.createHtmlOutput(
-    `<p><a href="${MfOAuthUtil.createService().getAuthorizationUrl()}" target="blank">こちらをクリックして認証処理を継続してください</a>
+    `<p><a href="${createMfAuthUrl()}" target="blank">こちらをクリックして認証処理を継続してください</a>
       <br>＊認証が完了したらこちらのウィンドウは閉じてください。</p>`
   )
     .setWidth(250)
@@ -71,11 +71,14 @@ function showMfApiAuthDialog() {
   SpreadsheetApp.getUi().showModelessDialog(htmlOutput, 'MF請求API認証');
 }
 
-//== テスト用 ==//
-
-function authorizationUrl() {
-  Logger.log(MfOAuthUtil.createService().getAuthorizationUrl());
+/**
+ * 認証URLを取得します。
+ */
+function createMfAuthUrl() {
+  console.log(MfOAuthUtil.createService().getAuthorizationUrl());
 }
+
+//== テスト用 ==//
 
 function testbillingsList() {
   const baseDate = new Date();
@@ -83,7 +86,8 @@ function testbillingsList() {
   const to = dateUtil.getEndDateNextMonth();
   const from = dateUtil.getEndDateLastMonth();
   const query = '入金済み';
-  Logger.log(createClient().billings.getBillings(from, to, query));
+  const client = createClient();
+  console.log(createClient().billings.getBillings(from, to, query));
 }
 
 function testQuotesList() {
@@ -92,13 +96,17 @@ function testQuotesList() {
   const to = dateUtil.getEndDateNextMonth();
   const from = dateUtil.getEndDateLastMonth();
   const query = '';
-  Logger.log(createClient().quotes.getQuotes(from, to, query));
+  console.log(createClient().quotes.getQuotes(from, to, query));
 }
 
 function testPartnersList() {
-  Logger.log(createClient().partners.getPartners());
+  console.log(createClient().partners.getPartners());
 }
 
 function testItemList() {
-  Logger.log(createClient().items.getItems());
+  console.log(createClient().items.getItems());
+}
+
+function testOffice() {
+  console.log(createClient().office.getMyOffice());
 }

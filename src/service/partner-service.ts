@@ -31,7 +31,7 @@ export class PartnerService extends ServiceBase {
       partners.push(...partnersRes.data);
       page += 1;
     }
-    Logger.log(partners.length + '件の取引先取得に成功。');
+    console.log(partners.length + '件の取引先取得に成功。');
     return partners;
   }
 }

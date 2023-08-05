@@ -76,6 +76,7 @@ export class ServiceBase {
       options.payload = payload;
       options.contentType = 'application/json';
     }
+    console.info('Request URL: ' + reqUrl);
     const res = UrlFetchApp.fetch(reqUrl, options);
     return res;
   }
@@ -87,10 +88,10 @@ export class ServiceBase {
    */
   processResponse(res: GoogleAppsScript.URL_Fetch.HTTPResponse) {
     if (res.getResponseCode() === 200 || res.getResponseCode() === 201) {
-      Logger.log('Request success.');
+      console.info('Request success.');
       return JSON.parse(res.getContentText());
     } else {
-      Logger.log('Request failed.');
+      console.error('Request failed.');
       throw new Error(
         `Request Failed !!. ${res.getResponseCode()}: ${res.getContentText()}`
       );

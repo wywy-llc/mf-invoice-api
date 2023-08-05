@@ -283,7 +283,7 @@ declare class PartnersResponse {
   public pagination: PaginationData;
 }
 
-declare class   ItemsResponse {
+declare class ItemsResponse {
   public data: Item[];
   public pagination: PaginationData;
 }

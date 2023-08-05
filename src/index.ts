@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MfInvoiceClient } from './lib/mf-invoice-client';
 import { DateUtil } from './lib/date-util';
-import { MfOAuthUtil } from './lib/mf-oauth-util';
+import { MfOAuth2 } from './lib/mf-oauth2';
 
 //== 基本的な関数 ==//
 
@@ -11,7 +11,7 @@ import { MfOAuthUtil } from './lib/mf-oauth-util';
  * @returns {MfInvoiceClient}
  */
 function createClient(): MfInvoiceClient {
-  const accessToken = MfOAuthUtil.createService().getAccessToken();
+  const accessToken = MfOAuth2.getMfService().getAccessToken();
   return new MfInvoiceClient(accessToken);
 }
 
@@ -30,7 +30,7 @@ function getDateUtil(baseDate: Date): DateUtil {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mfCallback(request: any) {
-  return MfOAuthUtil.handleCallback(request);
+  return MfOAuth2.handleCallback(request);
 }
 
 /**
@@ -57,7 +57,7 @@ function showMfApiAuthDialog() {
     return;
   }
   try {
-    MfOAuthUtil.logout();
+    MfOAuth2.logout();
   } catch (e) {
     /* empty */
   }
@@ -75,7 +75,7 @@ function showMfApiAuthDialog() {
  * 認証URLを取得します。
  */
 function createMfAuthUrl() {
-  console.log(MfOAuthUtil.createService().getAuthorizationUrl());
+  console.log(MfOAuth2.getMfService().getAuthorizationUrl());
 }
 
 //== テスト用 ==//

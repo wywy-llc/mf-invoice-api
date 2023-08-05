@@ -1,3 +1,12 @@
+// OAuth2.createService
+/**
+ * OAuth2
+ * https://github.com/googleworkspace/apps-script-oauth2
+ */
+declare class OAuth2 {
+  static createService(service_name: string): OAuth2Service;
+}
+
 /**
  * OAuth2Service
  *
@@ -16,14 +25,7 @@ declare class OAuth2Service {
   public getAccessToken(): string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public handleCallback(request: any): string;
+  public setCache(cache: GoogleAppsScript.Cache.Cache): OAuth2Service;
+  public setLock(lock: GoogleAppsScript.Lock.Lock): OAuth2Service;
   public reset(): void;
-}
-
-// OAuth2.createService
-/**
- * OAuth2
- * https://github.com/googleworkspace/apps-script-oauth2
- */
-declare class OAuth2 {
-  static createService(service_name: string): OAuth2Service;
 }

@@ -10,7 +10,7 @@ import { MfOAuth2 } from './lib/mf-oauth2';
  * MF請求書APIクライアントを生成します。
  * @returns {MfInvoiceClient}
  */
-function createClient(clientId: string, clientSecret: string): MfInvoiceClient {
+function create(clientId: string, clientSecret: string): MfInvoiceClient {
   const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
   const accessToken = mfOAuth2.getMfService().getAccessToken();
   return new MfInvoiceClient(accessToken);

@@ -10,8 +10,9 @@ import { MfOAuth2 } from './lib/mf-oauth2';
  * MF請求書APIクライアントを生成します。
  * @returns {MfInvoiceClient}
  */
-function createClient(): MfInvoiceClient {
-  const accessToken = MfOAuth2.getMfService().getAccessToken();
+function createClient(clientId: string, clientSecret: string): MfInvoiceClient {
+  const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
+  const accessToken = mfOAuth2.getMfService().getAccessToken();
   return new MfInvoiceClient(accessToken);
 }
 
@@ -27,9 +28,10 @@ function getDateUtil(baseDate: Date): DateUtil {
 /**
  * mfからログアウトします。
  */
-function logout() {
+function logout(clientId: string, clientSecret: string) {
+  const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
   try {
-    MfOAuth2.logout();
+    mfOAuth2.logout();
   } catch (e) {
     console.info('未ログインのためログアウトできませんでした。');
   }
@@ -40,14 +42,15 @@ function logout() {
  * @param request
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mfCallback(request: any) {
-  return MfOAuth2.handleCallback(request);
+function mfCallback(request: any, clientId: string, clientSecret: string) {
+  const mfOAuth2 = new MfOAuth2(clientId, clientSecret);
+  return mfOAuth2.handleCallback(request);
 }
 
 /**
  * MF請求書API認証ダイアログを表示します。
  */
-function showMfApiAuthDialog() {
+function showMfApiAuthDialog(clientId: string, clientSecret: string) {
   const result = Browser.msgBox(
     '認証処理を開始してよろしいでしょうか？',
     Browser.Buttons.OK_CANCEL
@@ -56,13 +59,16 @@ function showMfApiAuthDialog() {
     return;
   }
   try {
-    MfOAuth2.logout();
+    const mfOAuth2 = new MfOAuth2(clientId, clientSecret);
+    mfOAuth2.logout();
   } catch (e) {
     /* empty */
   }
-
   const htmlOutput = HtmlService.createHtmlOutput(
-    `<p><a href="${createMfAuthUrl()}" target="blank">こちらをクリックして認証処理を継続してください</a>
+    `<p><a href="${createMfAuthUrl(
+      clientId,
+      clientSecret
+    )}" target="blank">こちらをクリックして認証処理を継続してください</a>
       <br>＊認証が完了したらこちらのウィンドウは閉じてください。</p>`
   )
     .setWidth(250)
@@ -73,8 +79,11 @@ function showMfApiAuthDialog() {
 /**
  * 認証URLを取得します。
  */
-function createMfAuthUrl() {
-  console.log(MfOAuth2.getMfService().getAuthorizationUrl());
+function createMfAuthUrl(clientId: string, clientSecret: string) {
+  const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
+  const authUrl = mfOAuth2.getMfService().getAuthorizationUrl();
+  console.info(authUrl);
+  return authUrl;
 }
 
 /**

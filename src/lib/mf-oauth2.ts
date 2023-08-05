@@ -1,42 +1,45 @@
 export class MfOAuth2 {
-  static getMfService() {
-    const clientId =
-      PropertiesService.getScriptProperties().getProperty('CLIENT_ID');
-    if (!clientId) {
-      throw new Error('スクリプトプロパティにCLIENT_IDを設定してください。');
-    }
-    const clientSecret =
-      PropertiesService.getScriptProperties().getProperty('CLIENT_SECRET');
-    if (!clientSecret) {
+  private clientId: string;
+  private clientSecret: string;
+  constructor(clientId: string, clientSecret: string) {
+    if (!clientId || !clientSecret) {
       throw new Error(
-        'スクリプトプロパティにCLIENT_SECRETを設定してください。'
+        'スクリプトプロパティにCLIENT_IDとCLIENT_SECRETを設定してください。'
       );
     }
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
+  }
+  static create(clientId: string, clientSecret: string) {
+    return new MfOAuth2(clientId, clientSecret);
+  }
+  getMfService() {
     return OAuth2.createService('mf-invoice-client-v3')
       .setAuthorizationBaseUrl('https://api.biz.moneyforward.com/authorize')
       .setTokenUrl('https://api.biz.moneyforward.com/token')
-      .setClientId(clientId)
-      .setClientSecret(clientSecret)
+      .setClientId(this.clientId)
+      .setClientSecret(this.clientSecret)
       .setCallbackFunction('mfCallback')
       .setPropertyStore(PropertiesService.getUserProperties())
       .setCache(CacheService.getUserCache())
+      .setLock(LockService.getUserLock())
       .setScope('mfc/invoice/data.write');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static handleCallback(request: any) {
+  handleCallback(request: any) {
     return HtmlService.createHtmlOutput(
-      MfOAuth2.getMfService().handleCallback(request)
+      this.getMfService().handleCallback(request)
         ? '認証成功しました。このタブを閉じてください。'
         : '認証に失敗しました。'
     );
   }
 
-  static logout() {
-    MfOAuth2.getMfService().reset();
+  logout() {
+    this.getMfService().reset();
   }
 
-  static getAuthorizationUrl() {
-    return MfOAuth2.getMfService().getAuthorizationUrl();
+  getAuthorizationUrl() {
+    return this.getMfService().getAuthorizationUrl();
   }
 }

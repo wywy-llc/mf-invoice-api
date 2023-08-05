@@ -25,6 +25,17 @@ function getDateUtil(baseDate: Date): DateUtil {
 }
 
 /**
+ * mfからログアウトします。
+ */
+function logout() {
+  try {
+    MfOAuth2.logout();
+  } catch (e) {
+    console.info('未ログインのためログアウトできませんでした。');
+  }
+}
+
+/**
  * MF認証のコールバック関数です。
  * @param request
  */
@@ -78,35 +89,48 @@ function createMfAuthUrl() {
   console.log(MfOAuth2.getMfService().getAuthorizationUrl());
 }
 
+/**
+ * リダイレクトURIを取得します。
+ * @returns {string} リダイレクトURI
+ */
+function getRedirectUri() {
+  const scriptId = ScriptApp.getScriptId();
+  return (
+    'https://script.google.com/macros/d/' +
+    encodeURIComponent(scriptId) +
+    '/usercallback'
+  );
+}
+
 //== テスト用 ==//
 
-function testbillingsList() {
-  const baseDate = new Date();
-  const dateUtil: DateUtil = new DateUtil(baseDate);
-  const to = dateUtil.getEndDateNextMonth();
-  const from = dateUtil.getEndDateLastMonth();
-  const query = '入金済み';
-  const client = createClient();
-  console.log(createClient().billings.getBillings(from, to, query));
-}
+// function testbillingsList() {
+//   const baseDate = new Date();
+//   const dateUtil: DateUtil = new DateUtil(baseDate);
+//   const to = dateUtil.getEndDateNextMonth();
+//   const from = dateUtil.getEndDateLastMonth();
+//   const query = '入金済み';
+//   const client = createClient();
+//   console.log(createClient().billings.getBillings(from, to, query));
+// }
 
-function testQuotesList() {
-  const baseDate = new Date();
-  const dateUtil: DateUtil = new DateUtil(baseDate);
-  const to = dateUtil.getEndDateNextMonth();
-  const from = dateUtil.getEndDateLastMonth();
-  const query = '';
-  console.log(createClient().quotes.getQuotes(from, to, query));
-}
+// function testQuotesList() {
+//   const baseDate = new Date();
+//   const dateUtil: DateUtil = new DateUtil(baseDate);
+//   const to = dateUtil.getEndDateNextMonth();
+//   const from = dateUtil.getEndDateLastMonth();
+//   const query = '';
+//   console.log(createClient().quotes.getQuotes(from, to, query));
+// }
 
-function testPartnersList() {
-  console.log(createClient().partners.getPartners());
-}
+// function testPartnersList() {
+//   console.log(createClient().partners.getPartners());
+// }
 
-function testItemList() {
-  console.log(createClient().items.getItems());
-}
+// function testItemList() {
+//   console.log(createClient().items.getItems());
+// }
 
-function testOffice() {
-  console.log(createClient().office.getMyOffice());
-}
+// function testOffice() {
+//   console.log(createClient().office.getMyOffice());
+// }

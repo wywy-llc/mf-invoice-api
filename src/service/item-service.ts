@@ -3,7 +3,7 @@ import { ReqMethod, ServiceBase } from './service-base';
 export class ItemService extends ServiceBase {
   baseUrl: string = ServiceBase.API_BASE_URL + '/items';
 
-  getItems(page: number = 1, perPage: number = 100): Item[] {
+  getItems(page: number = 1, perPage: number = 100): ItemsResponse {
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);

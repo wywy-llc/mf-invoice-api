@@ -18,7 +18,7 @@ export class ItemService extends ServiceBase {
     return this.processResponse(res);
   }
 
-  getItem(id: String): Quote {
+  getItem(id: String): Item {
     const reqUrl = `${this.baseUrl}/${id}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);

@@ -288,12 +288,12 @@ declare class ItemsResponse {
   public pagination: PaginationData;
 }
 
-declare namespace MfInvoiceClient {
+declare namespace MfInvoiceApi {
   /**
    * MF請求書APIクライアントを生成します。
    * @returns {MfInvoiceClient}
    */
-  export declare function create(
+  export declare function createClient(
     clientId: string,
     clientSecret: string
   ): MfInvoiceClient;
@@ -336,23 +336,23 @@ declare namespace MfInvoiceClient {
    * @returns {string} リダイレクトURI
    */
   export declare function getRedirectUri(): string;
+}
 
+/**
+ * マネーフォワード請求API用クライアント
+ * ■ Money Forward Invoice API
+ * https://invoice.moneyforward.com/docs/api/v3/index.html#/
+ */
+export declare class MfClient {
+  billings: BillingService;
+  quotes: QuoteService;
+  partners: PartnerService;
+  items: ItemService;
+  office: OfficeService;
   /**
-   * マネーフォワード請求API用クライアント
-   * ■ Money Forward Invoice API
-   * https://invoice.moneyforward.com/docs/api/v3/index.html#/
+   * コンストラクタ
    */
-  export declare class MfInvoiceClient {
-    billings: BillingService;
-    quotes: QuoteService;
-    partners: PartnerService;
-    items: ItemService;
-    office: OfficeService;
-    /**
-     * コンストラクタ
-     */
-    constructor(accessToken: string);
-  }
+  constructor(accessToken: string);
 }
 
 export declare class MfOAuth2 {

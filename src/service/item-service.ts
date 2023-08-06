@@ -1,4 +1,4 @@
-import { Item, ItemsResponse } from '../@types/mf-invoice-client';
+import { Item, ItemsResponse } from '../@types/mf-invoice-api';
 import { ReqMethod, ServiceBase } from './service-base';
 
 export class ItemService extends ServiceBase {

@@ -11,7 +11,7 @@ import { QuoteService } from '../service/quote-service';
  * ■ Money Forward Invoice API
  * https://invoice.moneyforward.com/docs/api/v3/index.html#/
  */
-export class MfInvoiceClient {
+export class MfClient {
   public billings: BillingService;
   public quotes: QuoteService;
   public partners: PartnerService;

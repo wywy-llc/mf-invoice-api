@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { MfInvoiceClient } from './lib/mf-invoice-client';
+import { MfClient } from './lib/mf-client';
 import { DateUtil } from './lib/date-util';
 import { MfOAuth2 } from './lib/mf-oauth2';
 
@@ -8,12 +8,12 @@ import { MfOAuth2 } from './lib/mf-oauth2';
 
 /**
  * MF請求書APIクライアントを生成します。
- * @returns {MfInvoiceClient}
+ * @returns {MfClient}
  */
-function create(clientId: string, clientSecret: string): MfInvoiceClient {
+function createClient(clientId: string, clientSecret: string): MfClient {
   const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
   const accessToken = mfOAuth2.getMfService().getAccessToken();
-  return new MfInvoiceClient(accessToken);
+  return new MfClient(accessToken);
 }
 
 /**
@@ -98,36 +98,3 @@ function getRedirectUri() {
     '/usercallback'
   );
 }
-
-//== テスト用 ==//
-
-// function testbillingsList() {
-//   const baseDate = new Date();
-//   const dateUtil: DateUtil = new DateUtil(baseDate);
-//   const to = dateUtil.getEndDateNextMonth();
-//   const from = dateUtil.getEndDateLastMonth();
-//   const query = '入金済み';
-//   const client = createClient();
-//   console.log(createClient().billings.getBillings(from, to, query));
-// }
-
-// function testQuotesList() {
-//   const baseDate = new Date();
-//   const dateUtil: DateUtil = new DateUtil(baseDate);
-//   const to = dateUtil.getEndDateNextMonth();
-//   const from = dateUtil.getEndDateLastMonth();
-//   const query = '';
-//   console.log(createClient().quotes.getQuotes(from, to, query));
-// }
-
-// function testPartnersList() {
-//   console.log(createClient().partners.getPartners());
-// }
-
-// function testItemList() {
-//   console.log(createClient().items.getItems());
-// }
-
-// function testOffice() {
-//   console.log(createClient().office.getMyOffice());
-// }

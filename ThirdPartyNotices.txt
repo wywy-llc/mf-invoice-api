@@ -1,4 +1,14 @@
-Copyright 2023 wywy LLC
+NOTICES
+
+This repository incorporates material as listed below or described in the code.
+
+---------------------------------------------------------
+
+aside - Apache2
+
+https://github.com/google/aside
+
+Copyright 2023 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

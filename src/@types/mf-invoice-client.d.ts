@@ -287,3 +287,92 @@ declare class ItemsResponse {
   public data: Item[];
   public pagination: PaginationData;
 }
+
+/**
+ * MF請求書APIクライアントを生成します。
+ * @returns {MfInvoiceClient}
+ */
+export declare function create(
+  clientId: string,
+  clientSecret: string
+): MfInvoiceClient;
+/**
+ * 日付操作用のユーティリティクラスを生成します。
+ * @param baseDate 基準日
+ * @returns {DateUtil} 日付操作用のユーティリティクラス
+ */
+export declare function getDateUtil(baseDate: Date): DateUtil;
+/**
+ * mfからログアウトします。
+ */
+export declare function logout(clientId: string, clientSecret: string): void;
+/**
+ * MF認証のコールバック関数です。
+ * @param request
+ */
+export declare function mfCallback(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  request: any,
+  clientId: string,
+  clientSecret: string
+): GoogleAppsScript.HTML.HtmlOutput;
+/**
+ * MF請求書API認証ダイアログを表示します。
+ */
+export declare function showMfApiAuthDialog(
+  clientId: string,
+  clientSecret: string
+): void;
+/**
+ * 認証URLを取得します。
+ */
+export declare function createMfAuthUrl(
+  clientId: string,
+  clientSecret: string
+): string;
+/**
+ * リダイレクトURIを取得します。
+ * @returns {string} リダイレクトURI
+ */
+export declare function getRedirectUri(): string;
+
+/**
+ * マネーフォワード請求API用クライアント
+ * ■ Money Forward Invoice API
+ * https://invoice.moneyforward.com/docs/api/v3/index.html#/
+ */
+export declare class MfInvoiceClient {
+  billings: BillingService;
+  quotes: QuoteService;
+  partners: PartnerService;
+  items: ItemService;
+  office: OfficeService;
+  /**
+   * コンストラクタ
+   */
+  constructor(accessToken: string);
+}
+
+export declare class MfOAuth2 {
+  private clientId;
+  private clientSecret;
+  constructor(clientId: string, clientSecret: string);
+  static create(clientId: string, clientSecret: string): MfOAuth2;
+  getMfService(): OAuth2Service;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleCallback(request: any): GoogleAppsScript.HTML.HtmlOutput;
+  logout(): void;
+  getAuthorizationUrl(): string;
+}
+
+export declare class TextLinkUtil {
+  /**
+   * MF請求書URLを生成します。
+   * @param {string} billingNumber 請求書番号
+   */
+  static createMfBillingUrl(billingNumber: String): string;
+  /**
+   * 取引先URLを生成します。
+   */
+  static createPartnerUrl(partnerId: String): string;
+}

@@ -9,7 +9,7 @@ export class BillingService extends ServiceBase {
     page: number = 1,
     perPage: number = 100,
     rangeKey: BillingRangeKey = 'billing_date'
-  ): BillingsResponse {
+  ): MfInvoiceApi.BillingsResponse {
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${from}&to=${to}&q=${query}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
@@ -19,7 +19,7 @@ export class BillingService extends ServiceBase {
   /**
    * インボイス制度に対応した形式の請求書の作成
    */
-  createNew(billing: Billing): Billing {
+  createNew(billing: MfInvoiceApi.Billing): MfInvoiceApi.Billing {
     const reqUrl = `${ServiceBase.API_BASE_URL}/invoice_template_billings`;
     const method = ReqMethod.post;
     const payload = JSON.stringify(billing);
@@ -30,7 +30,7 @@ export class BillingService extends ServiceBase {
    * 請求書の取得
    * @returns
    */
-  getBilling(id: string): Billing {
+  getBilling(id: string): MfInvoiceApi.Billing {
     const reqUrl = `${this.baseUrl}/${id}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);

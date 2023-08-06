@@ -10,14 +10,14 @@ export class QuoteService extends ServiceBase {
     page: number = 1,
     perPage: number = 100,
     rangeKey: QuoteRangeKey = 'quote_date'
-  ): QuotesResponse {
+  ): MfInvoiceApi.QuotesResponse {
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${from}&to=${to}&q=${query}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
     return this.processResponse(res);
   }
 
-  createNew(quote: Quote): Quote {
+  createNew(quote: MfInvoiceApi.Quote): MfInvoiceApi.Quote {
     const reqUrl = this.baseUrl;
     const method = ReqMethod.post;
     const payload = JSON.stringify(quote);
@@ -25,7 +25,7 @@ export class QuoteService extends ServiceBase {
     return this.processResponse(res);
   }
 
-  getQuote(id: String): Quote {
+  getQuote(id: String): MfInvoiceApi.Quote {
     const reqUrl = `${this.baseUrl}/${id}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);

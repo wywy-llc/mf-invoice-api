@@ -3,14 +3,17 @@ import { ReqMethod, ServiceBase } from './service-base';
 export class PartnerService extends ServiceBase {
   baseUrl: string = ServiceBase.API_BASE_URL + '/partners';
 
-  getPartners(page: number = 1, perPage: number = 100): PartnersResponse {
+  getPartners(
+    page: number = 1,
+    perPage: number = 100
+  ): MfInvoiceApi.PartnersResponse {
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
     return this.processResponse(res);
   }
 
-  createNew(partner: Partner): Partner {
+  createNew(partner: MfInvoiceApi.Partner): MfInvoiceApi.Partner {
     const reqUrl = this.baseUrl;
     const method = ReqMethod.post;
     const payload = JSON.stringify(partner);
@@ -18,8 +21,8 @@ export class PartnerService extends ServiceBase {
     return this.processResponse(res);
   }
 
-  getAll(): Partner[] {
-    const partners: Partner[] = [];
+  getAll(): MfInvoiceApi.Partner[] {
+    const partners: MfInvoiceApi.Partner[] = [];
     let page = 1;
     let totalPages = 1;
     while (page <= totalPages) {

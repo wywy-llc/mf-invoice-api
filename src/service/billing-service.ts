@@ -1,4 +1,3 @@
-import { Billing, BillingsResponse } from '../@types/mf-invoice-api';
 import { ServiceBase, BillingRangeKey, ReqMethod } from './service-base';
 
 export class BillingService extends ServiceBase {

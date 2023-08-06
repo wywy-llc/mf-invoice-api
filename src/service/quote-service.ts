@@ -1,4 +1,3 @@
-import { Quote, QuotesResponse } from '../@types/mf-invoice-api';
 import { QuoteRangeKey, ReqMethod, ServiceBase } from './service-base';
 
 export class QuoteService extends ServiceBase {

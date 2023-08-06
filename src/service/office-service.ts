@@ -1,4 +1,3 @@
-import { Office } from '../@types/mf-invoice-api';
 import { ReqMethod, ServiceBase } from './service-base';
 
 export class OfficeService extends ServiceBase {

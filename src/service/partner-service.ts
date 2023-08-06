@@ -1,4 +1,3 @@
-import { Partner, PartnersResponse } from '../@types/mf-invoice-api';
 import { ReqMethod, ServiceBase } from './service-base';
 
 export class PartnerService extends ServiceBase {

@@ -10,27 +10,21 @@ declare namespace OAuth2 {
 /**
  * OAuth2Service
  */
-declare namespace OAuth2Service {
-  export declare function setAuthorizationBaseUrl(url: string): OAuth2Service;
-  export declare function setTokenUrl(url: string): OAuth2Service;
-  export declare function setClientId(clientId: string): OAuth2Service;
-  export declare function setClientSecret(clientSecret: string): OAuth2Service;
-  export declare function setCallbackFunction(
-    callbackFunction: string
-  ): OAuth2Service;
-  export declare function setPropertyStore(
+interface OAuth2Service {
+  setAuthorizationBaseUrl(url: string): OAuth2Service;
+  setTokenUrl(url: string): OAuth2Service;
+  setClientId(clientId: string): OAuth2Service;
+  setClientSecret(clientSecret: string): OAuth2Service;
+  setCallbackFunction(callbackFunction: string): OAuth2Service;
+  setPropertyStore(
     propertyStore: GoogleAppsScript.Properties.Properties
   ): OAuth2Service;
-  export declare function setScope(scope: string): OAuth2Service;
-  export declare function getAuthorizationUrl(): string;
-  export declare function getAccessToken(): string;
+  setScope(scope: string): OAuth2Service;
+  getAuthorizationUrl(): string;
+  getAccessToken(): string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export declare function handleCallback(request: any): string;
-  export declare function setCache(
-    cache: GoogleAppsScript.Cache.Cache
-  ): OAuth2Service;
-  export declare function setLock(
-    lock: GoogleAppsScript.Lock.Lock
-  ): OAuth2Service;
-  export declare function reset(): void;
+  handleCallback(request: any): string;
+  setCache(cache: GoogleAppsScript.Cache.Cache): OAuth2Service;
+  setLock(lock: GoogleAppsScript.Lock.Lock): OAuth2Service;
+  reset(): void;
 }

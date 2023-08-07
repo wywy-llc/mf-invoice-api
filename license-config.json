@@ -10,7 +10,8 @@
     "CONTRIBUTING",
     "build",
     "src",
-    "test"
+    "test",
+    "README.md"
   ],
   "license": "license-header.txt",
   "licenseFormats": {

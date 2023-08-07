@@ -1,6 +1,6 @@
 # mf-invoice-api
 
-MFクラウド請求書API v3 GAS(Google Apps Script)クライアント
+MFクラウド請求書API v3 対応のGAS(Google Apps Script)クライアント
 
 スクリプトID：`1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4`
 

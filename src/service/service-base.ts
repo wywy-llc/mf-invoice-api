@@ -3,7 +3,7 @@
  */
 export const BillingRangeKey = {
   billing_date: 'billing_date',
-  due_date: 'billing_date',
+  due_date: 'due_date',
   sales_date: 'sales_date',
   created_at: 'created_at',
   updated_at: 'updated_at',

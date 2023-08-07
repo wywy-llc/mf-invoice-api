@@ -1,6 +1,6 @@
 {
-  "name": "mf-invoice-client",
-  "version": "0.0.0",
+  "name": "mf-invoice-api",
+  "version": "0.0.2",
   "description": "",
   "main": "build/index.js",
   "license": "Apache-2.0",

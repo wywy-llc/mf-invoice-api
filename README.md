@@ -206,7 +206,7 @@ Request success.
 
 ```
 {
-	id: 'AbebZQVzNNwX3YCBqXq11Q',
+  id: 'AbebZQVzNNwX3YCBqXq11Q',
   name: '事業者名',
   zip: '7700053',
   prefecture: '徳島県',

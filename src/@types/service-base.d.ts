@@ -5,7 +5,7 @@ declare namespace MfInvoiceApi {
    */
   export declare const BillingRangeKey: {
     readonly billing_date: 'billing_date';
-    readonly due_date: 'billing_date';
+    readonly due_date: 'due_date';
     readonly sales_date: 'sales_date';
     readonly created_at: 'created_at';
     readonly updated_at: 'updated_at';

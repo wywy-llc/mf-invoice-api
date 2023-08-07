@@ -8,8 +8,8 @@ declare namespace MfInvoiceApi {
       page?: number,
       perPage?: number,
       rangeKey?: QuoteRangeKey
-    ): MfInvoiceApi.QuotesResponse;
-    createNew(quote: MfInvoiceApi.Quote): MfInvoiceApi.Quote;
-    getQuote(id: String): MfInvoiceApi.Quote;
+    ): QuotesResponse;
+    createNew(quote: Quote): Quote;
+    getQuote(id: String): Quote;
   }
 }

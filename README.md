@@ -155,7 +155,11 @@ function mfCallback(request) {
 5. 認証が成功したことを確認
     - `認証成功しました。このタブを閉じてください。` と表示されたら認証完了です
 
-## 事業者情報の取得を取得してみよう
+## 事業者情報をAPIから取得してみよう！
+
+まずは、自分の事業者情報をAPIから取得してみましょう。リファレンスは以下を参考にします。
+
+[事業者情報の取得 | MF Invoice API v3 GASクライアントのリファレンス](https://wywy.jp/54bea26952aa430b928ca9a09deafc4c)
 
 1. 以下、`コード.gs` にコピー＆ペーストしてください。
 
@@ -194,45 +198,178 @@ Request success.
 }
 ```
 
-### 事業者情報のデータ型
+### 事業者情報のデータ
 
-上記、`const office = getMfClient_().office.getMyOffice();` の変数officeには、以下のデータが格納されています。
+上記、`const office = getMfClient_().office.getMyOffice();` の変数officeには、例えば、以下のデータが格納されます。
 
 ```
-  /**
-   * Office
-   * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/Office
-   */
-  interface Office {
-    id: string;
-    name: string;
-    zip: string;
-    prefecture: string;
-    address1: string;
-    address2: string;
-    tel: string;
-    fax: string;
-    office_type: string;
-    office_code: string;
-    registration_code: string;
-    created_at: string;
-    updated_at: string;
-  }
+{
+	id: 'AbebZQVzNNwX3YCBqXq11Q',
+  name: '事業者名',
+  zip: '7700053',
+  prefecture: '徳島県',
+  address1: '徳島市南島田町２丁目 ５８ー３',
+  address2: 'オレス南島田Ｂ棟',
+  tel: '03-1234-5678',
+  fax: '03-1234-5678',
+  office_type: '個人',
+  office_code: '5018-5904',
+  registration_code: 'T7480003001692',
+  created_at: '2022-10-28 10:00:58 +0900',
+  updated_at: '2022-11-16 20:22:22 +0900' 
+}
 ```
+https://wywy.jp/54bea26952aa430b928ca9a09deafc4c より参照
 
 例えば、name(事業者名) を取得したい場合は、`office.name` で取得することができます。
 
-他のデータに関してもデータ型を公開しておりますので、データ型を確認する場合は、以下のURLから確認してください。
+他のデータに関してもリファレンスを公開してますので、データ例を確認する場合は、以下のページで確認してください。
 
-https://github.com/wywy-llc/mf-invoice-api/blob/main/src/%40types/mf-invoice-api.d.ts
+[MF Invoice API v3 GASクライアントのリファレンス](https://wywy.jp/docs/mfapi-v3-client/reference)
 
+## 請求書一覧をAPIから取得してみよう！
+
+続けて、請求書一覧をAPIから取得してみましょう。
+
+リファレンスは以下を参考にします。
+
+[請求書一覧の取得 | MF Invoice API v3 GASクライアントのリファレンス](https://wywy.jp/56b6b828e6eb4a758142759ae4643fbf)
+
+1. 以下、`コード.gs`にコピー＆ペーストしてください。
+
+```javascript
+/**
+ * 請求書一覧の取得
+ */
+function getBillings() {
+
+  // 日付操作
+  const baseDate = new Date();
+  const dateUtil = MfInvoiceApi.getDateUtil(baseDate);
+
+  // 先月末
+  const from = dateUtil.getEndDateLastMonth();
+
+  // 来月末
+  const to = dateUtil.getEndDateNextMonth();
+
+  // 検索キー
+  const query = '入金済み';
+
+  // API実行： 請求書一覧の取得
+  const billings = getMfClient_().billings.getBillings(from, to, query);
+  console.log(billings);
+  console.log('件数: ' + billings.pagination.total_count);
+}
+```
+2. getBillings関数を実行します。
+3. 請求書一覧が無事に取得できたことを確認しましょう。
+4. 以下のように表示されたらOKです。
+```
+Request URL: https://invoice.moneyforward.com/api/v3/billings?page=1&per_page=100&range_key=billing_date&from=2023-07-31&to=2023-09-30&q=入金済み
+
+Request success.
+{
+  id: ...
+}
+```
+
+### 請求書のデータ
+
+上記、`const billings = getMfClient_().billings.getBillings(from, to, query);` の変数billingsには、以下のデータが格納されています。
+
+```
+{
+  data: [
+    {
+      id: 'sg8qU4G0CrsCGUsyZFxtgg',
+      pdf_url: 'https://invoice.moneyforward.com/api/v3/billings/file.pdf',
+      operator_id: 'qMqFf7ECe6vYQEyrFgXoOg',
+      department_id: 'hz06NCst0B89gCyoVcjgxA',
+      member_id: 'xtxwZOK-ygfxyTHgilikLA',
+      member_name: '自社担当者',
+      partner_id: 'KVmEY0dSgFZPYekVvA7R0g',
+      partner_name: '取引先名',
+      office_id: 'AbebZQVzNNwX3YCBqXq11Q',
+      office_name: '事業者名',
+      office_detail:
+        '〒770-0053\n徳島県徳島市南島田町２丁目 ５８ー３\nオレス南島田Ｂ棟\nTEL: 088-676-3199\n',
+      title: '件名',
+      memo: 'メモ',
+      payment_condition: '振込先',
+      billing_date: '2023/08/02',
+      due_date: '2023/09/30',
+      sales_date: '2023/07/31',
+      billing_number: '請求書番号',
+      note: '備考',
+      document_name: '帳票名',
+      payment_status: '入金済み',
+      email_status: '未送信',
+      posting_status: '未郵送',
+      created_at: '2023-08-02 20:38:00 +0900',
+      updated_at: '2023-08-02 20:38:01 +0900',
+      is_downloaded: false,
+      is_locked: false,
+      deduct_price: '0.0',
+      tag_names: [],
+      items: [
+		    {
+		      id: '1nHYARjYb_kXv2cIPAHHtw',
+		      name: '品目名',
+		      code: '202305_C0003_h7',
+		      detail: '詳細',
+		      unit: '単位',
+		      price: '1354.0',
+		      quantity: '1.0',
+		      is_deduct_withholding_tax: false,
+		      excise: 'ten_percent',
+		      delivery_date: null,
+		      delivery_number: null,
+		      created_at: '2023-08-02 20:38:00 +0900',
+		      updated_at: '2023-08-02 20:38:00 +0900',
+		    },
+		  ],
+      excise_price: '135.0',
+      excise_price_of_untaxable: '0.0',
+      excise_price_of_non_taxable: '0.0',
+      excise_price_of_tax_exemption: '0.0',
+      excise_price_of_five_percent: '0.0',
+      excise_price_of_eight_percent: '0.0',
+      excise_price_of_eight_percent_as_reduced_tax_rate: '0.0',
+      excise_price_of_ten_percent: '135.0',
+      subtotal_price: '1354.0',
+      subtotal_of_untaxable_excise: '0.0',
+      subtotal_of_non_taxable_excise: '0.0',
+      subtotal_of_tax_exemption_excise: '0.0',
+      subtotal_of_five_percent_excise: '0.0',
+      subtotal_of_eight_percent_excise: '0.0',
+      subtotal_of_eight_percent_as_reduced_tax_rate_excise: '0.0',
+      subtotal_of_ten_percent_excise: '1354.0',
+      subtotal_with_tax_of_untaxable_excise: '0.0',
+      subtotal_with_tax_of_non_taxable_excise: '0.0',
+      subtotal_with_tax_of_five_percent_excise: '0.0',
+      subtotal_with_tax_of_tax_exemption_excise: '0.0',
+      subtotal_with_tax_of_eight_percent_excise: '0.0',
+      subtotal_with_tax_of_eight_percent_as_reduced_tax_rate_excise: '0.0',
+      subtotal_with_tax_of_ten_percent_excise: '0.0',
+      total_price: '1489.0',
+      registration_code: 'T7480003001692',
+      use_invoice_template: true,
+    },
+  ],
+  pagination: {
+    total_count: 1,
+    total_pages: 1,
+    per_page: 100,
+    current_page: 1,
+  },
+};
+```
+
+例えば、1件目の請求書データが欲しい場合には、`billings.data[0]` で取得することができます。
 
 ## その他サンプルコード
 
 以下、Githubにサンプルコード(実装例)がありますので、そちらもぜひ、参考にしてみてください。
 
 https://github.com/wywy-llc/mf-Invoice-api-sample/blob/main/%E3%82%B3%E3%83%BC%E3%83%89.gs
-
-
-
-

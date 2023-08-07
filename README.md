@@ -202,7 +202,7 @@ Request success.
 
 ### 事業者情報のデータ
 
-上記、`const office = getMfClient_().office.getMyOffice();` の変数officeには、例えば、以下のデータが格納されます。
+上記、`const office = getMfClient_().office.getMyOffice();` の変数officeには、以下のようなデータが格納されます。
 
 ```
 {
@@ -278,7 +278,7 @@ Request success.
 
 ### 請求書のデータ
 
-上記、`const billings = getMfClient_().billings.getBillings(from, to, query);` の変数billingsには、以下のデータが格納されています。
+上記、`const billings = getMfClient_().billings.getBillings(from, to, query);` の変数billingsには、以下のようなデータが格納されます。
 
 ```
 {

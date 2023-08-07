@@ -161,6 +161,8 @@ function mfCallback(request) {
 
 [事業者情報の取得 | MF Invoice API v3 GASクライアントのリファレンス](https://wywy.jp/54bea26952aa430b928ca9a09deafc4c)
 
+
+
 1. 以下、`コード.gs` にコピー＆ペーストしてください。
 
 ```javascript

@@ -192,11 +192,45 @@ Request success.
 }
 ```
 
+### 事業者情報のデータ型
+
+上記、`const office = getMfClient_().office.getMyOffice();` の変数officeには、以下のデータが格納されています。
+
+```
+  /**
+   * Office
+   * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/Office
+   */
+  interface Office {
+    id: string;
+    name: string;
+    zip: string;
+    prefecture: string;
+    address1: string;
+    address2: string;
+    tel: string;
+    fax: string;
+    office_type: string;
+    office_code: string;
+    registration_code: string;
+    created_at: string;
+    updated_at: string;
+  }
+```
+
+例えば、name(事業者名) を取得したい場合は、`office.name` で取得することができます。
+
+他のデータに関してもデータ型を公開しておりますので、データ型を確認する場合は、以下のURLから確認してください。
+
+https://github.com/wywy-llc/mf-invoice-api/blob/main/src/%40types/mf-invoice-api.d.ts
+
+
 ## その他サンプルコード
 
 以下、Githubにサンプルコード(実装例)がありますので、そちらもぜひ、参考にしてみてください。
 
 https://github.com/wywy-llc/mf-Invoice-api-sample/blob/main/%E3%82%B3%E3%83%BC%E3%83%89.gs
+
 
 
 

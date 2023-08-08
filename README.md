@@ -19,7 +19,7 @@ https://wywy.jp/docs/mfapi-v3-client/reference
 
 このライブラリは、スプレッドシート + GASを前提として話を進めます。
 
-この準備を省略する場合は、以下のURLより完成版をコピーしてください。
+この準備を省略する場合は以下のURLより、完成版のスプレッドシートをコピーしてください。
 https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy
 
 ### GASエディタを起動
@@ -403,8 +403,6 @@ function getMyOffice() {
   updated_at: '2022-11-16 20:22:22 +0900'
 }
 ```
-
-https://wywy.jp/54bea26952aa430b928ca9a09deafc4c より参照
 
 例えば、name(事業者名) を取得したい場合は、`office.name` で取得することができます。
 

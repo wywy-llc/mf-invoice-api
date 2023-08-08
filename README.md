@@ -379,7 +379,7 @@ function getMyOffice() {
 
 2. getMyOffice関数を実行します。
 3. ログで事業者情報が無事に取得できたことを確認します。
-  - `Request success.`と表示されたら成功です。
+    - `Request success.`と表示されたら成功です。
 4. スプレッドシートの`office`に取得したデータが追加されたことを確認します。
 
 ### 事業者情報のデータ
@@ -462,7 +462,7 @@ function getBillings() {
 
 2. getBillings関数を実行します。
 3. ログで請求書一覧が無事に取得できたことを確認します。
-  - `Request success.`と表示されたら成功です。
+    - `Request success.`と表示されたら成功です。
 4. スプレッドシートの`billings`に取得したデータが追加されたことを確認します。
 
 ### 請求書のデータ

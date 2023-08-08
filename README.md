@@ -49,26 +49,207 @@ https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCE
 ```javascript
 /**
  * 初期設定
- * ・トリガー設定
+ * ・トリガー作成
+ * ・シート作成
  */
 function initialize() {
-  // トリガー設定
-  const functionNames = ['onOpen'];
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  const triggers = ScriptApp.getProjectTriggers();
-  for (const trigger of triggers) {
-    const fname = trigger.getHandlerFunction();
-    if (functionNames.includes(fname)) {
-      ScriptApp.deleteTrigger(trigger);
-      switch (fname) {
-        case 'onOpen':
-          ScriptApp.newTrigger(fname)
-            .forSpreadsheet(spreadsheet)
-            .onOpen()
-            .create();
+  const initTriggers = () => {
+    // トリガー作成
+    const functionNames = ['onOpen'];
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const triggers = ScriptApp.getProjectTriggers();
+    for (const trigger of triggers) {
+      const fname = trigger.getHandlerFunction();
+      if (functionNames.includes(fname)) {
+        ScriptApp.deleteTrigger(trigger);
+        switch (fname) {
+          case 'onOpen':
+            ScriptApp.newTrigger(fname).forSpreadsheet(spreadsheet).onOpen().create();
+        }
       }
     }
   }
+  const headers = {
+    office: [
+      'id',
+      'name',
+      'zip',
+      'prefecture',
+      'address1',
+      'address2',
+      'tel',
+      'fax',
+      'office_type',
+      'office_code',
+      'registration_code',
+      'created_at',
+      'updated_at',
+    ],
+    items: [
+      'id',
+      'code',
+      'name',
+      'name_kana',
+      'name_suffix',
+      'memo',
+      'created_at',
+      'updated_at',
+      'departments',
+    ],
+    partners: [
+      'id',
+      'code',
+      'name',
+      'name_kana',
+      'name_suffix',
+      'memo',
+      'created_at',
+      'updated_at',
+      'departments',
+    ],
+    items: [
+      'id',
+      'name',
+      'code',
+      'detail',
+      'unit',
+      'price',
+      'quantity',
+      'is_deduct_withholding_tax',
+      'excise',
+      'created_at',
+      'updated_at'
+    ],
+    billings: ['id',
+      'pdf_url',
+      'operator_id',
+      'department_id',
+      'member_id',
+      'member_name',
+      'partner_id',
+      'partner_name',
+      'office_id',
+      'office_name',
+      'office_detail',
+      'title',
+      'memo',
+      'payment_condition',
+      'billing_date',
+      'due_date',
+      'sales_date',
+      'billing_number',
+      'note',
+      'document_name',
+      'payment_status',
+      'email_status',
+      'posting_status',
+      'created_at',
+      'updated_at',
+      'is_downloaded',
+      'is_locked',
+      'deduct_price',
+      'tag_names',
+      'items',
+      'excise_price',
+      'excise_price_of_untaxable',
+      'excise_price_of_non_taxable',
+      'excise_price_of_tax_exemption',
+      'excise_price_of_five_percent',
+      'excise_price_of_eight_percent',
+      'excise_price_of_eight_percent_as_reduced_tax_rate',
+      'excise_price_of_ten_percent',
+      'subtotal_price',
+      'subtotal_of_untaxable_excise',
+      'subtotal_of_non_taxable_excise',
+      'subtotal_of_tax_exemption_excise',
+      'subtotal_of_five_percent_excise',
+      'subtotal_of_eight_percent_excise',
+      'subtotal_of_eight_percent_as_reduced_tax_rate_excise',
+      'subtotal_of_ten_percent_excise',
+      'subtotal_with_tax_of_untaxable_excise',
+      'subtotal_with_tax_of_non_taxable_excise',
+      'subtotal_with_tax_of_five_percent_excise',
+      'subtotal_with_tax_of_tax_exemption_excise',
+      'subtotal_with_tax_of_eight_percent_excise',
+      'subtotal_with_tax_of_eight_percent_as_reduced_tax_rate_excise',
+      'subtotal_with_tax_of_ten_percent_excise',
+      'total_price',
+      'registration_code',
+      'use_invoice_template'],
+    quotes: [
+      'id',
+      'pdf_url',
+      'operator_id',
+      'department_id',
+      'member_id',
+      'member_name',
+      'partner_id',
+      'partner_name',
+      'partner_detail',
+      'office_id',
+      'office_name',
+      'office_detail',
+      'title',
+      'memo',
+      'quote_date',
+      'quote_number',
+      'note',
+      'expired_date',
+      'document_name',
+      'order_status',
+      'transmit_status',
+      'posting_status',
+      'created_at',
+      'updated_at',
+      'is_downloaded',
+      'is_locked',
+      'deduct_price',
+      'tag_names',
+      'items',
+      'excise_price',
+      'excise_price_of_untaxable',
+      'excise_price_of_non_taxable',
+      'excise_price_of_tax_exemption',
+      'excise_price_of_five_percent',
+      'excise_price_of_eight_percent',
+      'excise_price_of_eight_percent_as_reduced_tax_rate',
+      'excise_price_of_ten_percent',
+      'subtotal_price',
+      'subtotal_of_untaxable_excise',
+      'subtotal_of_non_taxable_excise',
+      'subtotal_of_tax_exemption_excise',
+      'subtotal_of_five_percent_excise',
+      'subtotal_of_eight_percent_excise',
+      'subtotal_of_eight_percent_as_reduced_tax_rate_excise',
+      'subtotal_of_ten_percent_excise',
+      'total_price'
+    ]
+  };
+  const initSheets = () => {
+    // シート作成
+    const client = getMfClient_();
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
+    for (const attr in client) {
+      console.log(attr);
+      let sheet = spreadsheet.getSheetByName(attr);
+      if (sheet) {
+        spreadsheet.deleteSheet(sheet);
+      }
+      sheet = spreadsheet.insertSheet(attr);
+      const headerNames = headers[attr];
+      if (!headerNames) {
+        continue;
+      }
+      const range = sheet.getRange(1, 1, 1, headerNames.length);
+      range.setBackground("#bdbdbd");
+      range.setValues([headerNames]);
+      if (headerNames.length < sheet.getMaxColumns()) {
+        sheet.deleteColumns(headerNames.length + 1, sheet.getMaxColumns() - headerNames.length);
+      }
+    }
+  }
+  initTriggers();
+  initSheets();
 }
 
 /**
@@ -106,7 +287,7 @@ function mfCallback(request) {
 ```
 
 2. `initialize関数`を実行
-   - トリガーを自動設定します。
+   - 自動でトリガー作成とシート作成いたします。
    - このトリガーによってMF請求書API連携用のメニューをスプレッドシートのメニューに追加します。
 3. `MF請求書API連携`メニューの表示
    - スプレッドシートの画面を再読み込みしてください。再読み込みすると、スプレッドシートの起動時にトリガーが実行されます。
@@ -185,21 +366,22 @@ function getMyOffice() {
   // API実行： 事業者情報の取得
   const office = getMfClient_().office.getMyOffice();
   console.log(office);
+
+  // スプレッドシートに追加
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("office");
+  SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(sheet);
+  const row = [];
+  for (const attr in office) {
+    row.push(office[attr]);
+  }
+  sheet.appendRow(row);
 }
 ```
 
 2. getMyOffice関数を実行します。
-3. 事業者情報が無事に取得できたことを確認する
-
-Request success.と表示されたらOKです。
-
-```
-Request URL: https://invoice.moneyforward.com/api/v3/office
-Request success.
-{
-  id: ...
-}
-```
+3. ログで事業者情報が無事に取得できたことを確認します。
+  - `Request success.`と表示されたら成功です。
+4. スプレッドシートの`office`に取得したデータが追加されたことを確認します。
 
 ### 事業者情報のデータ
 
@@ -261,23 +443,30 @@ function getBillings() {
 
   // API実行： 請求書一覧の取得
   const billings = getMfClient_().billings.getBillings(from, to, query);
-  console.log(billings);
+  console.log(billings.data[0]);
   console.log('件数: ' + billings.pagination.total_count);
+
+  // スプレッドシートに追加
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("billings");
+  SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(sheet);
+  for (const billing of billings.data) {
+    const row = [];
+    for (const attr in billing) {
+      if (attr === 'items' || attr === 'tag_names') {
+        row.push(JSON.stringify(billing[attr]));
+        continue;
+      }
+      row.push(billing[attr]);
+    }
+    sheet.appendRow(row);
+  }
 }
 ```
 
 2. getBillings関数を実行します。
-3. 請求書一覧が無事に取得できたことを確認しましょう。
-4. 以下のように表示されたらOKです。
-
-```
-Request URL: https://invoice.moneyforward.com/api/v3/billings?page=1&per_page=100&range_key=billing_date&from=2023-07-31&to=2023-09-30&q=入金済み
-
-Request success.
-{
-  id: ...
-}
-```
+3. ログで請求書一覧が無事に取得できたことを確認します。
+  - `Request success.`と表示されたら成功です。
+4. スプレッドシートの`billings`に取得したデータが追加されたことを確認します。
 
 ### 請求書のデータ
 

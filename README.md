@@ -230,7 +230,6 @@ function initialize() {
     const client = getMfClient_();
     const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
     for (const attr in client) {
-      console.log(attr);
       let sheet = spreadsheet.getSheetByName(attr);
       if (sheet) {
         spreadsheet.deleteSheet(sheet);

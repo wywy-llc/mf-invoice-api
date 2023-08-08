@@ -564,3 +564,10 @@ function getBillings() {
 以下、Githubにサンプルコード(実装例)がありますので、そちらもぜひ、参考にしてみてください。
 
 https://github.com/wywy-llc/mf-Invoice-api-sample/blob/main/%E3%82%B3%E3%83%BC%E3%83%89.gs
+
+## 問い合わせ
+
+以下にメールしていただくか、Issue登録していただければ対応いたします。
+
+- FUJISAWA Yuki 
+- yuki_fujisawa@wywy.jp

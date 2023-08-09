@@ -9,7 +9,7 @@ declare namespace MfInvoiceApi {
       perPage?: number,
       rangeKey?: QuoteRangeKey
     ): QuotesResponse;
-    createNew(quote: Quote): Quote;
+    createNew(quote: QuoteReqBody): Quote;
     getQuote(id: String): Quote;
   }
 }

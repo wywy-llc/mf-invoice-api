@@ -13,7 +13,7 @@ export class PartnerService extends ServiceBase {
     return this.processResponse(res);
   }
 
-  createNew(partner: MfInvoiceApi.Partner): MfInvoiceApi.Partner {
+  createNew(partner: MfInvoiceApi.PartnerReqBody): MfInvoiceApi.Partner {
     const reqUrl = this.baseUrl;
     const method = ReqMethod.post;
     const payload = JSON.stringify(partner);

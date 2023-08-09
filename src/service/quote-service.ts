@@ -17,7 +17,7 @@ export class QuoteService extends ServiceBase {
     return this.processResponse(res);
   }
 
-  createNew(quote: MfInvoiceApi.Quote): MfInvoiceApi.Quote {
+  createNew(quote: MfInvoiceApi.QuoteReqBody): MfInvoiceApi.Quote {
     const reqUrl = this.baseUrl;
     const method = ReqMethod.post;
     const payload = JSON.stringify(quote);

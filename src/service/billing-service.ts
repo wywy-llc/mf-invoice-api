@@ -19,7 +19,7 @@ export class BillingService extends ServiceBase {
   /**
    * インボイス制度に対応した形式の請求書の作成
    */
-  createNew(billing: MfInvoiceApi.Billing): MfInvoiceApi.Billing {
+  createNew(billing: MfInvoiceApi.BillingReqBody): MfInvoiceApi.Billing {
     const reqUrl = `${ServiceBase.API_BASE_URL}/invoice_template_billings`;
     const method = ReqMethod.post;
     const payload = JSON.stringify(billing);

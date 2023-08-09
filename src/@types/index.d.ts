@@ -1,12 +1,14 @@
 declare namespace MfInvoiceApi {
   /**
    * MF請求書APIクライアントを生成します。
-   * @returns {MfInvoiceClient}
+   * @param clientId APIクライアントID
+   * @param clientSecret APIクライアントシークレット
+   * @returns {MfInvoiceApi.MfInvoiceClient} MFのAPIクライアント
    */
   declare function createClient(
     clientId: string,
     clientSecret: string
-  ): MfInvoiceClient;
+  ): MfInvoiceApi.MfInvoiceClient;
   /**
    * 日付操作用のユーティリティクラスを生成します。
    * @param baseDate 基準日

@@ -13,7 +13,7 @@ export class ItemService extends ServiceBase {
     return this.processResponse(res);
   }
 
-  createNew(item: MfInvoiceApi.Item): MfInvoiceApi.Item {
+  createNew(item: MfInvoiceApi.ItemReqBody): MfInvoiceApi.Item {
     const reqUrl = this.baseUrl;
     const method = ReqMethod.post;
     const payload = JSON.stringify(item);

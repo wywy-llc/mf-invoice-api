@@ -31,6 +31,19 @@ declare namespace MfInvoiceApi {
   };
   export type ReqMethod = (typeof ReqMethod)[keyof typeof ReqMethod];
   /**
+   * 税率
+   */
+  export declare const Excise: {
+    untaxable: 'untaxable'; // 不課税
+    non_taxable: 'non_taxable'; // 非課税
+    tax_exemption: 'tax_exemption'; // 免税
+    five_percent: 'five_percent'; // 5%
+    eight_percent: 'eight_percent'; // 8%
+    eight_percent_as_reduced_tax_rate: 'eight_percent_as_reduced_tax_rate'; // 8%(軽減税率)
+    ten_percent: 'ten_percent'; // 10%
+  };
+  export type Excise = (typeof Excise)[keyof typeof Excise];
+  /**
    * サービスの基底クラス
    */
   interface ServiceBase {

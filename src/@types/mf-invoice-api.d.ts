@@ -215,7 +215,7 @@ declare namespace MfInvoiceApi {
     note?: string;
     tag_names?: string[];
     document_name?: string;
-    items?: BillingItemReqBody[];
+    items?: QuoteItemReqBody[];
   }
 
   /**

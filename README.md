@@ -269,7 +269,13 @@ function onOpen() {
 function showMfApiAuthDialog() {
   const scriptProps = PropertiesService.getScriptProperties();
   const clientId = scriptProps.getProperty('CLIENT_ID');
+  if (!clientId) {
+    throw new Error('CLIENT_IDが設定されていません。');
+  }
   const clientSecret = scriptProps.getProperty('CLIENT_SECRET');
+  if (!clientSecret) {
+    throw new Error('CLIENT_SECRETが設定されていません。');
+  }
   MfInvoiceApi.showMfApiAuthDialog(clientId, clientSecret);
 }
 
@@ -280,7 +286,13 @@ function showMfApiAuthDialog() {
 function mfCallback(request) {
   const scriptProps = PropertiesService.getScriptProperties();
   const clientId = scriptProps.getProperty('CLIENT_ID');
+  if (!clientId) {
+    throw new Error('CLIENT_IDが設定されていません。');
+  }
   const clientSecret = scriptProps.getProperty('CLIENT_SECRET');
+  if (!clientSecret) {
+    throw new Error('CLIENT_SECRETが設定されていません。');
+  }
   return MfInvoiceApi.mfCallback(request, clientId, clientSecret);
 }
 ```

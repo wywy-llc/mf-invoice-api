@@ -46,9 +46,6 @@ declare namespace MfInvoiceApi {
   /**
    * サービスの基底クラス
    */
-  /**
-   * サービスの基底クラス
-   */
   interface ServiceBase {
     /**
      * リクエストを送信する

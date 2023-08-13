@@ -87,7 +87,7 @@ export class ServiceBase {
       muteHttpExceptions: true,
       headers: this.getHeaders(),
     };
-    if (method === 'post') {
+    if (method === 'post' || method === 'put') {
       options.payload = payload;
       options.contentType = 'application/json';
     }

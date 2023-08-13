@@ -67,6 +67,7 @@ declare namespace MfInvoiceApi {
      * @param res レスポンス
      * @returns レスポンスのオブジェクト
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     processResponse(res: GoogleAppsScript.URL_Fetch.HTTPResponse): any;
     /**
      * 認証情報を含んだリクエストヘッダーを取得する。

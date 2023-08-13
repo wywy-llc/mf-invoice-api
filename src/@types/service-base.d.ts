@@ -23,6 +23,19 @@ declare namespace MfInvoiceApi {
   };
   export type QuoteRangeKey =
     (typeof QuoteRangeKey)[keyof typeof QuoteRangeKey];
+  /**
+   * 税率
+   */
+  export declare const Excise: {
+    readonly untaxable: 'untaxable';
+    readonly non_taxable: 'non_taxable';
+    readonly tax_exemption: 'tax_exemption';
+    readonly five_percent: 'five_percent';
+    readonly eight_percent: 'eight_percent';
+    readonly eight_percent_as_reduced_tax_rate: 'eight_percent_as_reduced_tax_rate';
+    readonly ten_percent: 'ten_percent';
+  };
+  export type Excise = (typeof Excise)[keyof typeof Excise];
   export declare const ReqMethod: {
     readonly get: 'get';
     readonly post: 'post';
@@ -31,18 +44,8 @@ declare namespace MfInvoiceApi {
   };
   export type ReqMethod = (typeof ReqMethod)[keyof typeof ReqMethod];
   /**
-   * 税率
+   * サービスの基底クラス
    */
-  export declare const Excise: {
-    untaxable: 'untaxable'; // 不課税
-    non_taxable: 'non_taxable'; // 非課税
-    tax_exemption: 'tax_exemption'; // 免税
-    five_percent: 'five_percent'; // 5%
-    eight_percent: 'eight_percent'; // 8%
-    eight_percent_as_reduced_tax_rate: 'eight_percent_as_reduced_tax_rate'; // 8%(軽減税率)
-    ten_percent: 'ten_percent'; // 10%
-  };
-  export type Excise = (typeof Excise)[keyof typeof Excise];
   /**
    * サービスの基底クラス
    */
@@ -64,7 +67,6 @@ declare namespace MfInvoiceApi {
      * @param res レスポンス
      * @returns レスポンスのオブジェクト
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     processResponse(res: GoogleAppsScript.URL_Fetch.HTTPResponse): any;
     /**
      * 認証情報を含んだリクエストヘッダーを取得する。

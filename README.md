@@ -295,6 +295,17 @@ function mfCallback(request) {
   }
   return MfInvoiceApi.mfCallback(request, clientId, clientSecret);
 }
+
+/**
+ * MF請求書APIクライアントを生成します。
+ * @returns {MfClient}
+ */
+function getMfClient_() {
+  const scriptProps = PropertiesService.getScriptProperties();
+  const clientId = scriptProps.getProperty('CLIENT_ID');
+  const clientSecret = scriptProps.getProperty('CLIENT_SECRET');
+  return MfInvoiceApi.createClient(clientId, clientSecret);
+}
 ```
 
 2. `initialize関数`を実行
@@ -360,17 +371,6 @@ function mfCallback(request) {
 
 ```javascript
 /**
- * MF請求書APIクライアントを生成します。
- * @returns {MfClient}
- */
-function getMfClient_() {
-  const scriptProps = PropertiesService.getScriptProperties();
-  const clientId = scriptProps.getProperty('CLIENT_ID');
-  const clientSecret = scriptProps.getProperty('CLIENT_SECRET');
-  return MfInvoiceApi.createClient(clientId, clientSecret);
-}
-
-/**
  * 事業者情報の取得
  */
 function getMyOffice() {
@@ -398,7 +398,7 @@ function getMyOffice() {
 
 上記、`const office = getMfClient_().office.getMyOffice();` の変数officeには、以下のようなデータが格納されます。
 
-```
+```javascript
 {
   id: 'AbebZQVzNNwX3YCBqXq11Q',
   name: '事業者名',
@@ -481,7 +481,7 @@ function getBillings() {
 
 上記、`const billings = getMfClient_().billings.getBillings(from, to, query);` の変数billingsには、以下のようなデータが格納されます。
 
-```
+```javascript
 {
   data: [
     {

@@ -266,7 +266,7 @@ function onOpen() {
 /**
  * MF認証情報を取得します。
  */
-function getMfCredential_() {
+function getMfCredentials_() {
   const scriptProps = PropertiesService.getScriptProperties();
   const clientId = scriptProps.getProperty('CLIENT_ID');
   if (!clientId) {
@@ -276,19 +276,22 @@ function getMfCredential_() {
   if (!clientSecret) {
     throw new Error('CLIENT_SECRETが設定されていません。');
   }
-  const credential = {
+  const credentials = {
     clientId: clientId,
     clientSecret: clientSecret,
   };
-  return credential;
+  return credentials;
 }
 
 /**
  * MF請求書API認証ダイアログを表示します。
  */
 function showMfApiAuthDialog() {
-  const credential = getMfCredential_();
-  MfInvoiceApi.showMfApiAuthDialog(credential.clientId, credential.clientSecret);
+  const credentials = getMfCredentials_();
+  MfInvoiceApi.showMfApiAuthDialog(
+    credentials.clientId,
+    credentials.clientSecret
+  );
 }
 
 /**
@@ -296,8 +299,12 @@ function showMfApiAuthDialog() {
  * @param request
  */
 function mfCallback(request) {
-  const credential = getMfCredential_();
-  return MfInvoiceApi.mfCallback(request, credential.clientId, credential.clientSecret);
+  const credentials = getMfCredentials_();
+  return MfInvoiceApi.mfCallback(
+    request,
+    credentials.clientId,
+    credentials.clientSecret
+  );
 }
 
 /**
@@ -305,8 +312,11 @@ function mfCallback(request) {
  * @returns {MfClient}
  */
 function getMfClient_() {
-  const credential = getMfCredential_();
-  return MfInvoiceApi.createClient(credential.clientId, credential.clientSecret);
+  const credentials = getMfCredentials_();
+  return MfInvoiceApi.createClient(
+    credentials.clientId,
+    credentials.clientSecret
+  );
 }
 ```
 

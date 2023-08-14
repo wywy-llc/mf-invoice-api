@@ -264,9 +264,9 @@ function onOpen() {
 }
 
 /**
- * MF請求書API認証ダイアログを表示します。
+ * MF認証情報を取得します。
  */
-function showMfApiAuthDialog() {
+function getMfCredential_() {
   const scriptProps = PropertiesService.getScriptProperties();
   const clientId = scriptProps.getProperty('CLIENT_ID');
   if (!clientId) {
@@ -276,7 +276,19 @@ function showMfApiAuthDialog() {
   if (!clientSecret) {
     throw new Error('CLIENT_SECRETが設定されていません。');
   }
-  MfInvoiceApi.showMfApiAuthDialog(clientId, clientSecret);
+  const credential = {
+    clientId: clientId,
+    clientSecret: clientSecret,
+  };
+  return credential;
+}
+
+/**
+ * MF請求書API認証ダイアログを表示します。
+ */
+function showMfApiAuthDialog() {
+  const credential = getMfCredential_();
+  MfInvoiceApi.showMfApiAuthDialog(credential.clientId, credential.clientSecret);
 }
 
 /**
@@ -284,16 +296,8 @@ function showMfApiAuthDialog() {
  * @param request
  */
 function mfCallback(request) {
-  const scriptProps = PropertiesService.getScriptProperties();
-  const clientId = scriptProps.getProperty('CLIENT_ID');
-  if (!clientId) {
-    throw new Error('CLIENT_IDが設定されていません。');
-  }
-  const clientSecret = scriptProps.getProperty('CLIENT_SECRET');
-  if (!clientSecret) {
-    throw new Error('CLIENT_SECRETが設定されていません。');
-  }
-  return MfInvoiceApi.mfCallback(request, clientId, clientSecret);
+  const credential = getMfCredential_();
+  return MfInvoiceApi.mfCallback(request, credential.clientId, credential.clientSecret);
 }
 
 /**
@@ -301,16 +305,8 @@ function mfCallback(request) {
  * @returns {MfClient}
  */
 function getMfClient_() {
-  const scriptProps = PropertiesService.getScriptProperties();
-  const clientId = scriptProps.getProperty('CLIENT_ID');
-  if (!clientId) {
-    throw new Error('CLIENT_IDが設定されていません。');
-  }
-  const clientSecret = scriptProps.getProperty('CLIENT_SECRET');
-  if (!clientSecret) {
-    throw new Error('CLIENT_SECRETが設定されていません。');
-  }
-  return MfInvoiceApi.createClient(clientId, clientSecret);
+  const credential = getMfCredential_();
+  return MfInvoiceApi.createClient(credential.clientId, credential.clientSecret);
 }
 ```
 

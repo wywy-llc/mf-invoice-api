@@ -5,9 +5,9 @@ export class ItemService extends ServiceBase {
 
   /**
    * 品目一覧の取得
-   * @param page ページ番号
-   * @param perPage 1ページあたりのデータ数
-   * @returns 品目一覧レスポンス
+   * @param {number} page ページ番号
+   * @param {number} perPage 1ページあたりのデータ数
+   * @returns {MfInvoiceApi.ItemsResponse} 品目一覧レスポンス
    */
   getItems(
     page: number = 1,
@@ -21,8 +21,8 @@ export class ItemService extends ServiceBase {
 
   /**
    * 品目の作成
-   * @param itemReqBody 品目
-   * @returns 品目
+   * @param {MfInvoiceApi.ItemReqBody} itemReqBody 品目リクエストボディ
+   * @returns {MfInvoiceApi.Item} 品目
    */
   createNew(itemReqBody: MfInvoiceApi.ItemReqBody): MfInvoiceApi.Item {
     const reqUrl = this.baseUrl;
@@ -34,8 +34,8 @@ export class ItemService extends ServiceBase {
 
   /**
    * 品目の取得
-   * @param id 品目ID
-   * @returns 品目
+   * @param {string} itemId 品目ID
+   * @returns {MfInvoiceApi.Item} 品目
    */
   getItem(itemId: String): MfInvoiceApi.Item {
     const reqUrl = `${this.baseUrl}/${itemId}`;
@@ -46,9 +46,9 @@ export class ItemService extends ServiceBase {
 
   /**
    * 品目の更新
-   * @param itemId 品目ID
-   * @param itemReqBody 品目
-   * @returns 品目
+   * @param {string} itemId 品目ID
+   * @param {MfInvoiceApi.ItemReqBody} itemReqBody 品目リクエストボディ
+   * @returns {MfInvoiceApi.Item} 品目
    */
   updateItem(
     itemId: string,

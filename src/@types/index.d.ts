@@ -1,9 +1,9 @@
 declare namespace MfInvoiceApi {
   /**
    * MF請求書APIクライアントを生成します。
-   * @param clientId APIクライアントID
-   * @param clientSecret APIクライアントシークレット
-   * @returns {MfInvoiceApi.MfInvoiceClient} MFのAPIクライアント
+   * @param {string} clientId クライアントID
+   * @param {string} clientSecret クライアントシークレット
+   * @returns {MfInvoiceApi.MfClient} MF請求書APIクライアント
    */
   declare function createClient(
     clientId: string,
@@ -11,17 +11,21 @@ declare namespace MfInvoiceApi {
   ): MfInvoiceApi.MfInvoiceClient;
   /**
    * 日付操作用のユーティリティクラスを生成します。
-   * @param baseDate 基準日
+   * @param {Date} baseDate
    * @returns {DateUtil} 日付操作用のユーティリティクラス
    */
   declare function getDateUtil(baseDate: Date): DateUtil;
   /**
    * mfからログアウトします。
+   * @param {string} clientId クライアントID
+   * @param {string} clientSecret クライアントシークレット
    */
   declare function logout(clientId: string, clientSecret: string): void;
   /**
    * MF認証のコールバック関数です。
-   * @param request
+   * @param {any} request リクエスト
+   * @param {string} clientId クライアントID
+   * @param {string} clientSecret クライアントシークレット
    */
   declare function mfCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +35,8 @@ declare namespace MfInvoiceApi {
   ): GoogleAppsScript.HTML.HtmlOutput;
   /**
    * MF請求書API認証ダイアログを表示します。
+   * @param {string} clientId クライアントID
+   * @param {string} clientSecret クライアントシークレット
    */
   declare function showMfApiAuthDialog(
     clientId: string,
@@ -38,6 +44,8 @@ declare namespace MfInvoiceApi {
   ): void;
   /**
    * 認証URLを取得します。
+   * @param {string} clientId クライアントID
+   * @param {string} clientSecret クライアントシークレット
    */
   declare function createMfAuthUrl(
     clientId: string,

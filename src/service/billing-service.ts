@@ -1,21 +1,24 @@
 import { ServiceBase, BillingRangeKey, ReqMethod } from './service-base';
 
 export class BillingService extends ServiceBase {
+  /**
+   * 請求書APIのベースURL
+   */
   baseUrl: string = ServiceBase.API_BASE_URL + '/billings';
   /**
    * 請求書一覧の取得
-   * @param from 検索範囲_開始日
-   * @param to 検索範囲_終了日
-   * @param query 検索文字列
-   * @param page ページ番号
-   * @param perPage 1ページあたりの件数
-   * @param rangeKey 検索範囲キー
-   *  - billing_date: 請求日
-   *  - due_date: 支払期日
-   *  - sales_date: 売上日
-   *  - created_at: 作成日
-   *  - updated_at : 更新日
-   * @returns 請求書一覧
+   * @param {string} from 検索範囲_開始日
+   * @param {string} to 検索範囲_終了日
+   * @param {string} query 検索文字列
+   * @param {number} page ページ番号
+   * @param {number} perPage 1ページあたりの件数
+   * @param {BillingRangeKey} rangeKey 検索範囲キー
+   * - billing_date: 請求日
+   * - due_date: 支払期日
+   * - sales_date: 売上日
+   * - created_at: 作成日
+   * - updated_at : 更新日
+   * @returns {MfInvoiceApi.BillingsResponse} 請求書レスポンス
    */
   getBillings(
     from: string,
@@ -33,8 +36,8 @@ export class BillingService extends ServiceBase {
 
   /**
    * インボイス制度に対応した形式の請求書の作成
-   * @param billingReqBody 請求書
-   * @returns 請求書
+   * @param {MfInvoiceApi.BillingReqBody} billingReqBody 請求書リクエストボディ
+   * @returns {MfInvoiceApi.Billing} 請求書
    */
   createNew(billingReqBody: MfInvoiceApi.BillingReqBody): MfInvoiceApi.Billing {
     const reqUrl = `${ServiceBase.API_BASE_URL}/invoice_template_billings`;
@@ -46,7 +49,8 @@ export class BillingService extends ServiceBase {
 
   /**
    * 請求書の取得
-   * @returns
+   * @param {string} billingId 請求書ID
+   * @returns {MfInvoiceApi.Billing} 請求書
    */
   getBilling(billingId: string): MfInvoiceApi.Billing {
     const reqUrl = `${this.baseUrl}/${billingId}`;
@@ -57,9 +61,9 @@ export class BillingService extends ServiceBase {
 
   /**
    * 請求書の更新
-   * @param billingId 請求書ID
-   * @param billingReqBody 請求書
-   * @returns 請求書
+   * @param {string} billingId 請求書ID
+   * @param {MfInvoiceApi.BillingReqBody} billingReqBody 請求書リクエストボディ
+   * @returns {MfInvoiceApi.Billing} 請求書
    */
   updateBilling(
     billingId: string,

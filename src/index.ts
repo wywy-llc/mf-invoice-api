@@ -10,7 +10,7 @@ import { MfOAuth2 } from './lib/mf-oauth2';
  * MF請求書APIクライアントを生成します。
  * @param {string} clientId クライアントID
  * @param {string} clientSecret クライアントシークレット
- * @returns {MfClient} MF請求書APIクライアント
+ * @returns {MfInvoiceApi.MfClient} MF請求書APIクライアント
  */
 function createClient(clientId: string, clientSecret: string): MfClient {
   const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
@@ -21,7 +21,7 @@ function createClient(clientId: string, clientSecret: string): MfClient {
 /**
  * 日付操作用のユーティリティクラスを生成します。
  * @param {Date} baseDate
- * @returns {DateUtil} 日付操作用のユーティリティクラス
+ * @returns {MfInvoiceApi.DateUtil} 日付操作用のユーティリティクラス
  */
 function getDateUtil(baseDate: Date): DateUtil {
   return new DateUtil(baseDate);
@@ -88,6 +88,7 @@ function showMfApiAuthDialog(clientId: string, clientSecret: string) {
  * 認証URLを取得します。
  * @param {string} clientId クライアントID
  * @param {string} clientSecret クライアントシークレット
+ * @returns {string} 認証URL
  */
 function createMfAuthUrl(clientId: string, clientSecret: string) {
   const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);

@@ -19,9 +19,9 @@ export class MfOAuth2 {
    * Mf用のOAuth2オブジェクトを生成します。
    * @param clientId MFのクライアントID
    * @param clientSecret MFのクライアントシークレット
-   * @returns {MfOAuth2} MfOAuth2オブジェクト
+   * @returns {MfInvoiceApi.MfOAuth2} MfOAuth2オブジェクト
    */
-  static create(clientId: string, clientSecret: string): MfOAuth2 {
+  static create(clientId: string, clientSecret: string): MfInvoiceApi.MfOAuth2 {
     return new MfOAuth2(clientId, clientSecret);
   }
   /**

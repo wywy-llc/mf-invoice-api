@@ -14,27 +14,27 @@ import { QuoteService } from '../service/quote-service';
 export class MfClient {
   /**
    * 請求API
-   * @type {BillingService}
+   * @type {MfInvoiceApi.BillingService}
    */
   public billings: BillingService;
   /**
    * 見積API
-   * @type {QuoteService}
+   * @type {MfInvoiceApi.QuoteService}
    */
   public quotes: QuoteService;
   /**
    * 取引先API
-   * @type {PartnerService}
+   * @type {MfInvoiceApi.PartnerService}
    */
   public partners: PartnerService;
   /**
    * 品目API
-   * @type {ItemService}
+   * @type {MfInvoiceApi.ItemService}
    */
   public items: ItemService;
   /**
    * 事業所API
-   * @type {OfficeService}
+   * @type {MfInvoiceApi.OfficeService}
    */
   public office: OfficeService;
 

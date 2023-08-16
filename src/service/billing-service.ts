@@ -97,7 +97,7 @@ export class BillingService extends ServiceBase {
    * @param {string} billingId 請求書ID
    * @returns {MfInvoiceApi.Billing} 請求書
    */
-  deleteBilling(billingId: string): MfInvoiceApi.Billing {
+  deleteBilling(billingId: string): boolean {
     const reqUrl = `${this.baseUrl}/${billingId}`;
     const method = ReqMethod.delete;
     const res = this.fetch(reqUrl, method);

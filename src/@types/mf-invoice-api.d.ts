@@ -129,7 +129,6 @@ declare namespace MfInvoiceApi {
   /**
    * Get Billings
    * https://invoice.moneyforward.com/docs/api/v3/index.html#/operations/get-billings
-   *
    */
   interface BillingsResponse {
     data: BillingData[];
@@ -369,11 +368,17 @@ declare namespace MfInvoiceApi {
     departments?: DepartmentReqBody[];
   }
 
+  /**
+   * 取引先レスポンス
+   */
   interface PartnersResponse {
     data: Partner[];
     pagination: PaginationData;
   }
 
+  /**
+   * 品目レスポンス
+   */
   interface ItemsResponse {
     data: Item[];
     pagination: PaginationData;

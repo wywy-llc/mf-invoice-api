@@ -12,14 +12,35 @@ import { QuoteService } from '../service/quote-service';
  * https://invoice.moneyforward.com/docs/api/v3/index.html#/
  */
 export class MfClient {
+  /**
+   * 請求API
+   * @type {BillingService}
+   */
   public billings: BillingService;
+  /**
+   * 見積API
+   * @type {QuoteService}
+   */
   public quotes: QuoteService;
+  /**
+   * 取引先API
+   * @type {PartnerService}
+   */
   public partners: PartnerService;
+  /**
+   * 品目API
+   * @type {ItemService}
+   */
   public items: ItemService;
+  /**
+   * 事業所API
+   * @type {OfficeService}
+   */
   public office: OfficeService;
 
   /**
    * コンストラクタ
+   * @param {string} accessToken アクセストークン
    */
   constructor(accessToken: string) {
     if (!accessToken) {

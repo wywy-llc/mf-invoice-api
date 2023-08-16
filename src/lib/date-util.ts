@@ -3,17 +3,22 @@
  */
 export class DateUtil {
   private baseDate: Date;
+
+  /**
+   * コンストラクタ
+   * @param {Date} baseDate 基準日付
+   */
   constructor(baseDate: Date) {
     this.baseDate = baseDate;
   }
 
   /**
    * 日付文字列を取得します。
-   * @param type 出力パターン
-   *  1: YYYY-MM-DD
-   *  2: YYYYMM
-   *  3: YYYY年MM月
-   * @returns
+   * @param {number} type 出力パターン
+   * 1: YYYY-MM-DD
+   * 2: YYYYMM
+   * 3: YYYY年MM月
+   * @return {string} 日付文字列
    */
   getDateString(type = 1): string {
     const year = this.baseDate.getFullYear();

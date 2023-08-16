@@ -127,7 +127,11 @@ export class ServiceBase {
    * @returns レスポンスのオブジェクト
    */
   processResponse(res: GoogleAppsScript.URL_Fetch.HTTPResponse) {
-    if (res.getResponseCode() === 200 || res.getResponseCode() === 201) {
+    if (
+      res.getResponseCode() === 200 ||
+      res.getResponseCode() === 201 ||
+      res.getResponseCode() === 204
+    ) {
       console.info('Request success.');
       if (res.getContentText()) {
         return JSON.parse(res.getContentText());

@@ -75,4 +75,91 @@ export class BillingService extends ServiceBase {
     const res = this.fetch(reqUrl, method, payload);
     return this.processResponse(res);
   }
+
+  /**
+   * 請求書の入金ステータス変更
+   * @param {string} billingId 請求書ID
+   * @param {MfInvoiceApi.PaymentStatus} paymentStatus 入金ステータス
+   */
+  updatePaymentStatus(
+    billingId: string,
+    paymentStatus: MfInvoiceApi.PaymentStatus
+  ): MfInvoiceApi.Billing {
+    const reqUrl = `${this.baseUrl}/${billingId}/payment_status`;
+    const method = ReqMethod.put;
+    const payload = JSON.stringify({ payment_status: paymentStatus });
+    const res = this.fetch(reqUrl, method, payload);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 請求書の削除
+   * @param {string} billingId 請求書ID
+   * @returns {MfInvoiceApi.Billing} 請求書
+   */
+  deleteBilling(billingId: string): MfInvoiceApi.Billing {
+    const reqUrl = `${this.baseUrl}/${billingId}`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 請求書に紐づく品目一覧の取得
+   * @param {string} billingId 請求書ID
+   * @returns {MfInvoiceApi.BillingsResponse} 請求書レスポンス
+   */
+  getBillingItems(billingId: string): MfInvoiceApi.BillingsResponse {
+    const reqUrl = `${this.baseUrl}/${billingId}/items`;
+    const method = ReqMethod.get;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 請求書に紐づく品目の取得
+   * @param {string} billingId 請求書ID
+   * @param {string} itemId 品目ID
+   * @returns {MfInvoiceApi.BillingItem} 請求書品目
+   */
+  getBillingItem(billingId: string, itemId: string): MfInvoiceApi.BillingItem {
+    const reqUrl = `${this.baseUrl}/${billingId}/items/${itemId}`;
+    const method = ReqMethod.get;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+  /**
+   * 請求書に紐づく品目の削除
+   * @param {string} billingId 請求書ID
+   * @param {string} itemId 品目ID
+   * @returns {boolean} 削除成功時はtrue
+   */
+  deleteBillingItem(billingId: string, itemId: string): boolean {
+    const reqUrl = `${this.baseUrl}/${billingId}/items/${itemId}`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+  /**
+   * 請求書の郵送依頼
+   * @param {string} billingId 請求書ID
+   * @returns {boolean} 郵送依頼成功時はtrue
+   */
+  applyToPostBilling(billingId: string): boolean {
+    const reqUrl = `${this.baseUrl}/${billingId}/posting`;
+    const method = ReqMethod.post;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+  /**
+   * 請求書の郵送キャンセル
+   * @param {string} billingId 請求書ID
+   * @returns {boolean} 郵送キャンセル成功時はtrue
+   */
+  cancelPostBilling(billingId: string): boolean {
+    const reqUrl = `${this.baseUrl}/${billingId}/posting`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
 }

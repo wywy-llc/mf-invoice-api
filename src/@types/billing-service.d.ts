@@ -51,5 +51,52 @@ declare namespace MfInvoiceApi {
       billingId: string,
       billingReqBody: MfInvoiceApi.BillingReqBody
     ): MfInvoiceApi.Billing;
+    /**
+     * 請求書の入金ステータス変更
+     * @param {string} billingId 請求書ID
+     * @param {MfInvoiceApi.PaymentStatus} paymentStatus 入金ステータス
+     */
+    updatePaymentStatus(
+      billingId: string,
+      paymentStatus: MfInvoiceApi.PaymentStatus
+    ): MfInvoiceApi.Billing;
+    /**
+     * 請求書の削除
+     * @param {string} billingId 請求書ID
+     * @returns {MfInvoiceApi.Billing} 請求書
+     */
+    deleteBilling(billingId: string): MfInvoiceApi.Billing;
+    /**
+     * 請求書に紐づく品目一覧の取得
+     * @param {string} billingId 請求書ID
+     * @returns {MfInvoiceApi.BillingsResponse} 請求書レスポンス
+     */
+    getBillingItems(billingId: string): MfInvoiceApi.BillingsResponse;
+    /**
+     * 請求書に紐づく品目の取得
+     * @param {string} billingId 請求書ID
+     * @param {string} itemId 品目ID
+     * @returns {MfInvoiceApi.BillingItem} 請求書品目
+     */
+    getBillingItem(billingId: string, itemId: string): MfInvoiceApi.BillingItem;
+    /**
+     * 請求書に紐づく品目の削除
+     * @param {string} billingId 請求書ID
+     * @param {string} itemId 品目ID
+     * @returns {boolean} 削除成功時はtrue
+     */
+    deleteBillingItem(billingId: string, itemId: string): boolean;
+    /**
+     * 請求書の郵送依頼
+     * @param {string} billingId 請求書ID
+     * @returns {boolean} 郵送依頼成功時はtrue
+     */
+    applyToPostBilling(billingId: string): boolean;
+    /**
+     * 請求書の郵送キャンセル
+     * @param {string} billingId 請求書ID
+     * @returns {boolean} 郵送キャンセル成功時はtrue
+     */
+    cancelPostBilling(billingId: string): boolean;
   }
 }

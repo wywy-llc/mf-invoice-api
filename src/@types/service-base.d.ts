@@ -1,14 +1,39 @@
 /// <reference types="google-apps-script" />
 declare namespace MfInvoiceApi {
   /**
+   * 入金ステータス
+   */
+  export declare const PaymentStatus: {
+    readonly default: '0'; // 未設定
+    readonly not_payment: '1'; // 未入金
+    readonly completed: '2'; // 入金済
+    readonly unpaid: '3'; // 未払い
+    readonly transferred: '4'; // 振込済
+  };
+
+  export type PaymentStatus =
+    (typeof PaymentStatus)[keyof typeof PaymentStatus];
+
+  /**
+   * 受注ステータス
+   */
+  export declare const OrderStatus: {
+    readonly failure: '-1'; // 失注
+    readonly default: '0'; // 未設定
+    readonly not_received: '1'; // 未受注
+    readonly received: '2'; // 受注済
+  };
+
+  export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
+  /**
    * 請求の期間絞込対象
    */
   export declare const BillingRangeKey: {
-    readonly billing_date: 'billing_date';
-    readonly due_date: 'due_date';
-    readonly sales_date: 'sales_date';
-    readonly created_at: 'created_at';
-    readonly updated_at: 'updated_at';
+    readonly billing_date: 'billing_date'; // 請求日
+    readonly due_date: 'due_date'; // 支払期日
+    readonly sales_date: 'sales_date'; // 売上計上日
+    readonly created_at: 'created_at'; // 作成日
+    readonly updated_at: 'updated_at'; // 更新日
   };
   export type BillingRangeKey =
     (typeof BillingRangeKey)[keyof typeof BillingRangeKey];

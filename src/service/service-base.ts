@@ -1,12 +1,37 @@
 /**
+ * 入金ステータス
+ */
+export const PaymentStatus = {
+  default: '0', // 未設定
+  not_payment: '1', // 未入金
+  completed: '2', // 入金済
+  unpaid: '3', // 未払い
+  transferred: '4', // 振込済
+} as const;
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];
+
+/**
+ * 受注ステータス
+ */
+export const OrderStatus = {
+  failure: '-1', // 失注
+  default: '0', // 未設定
+  not_received: '1', // 未受注
+  received: '2', // 受注済
+} as const;
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
+
+/**
  * 請求の期間絞込対象
  */
 export const BillingRangeKey = {
-  billing_date: 'billing_date',
-  due_date: 'due_date',
-  sales_date: 'sales_date',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
+  billing_date: 'billing_date', // 請求日
+  due_date: 'due_date', // 支払期日
+  sales_date: 'sales_date', // 売上計上日
+  created_at: 'created_at', // 作成日
+  updated_at: 'updated_at', // 更新日
 } as const;
 
 export type BillingRangeKey =
@@ -16,10 +41,10 @@ export type BillingRangeKey =
  * 見積の期間絞込対象
  */
 export const QuoteRangeKey = {
-  quote_date: 'quote_date',
-  expired_date: 'expired_date',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
+  quote_date: 'quote_date', // 見積日
+  expired_date: 'expired_date', // 有効期限
+  created_at: 'created_at', // 作成日
+  updated_at: 'updated_at', // 更新日
 } as const;
 
 export type QuoteRangeKey = (typeof QuoteRangeKey)[keyof typeof QuoteRangeKey];
@@ -87,7 +112,7 @@ export class ServiceBase {
       muteHttpExceptions: true,
       headers: this.getHeaders(),
     };
-    if (method === 'post' || method === 'put') {
+    if ((method === 'post' || method === 'put') && payload) {
       options.payload = payload;
       options.contentType = 'application/json';
     }
@@ -104,7 +129,10 @@ export class ServiceBase {
   processResponse(res: GoogleAppsScript.URL_Fetch.HTTPResponse) {
     if (res.getResponseCode() === 200 || res.getResponseCode() === 201) {
       console.info('Request success.');
-      return JSON.parse(res.getContentText());
+      if (res.getContentText()) {
+        return JSON.parse(res.getContentText());
+      }
+      return true;
     } else {
       console.error('Request failed.');
       throw new Error(

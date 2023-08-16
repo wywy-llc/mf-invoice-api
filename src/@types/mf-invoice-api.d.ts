@@ -127,11 +127,29 @@ declare namespace MfInvoiceApi {
   }
 
   /**
+   * 請求書ステータス更新のリクエストボディ
+   */
+  interface BillingUpdateReqBody {
+    department_id: string;
+    title: string;
+    memo: string;
+    payment_condition: string;
+    billing_date: string;
+    due_date: string;
+    sales_date: string;
+    billing_number: string;
+    note: string;
+    document_name: string;
+    tag_names: string[];
+    items: BillingItemReqBody[];
+  }
+
+  /**
    * Get Billings
    * https://invoice.moneyforward.com/docs/api/v3/index.html#/operations/get-billings
    */
   interface BillingsResponse {
-    data: BillingData[];
+    data: BillingItem[];
     pagination: PaginationData;
   }
 
@@ -221,9 +239,16 @@ declare namespace MfInvoiceApi {
    * Get Quotes
    * https://invoice.moneyforward.com/docs/api/v3/index.html#/operations/get-quotes
    */
-
   interface QuotesResponse {
     data: Quote[];
+    pagination: PaginationData;
+  }
+
+  /**
+   * QuoteItem
+   */
+  interface QuoteItemResponse {
+    data: Item[];
     pagination: PaginationData;
   }
 
@@ -262,7 +287,7 @@ declare namespace MfInvoiceApi {
     price?: string;
     quantity?: string;
     is_deduct_withholding_tax: boolean;
-    excise?: string;
+    excise?: MfInvoiceApi.Excise;
     created_at: string;
     updated_at: string;
   }

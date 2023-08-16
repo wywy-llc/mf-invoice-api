@@ -73,4 +73,104 @@ export class QuoteService extends ServiceBase {
     const res = this.fetch(reqUrl, method, payload);
     return this.processResponse(res);
   }
+
+  /**
+   * 見積書の削除
+   */
+  deleteQuote(quoteId: string): boolean {
+    const reqUrl = `${this.baseUrl}/${quoteId}`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 見積書に紐づく品目一覧の取得
+   * @param {string} quoteId 見積書ID
+   * @returns {MfInvoiceApi.QuoteItemResponse} 見積書品目レスポンス
+   */
+  getQuoteItems(quoteId: string): MfInvoiceApi.QuoteItemResponse {
+    const reqUrl = `${this.baseUrl}/${quoteId}/items`;
+    const method = ReqMethod.get;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 見積書に紐づく品目を取得
+   * @param {string} quoteId 見積書ID
+   * @param {string} itemId 品目ID
+   * @returns {MfInvoiceApi.Item} 品目
+   */
+  getQuoteItem(quoteId: string, itemId: string): MfInvoiceApi.Item {
+    const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
+    const method = ReqMethod.get;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 見積書に紐づく品目を削除
+   * @param {string} quoteId 見積書ID
+   * @param {string} itemId 品目ID
+   * @returns {boolean} 削除成功時はtrue
+   */
+  deleteQuoteItem(quoteId: string, itemId: string): boolean {
+    const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 見積書の郵送依頼
+   * @param {string} quoteId 見積書ID
+   * @returns {boolean} 郵送依頼成功時はtrue
+   */
+  applyToPostQuote(quoteId: string): boolean {
+    const reqUrl = `${this.baseUrl}/${quoteId}/posting`;
+    const method = ReqMethod.post;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 見積書の郵送キャンセル
+   * @param {string} quoteId 見積書ID
+   * @returns {boolean} 郵送キャンセル成功時はtrue
+   */
+  cancelPostQuote(quoteId: string): boolean {
+    const reqUrl = `${this.baseUrl}/${quoteId}/posting`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 見積書のステータス更新
+   * @param {string} quoteId 見積書ID
+   * @param {MfInvoiceApi.OrderStatus} status 受注ステータス
+   */
+  updateQuoteStatus(
+    quoteId: string,
+    status: MfInvoiceApi.OrderStatus
+  ): boolean {
+    const reqUrl = `${this.baseUrl}/${quoteId}/order_status`;
+    const method = ReqMethod.put;
+    const payload = JSON.stringify({ status: status });
+    const res = this.fetch(reqUrl, method, payload);
+    return this.processResponse(res);
+  }
+
+  /**
+   * 見積書を請求書に変換
+   * @param {string} quoteId 見積書ID
+   * @returns {MfInvoiceApi.Billing} 請求書
+   */
+  converQuoteToBilling(quoteId: string): MfInvoiceApi.Billing {
+    const reqUrl = `${this.baseUrl}/${quoteId}/convert_to_billing`;
+    const method = ReqMethod.post;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
 }

@@ -201,7 +201,7 @@ export class QuoteService extends ServiceBase {
    * @param {string} quoteId 見積書ID
    * @returns {MfInvoiceApi.Billing} 請求書
    */
-  converQuoteToBilling(quoteId: string): MfInvoiceApi.Billing {
+  convertQuoteToBilling(quoteId: string): MfInvoiceApi.Billing {
     if (!quoteId) {
       throw new Error('quoteId is required.');
     }

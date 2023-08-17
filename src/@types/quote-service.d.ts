@@ -96,6 +96,6 @@ declare namespace MfInvoiceApi {
      * @param {string} quoteId 見積書ID
      * @returns {MfInvoiceApi.Billing} 請求書
      */
-    converQuoteToBilling(quoteId: string): MfInvoiceApi.Billing;
+    convertQuoteToBilling(quoteId: string): MfInvoiceApi.Billing;
   }
 }

@@ -1,4 +1,4 @@
-# MFクラウド請求書APIv3対応のGASクライアント
+# MFクラウド請求書API v3 対応のGASクライアント
 
 スクリプトID： `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4`
 

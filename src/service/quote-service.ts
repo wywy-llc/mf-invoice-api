@@ -178,11 +178,11 @@ export class QuoteService extends ServiceBase {
   }
 
   /**
-   * 見積書のステータス更新
+   * 見積書の受注ステータス更新
    * @param {string} quoteId 見積書ID
    * @param {MfInvoiceApi.OrderStatus} status 受注ステータス
    */
-  updateQuoteStatus(
+  updateQuoteOrderStatus(
     quoteId: string,
     status: MfInvoiceApi.OrderStatus
   ): boolean {

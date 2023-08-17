@@ -87,7 +87,7 @@ declare namespace MfInvoiceApi {
      * @param {string} quoteId 見積書ID
      * @param {MfInvoiceApi.OrderStatus} status 受注ステータス
      */
-    updateQuoteStatus(
+    updateQuoteOrderStatus(
       quoteId: string,
       status: MfInvoiceApi.OrderStatus
     ): boolean;

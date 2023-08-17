@@ -28,11 +28,8 @@ export class BillingService extends ServiceBase {
     perPage: number = 100,
     rangeKey: BillingRangeKey = 'billing_date'
   ): MfInvoiceApi.BillingsResponse {
-    if (!from) {
-      throw new Error('from is required.');
-    }
-    if (!to) {
-      throw new Error('to is required.');
+    if (!from || !to) {
+      throw new Error('from and to are required.');
     }
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${from}&to=${to}&q=${query}`;
     const method = ReqMethod.get;
@@ -81,11 +78,8 @@ export class BillingService extends ServiceBase {
     billingId: string,
     billingReqBody: MfInvoiceApi.BillingReqBody
   ): MfInvoiceApi.Billing {
-    if (!billingId) {
-      throw new Error('billingId is required.');
-    }
-    if (!billingReqBody) {
-      throw new Error('billingReqBody is required.');
+    if (!billingId || !billingReqBody) {
+      throw new Error('billingId and billingReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${billingId}`;
     const method = ReqMethod.put;
@@ -103,11 +97,8 @@ export class BillingService extends ServiceBase {
     billingId: string,
     paymentStatus: MfInvoiceApi.PaymentStatus
   ): MfInvoiceApi.Billing {
-    if (!billingId) {
-      throw new Error('billingId is required.');
-    }
-    if (!paymentStatus) {
-      throw new Error('paymentStatus is required.');
+    if (!billingId || !paymentStatus) {
+      throw new Error('billingId and paymentStatus are required.');
     }
     const reqUrl = `${this.baseUrl}/${billingId}/payment_status`;
     const method = ReqMethod.put;
@@ -153,11 +144,8 @@ export class BillingService extends ServiceBase {
    * @returns {MfInvoiceApi.BillingItem} 請求書品目
    */
   getBillingItem(billingId: string, itemId: string): MfInvoiceApi.BillingItem {
-    if (!billingId) {
-      throw new Error('billingId is required');
-    }
-    if (!itemId) {
-      throw new Error('itemId is required');
+    if (!billingId || !itemId) {
+      throw new Error('billingId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${billingId}/items/${itemId}`;
     const method = ReqMethod.get;
@@ -171,11 +159,8 @@ export class BillingService extends ServiceBase {
    * @returns {boolean} 削除成功時はtrue
    */
   deleteBillingItem(billingId: string, itemId: string): boolean {
-    if (!billingId) {
-      throw new Error('billingId is required.');
-    }
-    if (!itemId) {
-      throw new Error('itemId is required.');
+    if (!billingId || !itemId) {
+      throw new Error('billingId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${billingId}/items/${itemId}`;
     const method = ReqMethod.delete;

@@ -60,11 +60,8 @@ export class ItemService extends ServiceBase {
     itemId: string,
     itemReqBody: MfInvoiceApi.ItemReqBody
   ): MfInvoiceApi.Item {
-    if (!itemId) {
-      throw new Error('itemId is required.');
-    }
-    if (!itemReqBody) {
-      throw new Error('itemReqBody is required.');
+    if (!itemId || !itemReqBody) {
+      throw new Error('itemId and itemReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${itemId}`;
     const method = ReqMethod.put;

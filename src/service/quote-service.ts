@@ -26,11 +26,8 @@ export class QuoteService extends ServiceBase {
     perPage: number = 100,
     rangeKey: QuoteRangeKey = 'quote_date'
   ): MfInvoiceApi.QuotesResponse {
-    if (!from) {
-      throw new Error('from is required.');
-    }
-    if (!to) {
-      throw new Error('to is required.');
+    if (!from || !to) {
+      throw new Error('from and to are required.');
     }
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${from}&to=${to}&q=${query}`;
     const method = ReqMethod.get;
@@ -79,11 +76,8 @@ export class QuoteService extends ServiceBase {
     quoteId: string,
     quoteReqBody: MfInvoiceApi.QuoteReqBody
   ): MfInvoiceApi.Quote {
-    if (!quoteId) {
-      throw new Error('quoteId is required.');
-    }
-    if (!quoteReqBody) {
-      throw new Error('quoteReqBody is required.');
+    if (!quoteId || !quoteReqBody) {
+      throw new Error('quoteId and quoteReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
     const method = ReqMethod.put;
@@ -127,11 +121,8 @@ export class QuoteService extends ServiceBase {
    * @returns {MfInvoiceApi.Item} 品目
    */
   getQuoteItem(quoteId: string, itemId: string): MfInvoiceApi.Item {
-    if (!quoteId) {
-      throw new Error('quoteId is required.');
-    }
-    if (!itemId) {
-      throw new Error('itemId is required.');
+    if (!quoteId || !itemId) {
+      throw new Error('quoteId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
     const method = ReqMethod.get;
@@ -146,11 +137,8 @@ export class QuoteService extends ServiceBase {
    * @returns {boolean} 削除成功時はtrue
    */
   deleteQuoteItem(quoteId: string, itemId: string): boolean {
-    if (!quoteId) {
-      throw new Error('quoteId is required.');
-    }
-    if (!itemId) {
-      throw new Error('itemId is required.');
+    if (!quoteId || !itemId) {
+      throw new Error('quoteId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
     const method = ReqMethod.delete;
@@ -198,11 +186,8 @@ export class QuoteService extends ServiceBase {
     quoteId: string,
     status: MfInvoiceApi.OrderStatus
   ): boolean {
-    if (!quoteId) {
-      throw new Error('quoteId is required.');
-    }
-    if (!status) {
-      throw new Error('status is required.');
+    if (!quoteId || !status) {
+      throw new Error('quoteId and status are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/order_status`;
     const method = ReqMethod.put;

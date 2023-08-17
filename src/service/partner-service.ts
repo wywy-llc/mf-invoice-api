@@ -60,11 +60,8 @@ export class PartnerService extends ServiceBase {
     partnerId: string,
     partnerReqBody: MfInvoiceApi.PartnerReqBody
   ): MfInvoiceApi.Partner {
-    if (!partnerId) {
-      throw new Error('partnerId is required.');
-    }
-    if (!partnerReqBody) {
-      throw new Error('partnerReqBody is required.');
+    if (!partnerId || !partnerReqBody) {
+      throw new Error('partnerId and partnerReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${partnerId}`;
     const method = ReqMethod.put;

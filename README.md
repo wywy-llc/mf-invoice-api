@@ -4,7 +4,7 @@
 
 ## 概要
 
-- GAS(Google Apps Script)用のMFクラウド請求書APIv3用のAPIクライアントライブラリです。
+- MFクラウド請求書API v3 用のGAS(Google Apps Script)のクライアントライブラリです。
 - 0から自分で開発するよりも素早くAPI連携を実現できます。
 
 ## API対応状況とライブラリのリファレンス

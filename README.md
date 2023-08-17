@@ -92,7 +92,7 @@ function initialize() {
       }
     }
   }
-  const headers = {
+  const schemas = {
     office: [
       'id',
       'name',
@@ -199,6 +199,20 @@ function initialize() {
       'total_price',
       'registration_code',
       'use_invoice_template'],
+    billingItems: [
+      'id',
+      'name',
+      'code',
+      'detail',
+      'unit',
+      'price',
+      'quantity',
+      'is_deduct_withholding_tax',
+      'excise',
+      'delivery_date',
+      'delivery_number',
+      'created_at',
+      'updated_at'],
     quotes: [
       'id',
       'pdf_url',
@@ -250,23 +264,24 @@ function initialize() {
   };
   const initSheets = () => {
     // シート作成
-    const client = getMfClient_();
     const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
-    for (const attr in client) {
-      let sheet = spreadsheet.getSheetByName(attr);
+
+    for (const schema of Object.keys(schemas)) {
+      let sheet = spreadsheet.getSheetByName(schema);
       if (sheet) {
+        // シートの削除（初期化のため）
         spreadsheet.deleteSheet(sheet);
       }
-      sheet = spreadsheet.insertSheet(attr);
-      const headerNames = headers[attr];
-      if (!headerNames) {
-        continue;
-      }
-      const range = sheet.getRange(1, 1, 1, headerNames.length);
+      // シートの挿入
+      sheet = spreadsheet.insertSheet(schema);
+      const attrs = schemas[schema];
+      const range = sheet.getRange(1, 1, 1, attrs.length);
       range.setBackground("#bdbdbd");
-      range.setValues([headerNames]);
-      if (headerNames.length < sheet.getMaxColumns()) {
-        sheet.deleteColumns(headerNames.length + 1, sheet.getMaxColumns() - headerNames.length);
+      range.setValues([attrs]);
+
+      // 不要な列を削除する
+      if (attrs.length < sheet.getMaxColumns()) {
+        sheet.deleteColumns(attrs.length + 1, sheet.getMaxColumns() - attrs.length);
       }
     }
   }

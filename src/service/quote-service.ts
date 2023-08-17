@@ -88,6 +88,8 @@ export class QuoteService extends ServiceBase {
 
   /**
    * 見積書の削除
+   * @param {string} quoteId 見積書ID
+   * @returns {boolean} 削除成功時はtrue
    */
   deleteQuote(quoteId: string): boolean {
     if (!quoteId) {

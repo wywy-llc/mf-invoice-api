@@ -184,14 +184,14 @@ export class QuoteService extends ServiceBase {
    */
   updateOrderStatus(
     quoteId: string,
-    status: MfInvoiceApi.OrderStatus
+    orderStatus: MfInvoiceApi.OrderStatus
   ): boolean {
-    if (!quoteId || !status) {
+    if (!quoteId || !orderStatus) {
       throw new Error('quoteId and status are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/order_status`;
     const method = ReqMethod.put;
-    const payload = JSON.stringify({ status: status });
+    const payload = JSON.stringify({ order_status: orderStatus });
     const res = this.fetch(reqUrl, method, payload);
     return this.processResponse(res);
   }

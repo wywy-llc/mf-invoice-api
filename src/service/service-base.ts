@@ -92,6 +92,9 @@ export class ServiceBase {
    * @param accessToken アクセストークン
    */
   constructor(accessToken: string) {
+    if (!accessToken) {
+      throw new Error('accessToken is required.');
+    }
     this.accessToken = accessToken;
   }
 

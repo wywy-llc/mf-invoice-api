@@ -25,6 +25,9 @@ export class PartnerService extends ServiceBase {
    * @returns {MfInvoiceApi.Partner} 取引先
    */
   createNew(partnerReqBody: MfInvoiceApi.PartnerReqBody): MfInvoiceApi.Partner {
+    if (!partnerReqBody) {
+      throw new Error('partnerReqBody is required.');
+    }
     const reqUrl = this.baseUrl;
     const method = ReqMethod.post;
     const payload = JSON.stringify(partnerReqBody);
@@ -38,6 +41,9 @@ export class PartnerService extends ServiceBase {
    * @returns {MfInvoiceApi.Partner} 取引先
    */
   getPartner(partnerId: String): MfInvoiceApi.Partner {
+    if (!partnerId) {
+      throw new Error('partnerId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${partnerId}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
@@ -54,6 +60,12 @@ export class PartnerService extends ServiceBase {
     partnerId: string,
     partnerReqBody: MfInvoiceApi.PartnerReqBody
   ): MfInvoiceApi.Partner {
+    if (!partnerId) {
+      throw new Error('partnerId is required.');
+    }
+    if (!partnerReqBody) {
+      throw new Error('partnerReqBody is required.');
+    }
     const reqUrl = `${this.baseUrl}/${partnerId}`;
     const method = ReqMethod.put;
     const payload = JSON.stringify(partnerReqBody);

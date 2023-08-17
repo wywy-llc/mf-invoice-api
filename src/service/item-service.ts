@@ -25,6 +25,9 @@ export class ItemService extends ServiceBase {
    * @returns {MfInvoiceApi.Item} 品目
    */
   createNew(itemReqBody: MfInvoiceApi.ItemReqBody): MfInvoiceApi.Item {
+    if (!itemReqBody) {
+      throw new Error('itemReqBody is required.');
+    }
     const reqUrl = this.baseUrl;
     const method = ReqMethod.post;
     const payload = JSON.stringify(itemReqBody);
@@ -38,6 +41,9 @@ export class ItemService extends ServiceBase {
    * @returns {MfInvoiceApi.Item} 品目
    */
   getItem(itemId: String): MfInvoiceApi.Item {
+    if (!itemId) {
+      throw new Error('itemId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${itemId}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
@@ -54,6 +60,12 @@ export class ItemService extends ServiceBase {
     itemId: string,
     itemReqBody: MfInvoiceApi.ItemReqBody
   ): MfInvoiceApi.Item {
+    if (!itemId) {
+      throw new Error('itemId is required.');
+    }
+    if (!itemReqBody) {
+      throw new Error('itemReqBody is required.');
+    }
     const reqUrl = `${this.baseUrl}/${itemId}`;
     const method = ReqMethod.put;
     const payload = JSON.stringify(itemReqBody);

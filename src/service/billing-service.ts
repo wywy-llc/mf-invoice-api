@@ -23,11 +23,17 @@ export class BillingService extends ServiceBase {
   getBillings(
     from: string,
     to: string,
-    query: string,
+    query: string = '',
     page: number = 1,
     perPage: number = 100,
     rangeKey: BillingRangeKey = 'billing_date'
   ): MfInvoiceApi.BillingsResponse {
+    if (!from) {
+      throw new Error('from is required.');
+    }
+    if (!to) {
+      throw new Error('to is required.');
+    }
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${from}&to=${to}&q=${query}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
@@ -40,6 +46,9 @@ export class BillingService extends ServiceBase {
    * @returns {MfInvoiceApi.Billing} 請求書
    */
   createNew(billingReqBody: MfInvoiceApi.BillingReqBody): MfInvoiceApi.Billing {
+    if (!billingReqBody) {
+      throw new Error('billingReqBody is required.');
+    }
     const reqUrl = `${ServiceBase.API_BASE_URL}/invoice_template_billings`;
     const method = ReqMethod.post;
     const payload = JSON.stringify(billingReqBody);
@@ -53,6 +62,9 @@ export class BillingService extends ServiceBase {
    * @returns {MfInvoiceApi.Billing} 請求書
    */
   getBilling(billingId: string): MfInvoiceApi.Billing {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
@@ -69,6 +81,12 @@ export class BillingService extends ServiceBase {
     billingId: string,
     billingReqBody: MfInvoiceApi.BillingReqBody
   ): MfInvoiceApi.Billing {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
+    if (!billingReqBody) {
+      throw new Error('billingReqBody is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}`;
     const method = ReqMethod.put;
     const payload = JSON.stringify(billingReqBody);
@@ -85,6 +103,12 @@ export class BillingService extends ServiceBase {
     billingId: string,
     paymentStatus: MfInvoiceApi.PaymentStatus
   ): MfInvoiceApi.Billing {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
+    if (!paymentStatus) {
+      throw new Error('paymentStatus is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}/payment_status`;
     const method = ReqMethod.put;
     const payload = JSON.stringify({ payment_status: paymentStatus });
@@ -98,6 +122,9 @@ export class BillingService extends ServiceBase {
    * @returns {MfInvoiceApi.Billing} 請求書
    */
   deleteBilling(billingId: string): boolean {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}`;
     const method = ReqMethod.delete;
     const res = this.fetch(reqUrl, method);
@@ -110,6 +137,9 @@ export class BillingService extends ServiceBase {
    * @returns {MfInvoiceApi.BillingsResponse} 請求書レスポンス
    */
   getBillingItems(billingId: string): MfInvoiceApi.BillingsResponse {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}/items`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
@@ -123,6 +153,12 @@ export class BillingService extends ServiceBase {
    * @returns {MfInvoiceApi.BillingItem} 請求書品目
    */
   getBillingItem(billingId: string, itemId: string): MfInvoiceApi.BillingItem {
+    if (!billingId) {
+      throw new Error('billingId is required');
+    }
+    if (!itemId) {
+      throw new Error('itemId is required');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}/items/${itemId}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
@@ -135,6 +171,12 @@ export class BillingService extends ServiceBase {
    * @returns {boolean} 削除成功時はtrue
    */
   deleteBillingItem(billingId: string, itemId: string): boolean {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
+    if (!itemId) {
+      throw new Error('itemId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}/items/${itemId}`;
     const method = ReqMethod.delete;
     const res = this.fetch(reqUrl, method);
@@ -146,6 +188,9 @@ export class BillingService extends ServiceBase {
    * @returns {boolean} 郵送依頼成功時はtrue
    */
   applyToPostBilling(billingId: string): boolean {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}/posting`;
     const method = ReqMethod.post;
     const res = this.fetch(reqUrl, method);
@@ -157,6 +202,9 @@ export class BillingService extends ServiceBase {
    * @returns {boolean} 郵送キャンセル成功時はtrue
    */
   cancelPostBilling(billingId: string): boolean {
+    if (!billingId) {
+      throw new Error('billingId is required.');
+    }
     const reqUrl = `${this.baseUrl}/${billingId}/posting`;
     const method = ReqMethod.delete;
     const res = this.fetch(reqUrl, method);

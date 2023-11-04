@@ -71,20 +71,15 @@ export class BillingService extends ServiceBase {
   /**
    * 請求書の更新
    * @param {string} billingId 請求書ID
-   * @param {MfInvoiceApi.BillingReqBody} billingReqBody 請求書リクエストボディ
    * @returns {MfInvoiceApi.Billing} 請求書
    */
-  updateBilling(
-    billingId: string,
-    billingReqBody: MfInvoiceApi.BillingReqBody
-  ): MfInvoiceApi.Billing {
-    if (!billingId || !billingReqBody) {
-      throw new Error('billingId and billingReqBody are required.');
+  updateBilling(billingId: string): MfInvoiceApi.Billing {
+    if (!billingId) {
+      throw new Error('billingId is required.');
     }
     const reqUrl = `${this.baseUrl}/${billingId}`;
     const method = ReqMethod.put;
-    const payload = JSON.stringify(billingReqBody);
-    const res = this.fetch(reqUrl, method, payload);
+    const res = this.fetch(reqUrl, method);
     return this.processResponse(res);
   }
 
@@ -152,6 +147,27 @@ export class BillingService extends ServiceBase {
     const res = this.fetch(reqUrl, method);
     return this.processResponse(res);
   }
+
+  /**
+   * 請求書に品目を追加
+   * @param billingId 請求書ID
+   * @param itemReqBody 品目リクエストボディ
+   * @returns {boolean} 成功時はtrue
+   */
+  attachBillingItem(
+    billingId: string,
+    itemReqBody: MfInvoiceApi.BillingItemReqBody
+  ): MfInvoiceApi.BillingItem {
+    if (!billingId || !itemReqBody) {
+      throw new Error('billingId and item are required.');
+    }
+    const reqUrl = `${this.baseUrl}/${billingId}/items`;
+    const method = ReqMethod.post;
+    const payload = JSON.stringify(itemReqBody);
+    const res = this.fetch(reqUrl, method, payload);
+    return this.processResponse(res);
+  }
+
   /**
    * 請求書に紐づく品目の削除
    * @param {string} billingId 請求書ID

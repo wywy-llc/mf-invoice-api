@@ -31,18 +31,18 @@ declare namespace MfInvoiceApi {
   }
 
   /**
-   * 請求書作成のリクエストボディ
+   * 請求書の品目作成のリクエストボディ
    */
   interface BillingItemReqBody {
     item_id: string;
     delivery_number?: string;
     delivery_date?: string;
-    detail: string;
-    unit: string;
-    price: number;
-    quantity: number;
-    is_deduct_withholding_tax: boolean;
-    excise: Excise;
+    detail?: string;
+    unit?: string;
+    price?: number;
+    quantity?: number;
+    is_deduct_withholding_tax?: boolean;
+    excise?: Excise;
   }
 
   /**
@@ -63,7 +63,7 @@ declare namespace MfInvoiceApi {
     office_detail: string;
     title: string;
     memo?: string;
-    payment_condition: string;
+    payment_condition?: string;
     billing_date: string;
     due_date: string;
     sales_date?: string;
@@ -106,6 +106,7 @@ declare namespace MfInvoiceApi {
     total_price: string;
     registration_code?: string;
     use_invoice_template: boolean;
+    config: BillingConfig;
   }
 
   /**
@@ -113,35 +114,43 @@ declare namespace MfInvoiceApi {
    */
   interface BillingReqBody {
     department_id: string;
-    title: string;
-    memo: string;
-    payment_condition: string;
+    title?: string;
+    memo?: string;
+    payment_condition?: string;
     billing_date: string;
     due_date: string;
-    sales_date: string;
-    billing_number: string;
-    note: string;
-    document_name: string;
-    tag_names: string[];
-    items: BillingItemReqBody[];
+    sales_date?: string;
+    billing_number?: string;
+    note?: string;
+    document_name?: string;
+    tag_names?: string[];
+    items?: BillingItemReqBody[];
+  }
+
+  /**
+   * 請求書の詳細設定
+   */
+  interface BillingConfig {
+    rounding: string;
+    rounding_consumption_tax: string;
+    consumption_tax_display_type: string;
   }
 
   /**
    * 請求書ステータス更新のリクエストボディ
    */
   interface BillingUpdateReqBody {
-    department_id: string;
-    title: string;
-    memo: string;
-    payment_condition: string;
-    billing_date: string;
-    due_date: string;
-    sales_date: string;
-    billing_number: string;
-    note: string;
-    document_name: string;
-    tag_names: string[];
-    items: BillingItemReqBody[];
+    department_id?: string;
+    title?: string;
+    memo?: string;
+    payment_condition?: string;
+    billing_date?: string;
+    due_date?: string;
+    sales_date?: string;
+    billing_number?: string;
+    note?: string;
+    document_name?: string;
+    tag_names?: string[];
   }
 
   /**
@@ -265,7 +274,7 @@ declare namespace MfInvoiceApi {
     address2?: string;
     person_name?: string;
     person_title?: string;
-    person_dept: string;
+    person_dept?: string;
     email?: string;
     cc_emails?: string;
     office_member_id?: string;
@@ -286,7 +295,7 @@ declare namespace MfInvoiceApi {
     unit?: string;
     price?: string;
     quantity?: string;
-    is_deduct_withholding_tax: boolean;
+    is_deduct_withholding_tax?: boolean;
     excise?: MfInvoiceApi.Excise;
     created_at: string;
     updated_at: string;

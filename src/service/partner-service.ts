@@ -69,6 +69,20 @@ export class PartnerService extends ServiceBase {
     const res = this.fetch(reqUrl, method, payload);
     return this.processResponse(res);
   }
+  /**
+   * 取引先の削除
+   * @param partnerId 取引先ID
+   * @returns {boolean} 削除成功時はtrue
+   */
+  deletePartner(partnerId: string): MfInvoiceApi.Partner {
+    if (!partnerId) {
+      throw new Error('partnerId is required.');
+    }
+    const reqUrl = `${this.baseUrl}/${partnerId}`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
 
   /**
    * 全ての取引先を取得

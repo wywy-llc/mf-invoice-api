@@ -33,6 +33,12 @@ declare namespace MfInvoiceApi {
       partnerReqBody: MfInvoiceApi.PartnerReqBody
     ): MfInvoiceApi.Partner;
     /**
+     * 取引先の削除
+     * @param partnerId 取引先ID
+     * @returns {boolean} 削除成功時はtrue
+     */
+    deletePartner(partnerId: string): MfInvoiceApi.Partner;
+    /**
      * 全ての取引先を取得
      * @returns {MfInvoiceApi.Partner[]} 取引先一覧
      */

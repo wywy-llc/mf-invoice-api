@@ -19,7 +19,7 @@ declare namespace MfInvoiceApi {
     getQuotes(
       from: string,
       to: string,
-      query: string,
+      query?: string,
       page?: number,
       perPage?: number,
       rangeKey?: QuoteRangeKey
@@ -44,6 +44,8 @@ declare namespace MfInvoiceApi {
     updateQuote(quoteId: string): MfInvoiceApi.Quote;
     /**
      * 見積書の削除
+     * @param {string} quoteId 見積書ID
+     * @returns {boolean} 削除成功時はtrue
      */
     deleteQuote(quoteId: string): boolean;
     /**
@@ -59,6 +61,16 @@ declare namespace MfInvoiceApi {
      * @returns {MfInvoiceApi.Item} 品目
      */
     getQuoteItem(quoteId: string, itemId: string): MfInvoiceApi.Item;
+    /**
+     * 見積書に品目を追加
+     * @param {string} quoteId 見積書ID
+     * @param {MfInvoiceApi.QuoteItemReqBody} quoteItemReqBody 見積書品目リクエストボディ
+     * @returns {boolean} 成功時はtrue
+     */
+    attachQuoteItem(
+      quoteId: string,
+      quoteItemReqBody: MfInvoiceApi.QuoteItemReqBody
+    ): boolean;
     /**
      * 見積書に紐づく品目を削除
      * @param {string} quoteId 見積書ID
@@ -79,13 +91,13 @@ declare namespace MfInvoiceApi {
      */
     cancelPostQuote(quoteId: string): boolean;
     /**
-     * 見積書のステータス更新
+     * 見積書の受注ステータス更新
      * @param {string} quoteId 見積書ID
      * @param {MfInvoiceApi.OrderStatus} status 受注ステータス
      */
     updateOrderStatus(
       quoteId: string,
-      status: MfInvoiceApi.OrderStatus
+      orderStatus: MfInvoiceApi.OrderStatus
     ): boolean;
     /**
      * 見積書を請求書に変換

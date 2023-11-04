@@ -47,10 +47,7 @@ declare namespace MfInvoiceApi {
      * @param {MfInvoiceApi.BillingReqBody} billingReqBody 請求書リクエストボディ
      * @returns {MfInvoiceApi.Billing} 請求書
      */
-    updateBilling(
-      billingId: string,
-      billingReqBody: MfInvoiceApi.BillingReqBody
-    ): MfInvoiceApi.Billing;
+    updateBilling(billingId: string): MfInvoiceApi.Billing;
     /**
      * 請求書の入金ステータス変更
      * @param {string} billingId 請求書ID

@@ -39,13 +39,9 @@ declare namespace MfInvoiceApi {
     /**
      * 見積書の更新
      * @param {string} quoteId 見積書ID
-     * @param {MfInvoiceApi.QuoteReqBody} quoteReqBody 見積書リクエストボディ
      * @returns {MfInvoiceApi.Quote} 見積書
      */
-    updateQuote(
-      quoteId: string,
-      quoteReqBody: MfInvoiceApi.QuoteReqBody
-    ): MfInvoiceApi.Quote;
+    updateQuote(quoteId: string): MfInvoiceApi.Quote;
     /**
      * 見積書の削除
      */

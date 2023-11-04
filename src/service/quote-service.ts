@@ -69,20 +69,15 @@ export class QuoteService extends ServiceBase {
   /**
    * 見積書の更新
    * @param {string} quoteId 見積書ID
-   * @param {MfInvoiceApi.QuoteReqBody} quoteReqBody 見積書リクエストボディ
    * @returns {MfInvoiceApi.Quote} 見積書
    */
-  updateQuote(
-    quoteId: string,
-    quoteReqBody: MfInvoiceApi.QuoteReqBody
-  ): MfInvoiceApi.Quote {
-    if (!quoteId || !quoteReqBody) {
-      throw new Error('quoteId and quoteReqBody are required.');
+  updateQuote(quoteId: string): MfInvoiceApi.Quote {
+    if (!quoteId) {
+      throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
     const method = ReqMethod.put;
-    const payload = JSON.stringify(quoteReqBody);
-    const res = this.fetch(reqUrl, method, payload);
+    const res = this.fetch(reqUrl, method);
     return this.processResponse(res);
   }
 

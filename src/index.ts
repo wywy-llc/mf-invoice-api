@@ -24,7 +24,12 @@ function createClient(clientId: string, clientSecret: string): MfClient {
 }
 
 /**
- * 入金ステータス
+ * 入金ステータスを取得します。
+ * - default: '0', // 未設定
+ * - not_payment: '1', // 未入金
+ * - completed: '2', // 入金済
+ * - unpaid: '3', // 未払い
+ * - transferred: '4', // 振込済
  * @param status 入金ステータス
  * @returns 入金ステータス(数値)
  */
@@ -33,7 +38,11 @@ function getPaymentStatus(status: string): string {
 }
 
 /**
- * 受注ステータス
+ * 受注ステータスを取得します。
+ * - failure: '-1', // 失注
+ * - default: '0', // 未設定
+ * - not_received: '1', // 未受注
+ * - received: '2', // 受注済
  * @param status 受注ステータス
  * @returns 受注ステータス(数値)
  */

@@ -74,7 +74,7 @@ export class PartnerService extends ServiceBase {
    * @param partnerId 取引先ID
    * @returns {boolean} 削除成功時はtrue
    */
-  deletePartner(partnerId: string): MfInvoiceApi.Partner {
+  deletePartner(partnerId: string): boolean {
     if (!partnerId) {
       throw new Error('partnerId is required.');
     }

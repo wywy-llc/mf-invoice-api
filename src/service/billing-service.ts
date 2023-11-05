@@ -71,15 +71,20 @@ export class BillingService extends ServiceBase {
   /**
    * 請求書の更新
    * @param {string} billingId 請求書ID
+   * @param {MfInvoiceApi.BillingReqBody} billingReqBody 請求書リクエストボディ
    * @returns {MfInvoiceApi.Billing} 請求書
    */
-  updateBilling(billingId: string): MfInvoiceApi.Billing {
-    if (!billingId) {
-      throw new Error('billingId is required.');
+  updateBilling(
+    billingId: string,
+    billingReqBody: MfInvoiceApi.BillingReqBody
+  ): MfInvoiceApi.Billing {
+    if (!billingId || !billingReqBody) {
+      throw new Error('billingId and billingReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${billingId}`;
     const method = ReqMethod.put;
-    const res = this.fetch(reqUrl, method);
+    const payload = JSON.stringify(billingReqBody);
+    const res = this.fetch(reqUrl, method, payload);
     return this.processResponse(res);
   }
 

@@ -3,6 +3,11 @@
 import { MfClient } from './lib/mf-client';
 import { DateUtil } from './lib/date-util';
 import { MfOAuth2 } from './lib/mf-oauth2';
+import {
+  BillingRangeKey,
+  OrderStatus,
+  PaymentStatus,
+} from './service/service-base';
 
 //== 基本的な関数 ==//
 
@@ -16,6 +21,24 @@ function createClient(clientId: string, clientSecret: string): MfClient {
   const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
   const accessToken = mfOAuth2.getMfService().getAccessToken();
   return new MfClient(accessToken);
+}
+
+/**
+ * 入金ステータス
+ * @param status 入金ステータス
+ * @returns 入金ステータス(数値)
+ */
+function getPaymentStatus(status: string): string {
+  return PaymentStatus[status as keyof typeof PaymentStatus];
+}
+
+/**
+ * 受注ステータス
+ * @param status 受注ステータス
+ * @returns 受注ステータス(数値)
+ */
+function getOrderStatus(status: string): string {
+  return OrderStatus[status as keyof typeof OrderStatus];
 }
 
 /**

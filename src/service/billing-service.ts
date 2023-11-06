@@ -152,6 +152,27 @@ export class BillingService extends ServiceBase {
     const res = this.fetch(reqUrl, method);
     return this.processResponse(res);
   }
+
+  /**
+   * 請求書に品目を追加
+   * @param billingId 請求書ID
+   * @param itemReqBody 品目リクエストボディ
+   * @returns {boolean} 成功時はtrue
+   */
+  attachBillingItem(
+    billingId: string,
+    itemReqBody: MfInvoiceApi.BillingItemReqBody
+  ): MfInvoiceApi.BillingItem {
+    if (!billingId || !itemReqBody) {
+      throw new Error('billingId and item are required.');
+    }
+    const reqUrl = `${this.baseUrl}/${billingId}/items`;
+    const method = ReqMethod.post;
+    const payload = JSON.stringify(itemReqBody);
+    const res = this.fetch(reqUrl, method, payload);
+    return this.processResponse(res);
+  }
+
   /**
    * 請求書に紐づく品目の削除
    * @param {string} billingId 請求書ID

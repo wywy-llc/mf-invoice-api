@@ -1,10 +1,10 @@
 {
   "name": "mf-invoice-api",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.2.0",
+  "description": "マネーフォワード クラウド請求書API v3 GASクライアント",
   "main": "build/index.js",
   "license": "Apache-2.0",
-  "keywords": [],
+  "keywords": ["typescript","api-client","google-apps-script","app-script"],
   "scripts": {
     "clean": "rimraf build dist",
     "lint": "npm run license && eslint --fix --no-error-on-unmatched-pattern src/ test/",

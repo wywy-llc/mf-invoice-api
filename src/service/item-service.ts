@@ -51,6 +51,21 @@ export class ItemService extends ServiceBase {
   }
 
   /**
+   * 品目の削除
+   * @param {string} itemId 品目ID
+   * @returns {boolean} 成功時はtrue
+   */
+  deleteItem(itemId: string): void {
+    if (!itemId) {
+      throw new Error('itemId is required.');
+    }
+    const reqUrl = `${this.baseUrl}/${itemId}`;
+    const method = ReqMethod.delete;
+    const res = this.fetch(reqUrl, method);
+    return this.processResponse(res);
+  }
+
+  /**
    * 品目の更新
    * @param {string} itemId 品目ID
    * @param {MfInvoiceApi.ItemReqBody} itemReqBody 品目リクエストボディ

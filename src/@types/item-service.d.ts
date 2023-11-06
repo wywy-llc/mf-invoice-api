@@ -21,6 +21,12 @@ declare namespace MfInvoiceApi {
      */
     getItem(itemId: String): MfInvoiceApi.Item;
     /**
+     * 品目の削除
+     * @param {string} itemId 品目ID
+     * @returns {boolean} 成功時はtrue
+     */
+    deleteItem(itemId: string): void;
+    /**
      * 品目の更新
      * @param {string} itemId 品目ID
      * @param {MfInvoiceApi.ItemReqBody} itemReqBody 品目リクエストボディ

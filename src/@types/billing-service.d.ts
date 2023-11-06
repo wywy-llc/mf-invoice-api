@@ -22,7 +22,7 @@ declare namespace MfInvoiceApi {
     getBillings(
       from: string,
       to: string,
-      query: string,
+      query?: string,
       page?: number,
       perPage?: number,
       rangeKey?: BillingRangeKey
@@ -65,7 +65,7 @@ declare namespace MfInvoiceApi {
      * @param {string} billingId 請求書ID
      * @returns {MfInvoiceApi.Billing} 請求書
      */
-    deleteBilling(billingId: string): MfInvoiceApi.Billing;
+    deleteBilling(billingId: string): boolean;
     /**
      * 請求書に紐づく品目一覧の取得
      * @param {string} billingId 請求書ID
@@ -79,6 +79,16 @@ declare namespace MfInvoiceApi {
      * @returns {MfInvoiceApi.BillingItem} 請求書品目
      */
     getBillingItem(billingId: string, itemId: string): MfInvoiceApi.BillingItem;
+    /**
+     * 請求書に品目を追加
+     * @param billingId 請求書ID
+     * @param itemReqBody 品目リクエストボディ
+     * @returns {boolean} 成功時はtrue
+     */
+    attachBillingItem(
+      billingId: string,
+      itemReqBody: MfInvoiceApi.BillingItemReqBody
+    ): MfInvoiceApi.BillingItem;
     /**
      * 請求書に紐づく品目の削除
      * @param {string} billingId 請求書ID

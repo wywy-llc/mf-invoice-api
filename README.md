@@ -196,7 +196,8 @@ function initialize() {
       'subtotal_with_tax_of_ten_percent_excise',
       'total_price',
       'registration_code',
-      'use_invoice_template'
+      'use_invoice_template',
+      'config'
     ],
     billingItems: [
       'id',
@@ -211,7 +212,8 @@ function initialize() {
       'delivery_date',
       'delivery_number',
       'created_at',
-      'updated_at'
+      'updated_at',
+      'billing_id'
     ],
     quotes: [
       'id',
@@ -272,7 +274,8 @@ function initialize() {
       'is_deduct_withholding_tax',
       'excise',
       'created_at',
-      'updated_at'
+      'updated_at',
+      'quote_id'
     ]
   };
   const initSheets = () => {

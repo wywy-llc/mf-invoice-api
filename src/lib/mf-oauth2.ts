@@ -38,7 +38,7 @@ export class MfOAuth2 {
       .setPropertyStore(PropertiesService.getUserProperties())
       .setCache(CacheService.getUserCache())
       .setLock(LockService.getUserLock())
-      .setScope('mfc/invoice/data.write');
+      .setScope('mfc/invoice/data.write mfc/invoice/data.read');
   }
   /**
    * MFからのコールバックリクエストを処理します。

@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
+/**
+ * Copyright 2026 wywy LLC
+ */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MfClient } from './lib/mf-client';
 import { DateUtil } from './lib/date-util';

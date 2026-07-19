@@ -1,4 +1,7 @@
 /**
+ * Copyright 2026 wywy LLC
+ */
+/**
  * 入金ステータス
  */
 export const PaymentStatus = {

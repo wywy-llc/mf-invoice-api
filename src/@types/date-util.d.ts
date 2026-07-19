@@ -1,3 +1,6 @@
+/**
+ * Copyright 2026 wywy LLC
+ */
 declare namespace MfInvoiceApi {
   /**
    * 日付ユーティリティクラス

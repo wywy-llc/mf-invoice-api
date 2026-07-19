@@ -1,3 +1,6 @@
+/**
+ * Copyright 2026 wywy LLC
+ */
 import { ReqMethod, ServiceBase } from './service-base';
 
 export class ItemService extends ServiceBase {
@@ -40,7 +43,7 @@ export class ItemService extends ServiceBase {
    * @param {string} itemId 品目ID
    * @returns {MfInvoiceApi.Item} 品目
    */
-  getItem(itemId: String): MfInvoiceApi.Item {
+  getItem(itemId: string): MfInvoiceApi.Item {
     if (!itemId) {
       throw new Error('itemId is required.');
     }

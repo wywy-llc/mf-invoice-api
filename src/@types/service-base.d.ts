@@ -1,3 +1,6 @@
+/**
+ * Copyright 2026 wywy LLC
+ */
 /// <reference types="google-apps-script" />
 declare namespace MfInvoiceApi {
   /**

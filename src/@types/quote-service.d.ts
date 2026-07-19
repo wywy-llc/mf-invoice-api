@@ -1,3 +1,6 @@
+/**
+ * Copyright 2026 wywy LLC
+ */
 declare namespace MfInvoiceApi {
   interface QuoteService extends ServiceBase {
     baseUrl: string;
@@ -35,7 +38,7 @@ declare namespace MfInvoiceApi {
      * @param {string} quoteId 見積書ID
      * @returns {MfInvoiceApi.Quote} 見積書
      */
-    getQuote(quoteId: String): MfInvoiceApi.Quote;
+    getQuote(quoteId: string): MfInvoiceApi.Quote;
     /**
      * 見積書の更新
      * @param {string} quoteId 見積書ID

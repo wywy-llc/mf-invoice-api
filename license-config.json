@@ -1,17 +1,20 @@
 {
   "ignore": [
     ".claspignore",
+    ".claude",
     ".editorconfig",
-    ".eslintignore",
+    ".github",
     ".gitignore",
+    ".husky",
     ".prettierignore",
     "*.txt",
-    ".github",
+    "CLAUDE.md",
     "CONTRIBUTING",
+    "README.md",
     "build",
-    "src",
-    "test",
-    "README.md"
+    "eslint.config.mjs",
+    "rollup.config.mjs",
+    "test"
   ],
   "license": "license-header.txt",
   "licenseFormats": {
@@ -20,15 +23,6 @@
       "append": " */",
       "eachLine": {
         "prepend": " * "
-      }
-    },
-    "html|md": {
-      "prepend": "<!--",
-      "append": "-->"
-    },
-    "sh|^pre-commit": {
-      "eachLine": {
-        "prepend": "# "
       }
     }
   },

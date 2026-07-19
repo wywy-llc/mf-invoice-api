@@ -1,3 +1,6 @@
+/**
+ * Copyright 2026 wywy LLC
+ */
 export class MfOAuth2 {
   private clientId: string;
   private clientSecret: string;

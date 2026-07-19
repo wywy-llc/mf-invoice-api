@@ -1,3 +1,6 @@
+/**
+ * Copyright 2026 wywy LLC
+ */
 import { ServiceBase, BillingRangeKey, ReqMethod } from './service-base';
 
 export class BillingService extends ServiceBase {

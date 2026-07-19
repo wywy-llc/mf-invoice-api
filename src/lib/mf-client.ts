@@ -1,5 +1,6 @@
-/* eslint-disable no-constant-condition */
-
+/**
+ * Copyright 2026 wywy LLC
+ */
 import { BillingService } from '../service/billing-service';
 import { ItemService } from '../service/item-service';
 import { OfficeService } from '../service/office-service';

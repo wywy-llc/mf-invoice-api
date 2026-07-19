@@ -1,4 +1,7 @@
 /**
+ * Copyright 2026 wywy LLC
+ */
+/**
  * 日付ユーティリティクラス
  */
 export class DateUtil {

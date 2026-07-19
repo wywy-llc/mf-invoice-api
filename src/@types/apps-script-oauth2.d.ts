@@ -1,4 +1,7 @@
 /**
+ * Copyright 2026 wywy LLC
+ */
+/**
  * OAuth2
  * https://github.com/googleworkspace/apps-script-oauth2
  */

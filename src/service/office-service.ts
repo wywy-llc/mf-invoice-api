@@ -1,3 +1,6 @@
+/**
+ * Copyright 2026 wywy LLC
+ */
 import { ReqMethod, ServiceBase } from './service-base';
 
 /**

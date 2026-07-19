@@ -157,4 +157,19 @@ export class ServiceBase {
       Authorization: 'Bearer ' + this.accessToken,
     };
   }
+
+  /**
+   * クエリ文字列を組み立てる。各値は URL エンコードする。
+   * @param params クエリパラメータ（値が undefined のものは除外する）
+   * @returns 先頭に `?` を付けたクエリ文字列（パラメータが無ければ空文字）
+   */
+  protected buildQueryString(
+    params: Record<string, string | number | undefined>
+  ): string {
+    const query = Object.entries(params)
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+      .join('&');
+    return query ? `?${query}` : '';
+  }
 }

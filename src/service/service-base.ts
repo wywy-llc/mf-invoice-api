@@ -119,7 +119,6 @@ export class ServiceBase {
       options.payload = payload;
       options.contentType = 'application/json';
     }
-    console.info(`Request URL: ${method} ${reqUrl}`);
     const res = UrlFetchApp.fetch(reqUrl, options);
     return res;
   }

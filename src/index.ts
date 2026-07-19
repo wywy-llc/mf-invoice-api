@@ -125,7 +125,6 @@ function showMfApiAuthDialog(clientId: string, clientSecret: string) {
 function createMfAuthUrl(clientId: string, clientSecret: string) {
   const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
   const authUrl = mfOAuth2.getMfService().getAuthorizationUrl();
-  console.info(authUrl);
   return authUrl;
 }
 

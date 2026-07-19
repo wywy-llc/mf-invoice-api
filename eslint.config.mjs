@@ -16,7 +16,6 @@
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import nPlugin from 'eslint-plugin-n';
@@ -25,7 +24,6 @@ import prettierConfig from 'eslint-config-prettier/flat';
 import globals from 'globals';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const compat = new FlatCompat({ baseDirectory: __dirname });
 
 export default defineConfig([
   {
@@ -33,7 +31,7 @@ export default defineConfig([
   },
 
   js.configs.recommended,
-  ...compat.extends('plugin:n/recommended'),
+  nPlugin.configs['flat/recommended'],
   ...tseslint.configs.recommended,
   prettierConfig,
 

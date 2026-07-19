@@ -8,8 +8,12 @@ TypeScript client library for the MoneyForward Cloud Invoice API v3 (マネー�
 
 ## Commands
 
-- `npm run lint` — runs `license-check-and-add add` (prepends Apache-2.0 headers to `.ts`/`.js`/`.mjs`) **then** `eslint --fix`. This is **not read-only**: it mutates files.
+- `npm run lint` — runs `license-check-and-add add` (prepends Apache-2.0 headers; per `license-config.json` this covers `.ts`/`.js`/`.mjs` **and** `.md`/`.html`/shell scripts, excluding only `README.md` and a few ignored paths) **then** `eslint --fix`. This is **not read-only**: it mutates files.
+- `npm run lint:fix` — `eslint --fix` only, no license header pass.
+- `npm run format` — `prettier --write src/ test/`.
+- `npm run typecheck` — `tsc --noEmit`.
 - `npm test` — `jest test/ --passWithNoTests --detectOpenHandles`. Run a single file: `npx jest test/lib/date-util.test.ts`.
+- A `husky` pre-commit hook (`.husky/pre-commit`) runs `lint-staged` (eslint --fix + prettier --write, plus `jest --findRelatedTests` for `src/**/*.ts`) followed by `tsc --noEmit` on every commit — most lint/format issues are caught automatically at commit time.
 - `npm run build` — cleans, bundles via Rollup into `dist/` (note: `package.json` `main` says `build/index.js`, but the actual bundler output directory is `dist/` — this is a pre-existing inconsistency, not a bug to silently "fix").
 - `npm run deploy` — lint + test + build, then swaps in `.clasp-dev.json` and `clasp push -f` to the **dev** GAS project. Safe for Claude to run autonomously.
 - `npm run deploy:prod` — same but swaps in `.clasp-prod.json` and `clasp push` (no `-f`) to the **production** GAS project consumed by real users. **Always confirm with the user before running this** — it is a production deploy, not a reversible local action.
@@ -31,5 +35,5 @@ TypeScript client library for the MoneyForward Cloud Invoice API v3 (マネー�
 ## Conventions
 
 - Commit messages: `<English capitalized verb> <Japanese description>` (e.g. `Add 品目の削除`, `Fix OAuth スコープに data.read を追加`). This is **not** Conventional Commits (`feat:`/`fix:`) — use `Add`/`Fix`/`Refactor`/`Del`/`Verup`/`Doc`-style prefixes with a Japanese subject.
-- Formatting: 2-space indent, single quotes, trailing commas (`es5`), enforced via ESLint (`gts` + `prettier` + `@typescript-eslint`) — see `.eslintrc.json` / `.prettierrc.json`.
-- No CI pipeline exists in this repo — lint/test/build must be run manually before pushing or deploying.
+- Formatting: 2-space indent, single quotes, trailing commas (`es5`), enforced via ESLint flat config (`eslint.config.mjs`, ESLint v9 + `typescript-eslint` + `eslint-plugin-n` + `prettier`) — see `eslint.config.mjs` / `.prettierrc.json`.
+- No CI pipeline exists in this repo. The husky pre-commit hook covers lint/format/typecheck automatically, but `npm run build` and the full `npm test` suite must still be run manually before pushing or deploying.

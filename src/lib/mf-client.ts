@@ -1,5 +1,5 @@
 /**
- * Copyright 2026 wywy LLC
+ * Copyright 2026 wywy LLC and contributors
  */
 import { BillingService } from '../service/billing-service';
 import { ItemService } from '../service/item-service';

@@ -1,5 +1,5 @@
 /**
- * Copyright 2026 wywy LLC
+ * Copyright 2026 wywy LLC and contributors
  */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MfClient } from './lib/mf-client';

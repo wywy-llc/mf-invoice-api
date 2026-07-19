@@ -1,5 +1,5 @@
 /**
- * Copyright 2026 wywy LLC
+ * Copyright 2026 wywy LLC and contributors
  */
 /**
  * 入金ステータス

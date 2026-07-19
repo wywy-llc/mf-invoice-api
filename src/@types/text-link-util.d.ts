@@ -4,10 +4,10 @@ declare namespace MfInvoiceApi {
      * MF請求書URLを生成します。
      * @param {string} billingNumber 請求書番号
      */
-    static createMfBillingUrl(billingNumber: String): string;
+    static createMfBillingUrl(billingNumber: string): string;
     /**
      * 取引先URLを生成します。
      */
-    static createPartnerUrl(partnerId: String): string;
+    static createPartnerUrl(partnerId: string): string;
   }
 }

@@ -19,7 +19,7 @@ declare namespace MfInvoiceApi {
      * @param {string} itemId 品目ID
      * @returns {MfInvoiceApi.Item} 品目
      */
-    getItem(itemId: String): MfInvoiceApi.Item;
+    getItem(itemId: string): MfInvoiceApi.Item;
     /**
      * 品目の削除
      * @param {string} itemId 品目ID

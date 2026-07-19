@@ -21,7 +21,7 @@ declare namespace MfInvoiceApi {
      * @param {string} partnerId 取引先ID
      * @returns {MfInvoiceApi.Partner} 取引先
      */
-    getPartner(partnerId: String): MfInvoiceApi.Partner;
+    getPartner(partnerId: string): MfInvoiceApi.Partner;
     /**
      * 取引先の更新
      * @param {string} partnerId 取引先ID

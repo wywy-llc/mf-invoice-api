@@ -1,5 +1,3 @@
-/* eslint-disable no-constant-condition */
-
 import { BillingService } from '../service/billing-service';
 import { ItemService } from '../service/item-service';
 import { OfficeService } from '../service/office-service';

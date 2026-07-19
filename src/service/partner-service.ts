@@ -40,7 +40,7 @@ export class PartnerService extends ServiceBase {
    * @param {string} partnerId 取引先ID
    * @returns {MfInvoiceApi.Partner} 取引先
    */
-  getPartner(partnerId: String): MfInvoiceApi.Partner {
+  getPartner(partnerId: string): MfInvoiceApi.Partner {
     if (!partnerId) {
       throw new Error('partnerId is required.');
     }

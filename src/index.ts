@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MfClient } from './lib/mf-client';
 import { DateUtil } from './lib/date-util';

@@ -18,7 +18,7 @@
   "engines": {
     "node": ">=12"
   },
-  "dependencies": {
+  "devDependencies": {
     "@google/clasp": "^2.4.2",
     "@types/google-apps-script": "^1.0.66",
     "@types/jest": "^29.5.3",

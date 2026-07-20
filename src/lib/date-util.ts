@@ -28,14 +28,11 @@ export class DateUtil {
     const month = this.baseDate.getMonth() + 1;
     const date = this.baseDate.getDate();
     switch (type) {
-      case 1:
-        return `${year}-${month.toString().padStart(2, '0')}-${date
-          .toString()
-          .padStart(2, '0')}`;
       case 2:
         return `${year}${month.toString().padStart(2, '0')}`;
       case 3:
         return `${year}年${month}月`;
+      case 1:
       default:
         return `${year}-${month.toString().padStart(2, '0')}-${date
           .toString()
@@ -66,19 +63,7 @@ export class DateUtil {
    * @return {string} 今月末日付((YYYY-MM-DD)
    */
   getEndDateBaseMonth(): string {
-    const nextMonthLastDay = new Date(
-      this.baseDate.getFullYear(),
-      this.baseDate.getMonth() + 1,
-      0
-    );
-    return `${nextMonthLastDay.getFullYear()}-${(
-      nextMonthLastDay.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, '0')}-${nextMonthLastDay
-      .getDate()
-      .toString()
-      .padStart(2, '0')}`;
+    return this.formatEndOfMonth(1);
   }
 
   /**
@@ -86,38 +71,30 @@ export class DateUtil {
    * @return {string} 先月末日付((YYYY-MM-DD)
    */
   getEndDateLastMonth(): string {
-    const lastMonthLastDay = new Date(
-      this.baseDate.getFullYear(),
-      this.baseDate.getMonth(),
-      0
-    );
-    return `${lastMonthLastDay.getFullYear()}-${(
-      lastMonthLastDay.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, '0')}-${lastMonthLastDay
-      .getDate()
-      .toString()
-      .padStart(2, '0')}`;
+    return this.formatEndOfMonth(0);
   }
 
   /**
    * 来月末日付の文字列を取得します。
    * @return {string} 来月末日付(YYYY-MM-DD)
    */
-  getEndDateNextMonth() {
-    const nextMonthLastDay = new Date(
+  getEndDateNextMonth(): string {
+    return this.formatEndOfMonth(2);
+  }
+
+  /**
+   * 基準日からmonthOffsetヶ月後の月末日付の文字列を取得します。
+   * @param {number} monthOffset 基準月からのオフセット
+   * @return {string} 月末日付(YYYY-MM-DD)
+   */
+  private formatEndOfMonth(monthOffset: number): string {
+    const lastDay = new Date(
       this.baseDate.getFullYear(),
-      this.baseDate.getMonth() + 2,
+      this.baseDate.getMonth() + monthOffset,
       0
     );
-    return `${nextMonthLastDay.getFullYear()}-${(
-      nextMonthLastDay.getMonth() + 1
-    )
+    return `${lastDay.getFullYear()}-${(lastDay.getMonth() + 1)
       .toString()
-      .padStart(2, '0')}-${nextMonthLastDay
-      .getDate()
-      .toString()
-      .padStart(2, '0')}`;
+      .padStart(2, '0')}-${lastDay.getDate().toString().padStart(2, '0')}`;
   }
 }

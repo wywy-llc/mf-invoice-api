@@ -4,6 +4,7 @@
 export class MfOAuth2 {
   private clientId: string;
   private clientSecret: string;
+  private mfService?: OAuth2.OAuth2Service;
   /**
    * コンストラクタ
    * @param {string} clientId MFのクライアントID
@@ -28,20 +29,23 @@ export class MfOAuth2 {
     return new MfOAuth2(clientId, clientSecret);
   }
   /**
-   * OAuth2オブジェクトを取得します。
-   * @returns {OAuth2} OAuth2オブジェクト
+   * OAuth2オブジェクトを取得します。呼び出しごとの再構築を避けるため、初回生成時にキャッシュします。
+   * @returns {OAuth2.OAuth2Service} OAuth2オブジェクト
    */
-  getMfService() {
-    return OAuth2.createService('mf-invoice-client-v3')
-      .setAuthorizationBaseUrl('https://api.biz.moneyforward.com/authorize')
-      .setTokenUrl('https://api.biz.moneyforward.com/token')
-      .setClientId(this.clientId)
-      .setClientSecret(this.clientSecret)
-      .setCallbackFunction('mfCallback')
-      .setPropertyStore(PropertiesService.getUserProperties())
-      .setCache(CacheService.getUserCache())
-      .setLock(LockService.getUserLock())
-      .setScope('mfc/invoice/data.write mfc/invoice/data.read');
+  getMfService(): OAuth2.OAuth2Service {
+    if (!this.mfService) {
+      this.mfService = OAuth2.createService('mf-invoice-client-v3')
+        .setAuthorizationBaseUrl('https://api.biz.moneyforward.com/authorize')
+        .setTokenUrl('https://api.biz.moneyforward.com/token')
+        .setClientId(this.clientId)
+        .setClientSecret(this.clientSecret)
+        .setCallbackFunction('mfCallback')
+        .setPropertyStore(PropertiesService.getUserProperties())
+        .setCache(CacheService.getUserCache())
+        .setLock(LockService.getUserLock())
+        .setScope('mfc/invoice/data.write mfc/invoice/data.read');
+    }
+    return this.mfService;
   }
   /**
    * MFからのコールバックリクエストを処理します。

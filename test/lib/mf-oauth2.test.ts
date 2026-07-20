@@ -81,6 +81,13 @@ describe('MfOAuth2', () => {
         'mfc/invoice/data.write mfc/invoice/data.read'
       );
     });
+    it('2回呼び出すと、2回目はキャッシュされたサービスを再利用しビルダーチェーンを再構築しない', () => {
+      const oauth2 = new MfOAuth2('id', 'secret');
+      const first = oauth2.getMfService();
+      const second = oauth2.getMfService();
+      expect(second).toBe(first);
+      expect(createServiceMock).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('handleCallback', () => {

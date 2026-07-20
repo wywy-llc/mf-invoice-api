@@ -6,6 +6,7 @@ import { ItemService } from '../service/item-service';
 import { OfficeService } from '../service/office-service';
 import { PartnerService } from '../service/partner-service';
 import { QuoteService } from '../service/quote-service';
+import { SentHistoryService } from '../service/sent-history-service';
 
 /**
  * MfClientが保持するリソース別サービス群。テスト時のモック注入に使用します。
@@ -16,6 +17,7 @@ export interface MfClientServices {
   partners: PartnerService;
   items: ItemService;
   office: OfficeService;
+  sentHistories: SentHistoryService;
 }
 
 /**
@@ -49,6 +51,11 @@ export class MfClient {
    * @type {MfInvoiceApi.OfficeService}
    */
   public office: OfficeService;
+  /**
+   * 送付履歴API
+   * @type {MfInvoiceApi.SentHistoryService}
+   */
+  public sentHistories: SentHistoryService;
 
   /**
    * コンストラクタ
@@ -64,5 +71,7 @@ export class MfClient {
     this.partners = services.partners ?? new PartnerService(accessToken);
     this.items = services.items ?? new ItemService(accessToken);
     this.office = services.office ?? new OfficeService(accessToken);
+    this.sentHistories =
+      services.sentHistories ?? new SentHistoryService(accessToken);
   }
 }

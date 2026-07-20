@@ -17,9 +17,7 @@ export class ItemService extends ServiceBase {
     perPage: number = 100
   ): MfInvoiceApi.ItemsResponse {
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.ItemsResponse>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -31,11 +29,11 @@ export class ItemService extends ServiceBase {
     if (!itemReqBody) {
       throw new Error('itemReqBody is required.');
     }
-    const reqUrl = this.baseUrl;
-    const method = ReqMethod.post;
-    const payload = JSON.stringify(itemReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(
+      this.baseUrl,
+      ReqMethod.post,
+      JSON.stringify(itemReqBody)
+    );
   }
 
   /**
@@ -48,9 +46,7 @@ export class ItemService extends ServiceBase {
       throw new Error('itemId is required.');
     }
     const reqUrl = `${this.baseUrl}/${itemId}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -58,33 +54,32 @@ export class ItemService extends ServiceBase {
    * @param {string} itemId 品目ID
    * @returns {boolean} 成功時はtrue
    */
-  deleteItem(itemId: string): void {
+  deleteItem(itemId: string): boolean {
     if (!itemId) {
       throw new Error('itemId is required.');
     }
     const reqUrl = `${this.baseUrl}/${itemId}`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
-   * 品目の更新
+   * 品目の更新(部分更新可、全フィールド任意)
    * @param {string} itemId 品目ID
-   * @param {MfInvoiceApi.ItemReqBody} itemReqBody 品目リクエストボディ
+   * @param {MfInvoiceApi.ItemUpdateReqBody} itemReqBody 品目更新リクエストボディ
    * @returns {MfInvoiceApi.Item} 品目
    */
   updateItem(
     itemId: string,
-    itemReqBody: MfInvoiceApi.ItemReqBody
+    itemReqBody: MfInvoiceApi.ItemUpdateReqBody
   ): MfInvoiceApi.Item {
     if (!itemId || !itemReqBody) {
       throw new Error('itemId and itemReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${itemId}`;
-    const method = ReqMethod.put;
-    const payload = JSON.stringify(itemReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify(itemReqBody)
+    );
   }
 }

@@ -213,5 +213,21 @@ describe('PartnerService', () => {
       expect(partnerService.getAll()).toEqual(page1.data);
       expect(fetchMock).toHaveBeenCalledTimes(1);
     });
+
+    it('総ページ数がMAX_PAGES(100)を超える場合、100ページ分で打ち切って返す', () => {
+      // 全ページ同一データ(1件+total_pages=999)を返す固定モック
+      // → 実装がMAX_PAGESで打ち切ることをfetch回数と集約件数から検証する
+      const page = partnersResponseFactory.build({
+        data: partnerFactory.buildList(1),
+        pagination: paginationDataFactory.build({
+          total_pages: 999,
+          current_page: 1,
+        }),
+      });
+      const fetchMock = stubUrlFetchJson(page);
+
+      expect(partnerService.getAll()).toHaveLength(100);
+      expect(fetchMock).toHaveBeenCalledTimes(100);
+    });
   });
 });

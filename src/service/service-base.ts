@@ -143,8 +143,15 @@ export class ServiceBase {
       res.getResponseCode() === 204
     ) {
       console.info('Request success.');
-      if (res.getContentText()) {
-        return JSON.parse(res.getContentText());
+      const contentText = res.getContentText();
+      if (contentText) {
+        try {
+          return JSON.parse(contentText);
+        } catch {
+          throw new Error(
+            `Response body is not valid JSON !!. ${res.getResponseCode()}: ${contentText}`
+          );
+        }
       }
       return true;
     } else {
@@ -163,5 +170,49 @@ export class ServiceBase {
       accept: 'application/json',
       Authorization: 'Bearer ' + this.getAccessToken(),
     };
+  }
+
+  /**
+   * リクエストを送信し、レスポンスを処理した結果を返す。
+   * 各サービスで重複していた「fetch → processResponse」の定型パターンを集約したヘルパー
+   * @param reqUrl リクエストURL
+   * @param method リクエストメソッド
+   * @param payload リクエストボディ
+   * @returns レスポンスを処理した結果
+   */
+  protected request<T>(
+    reqUrl: string,
+    method: GoogleAppsScript.URL_Fetch.HttpMethod,
+    payload?: string
+  ): T {
+    const res = this.fetch(reqUrl, method, payload);
+    return this.processResponse(res) as T;
+  }
+
+  /**
+   * 期間・検索文字列・ページングで絞り込む一覧取得リクエストを送信する
+   * (billing/quoteのgetBillings・getQuotesで共通の実装)
+   * @param baseUrl リソースのベースURL
+   * @param from 検索範囲_開始日
+   * @param to 検索範囲_終了日
+   * @param query 検索文字列
+   * @param page ページ番号
+   * @param perPage 1ページあたりの件数
+   * @param rangeKey 検索範囲キー
+   * @returns レスポンスを処理した結果
+   */
+  protected fetchListWithRange<T>(
+    baseUrl: string,
+    from: string,
+    to: string,
+    query: string,
+    page: number,
+    perPage: number,
+    rangeKey: string
+  ): T {
+    const reqUrl = `${baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
+      from
+    )}&to=${encodeURIComponent(to)}&q=${encodeURIComponent(query)}`;
+    return this.request<T>(reqUrl, ReqMethod.get);
   }
 }

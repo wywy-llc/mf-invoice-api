@@ -14,9 +14,8 @@ export class QuoteService extends ServiceBase {
    * @param {number} page ページ番号
    * @param {number} perPage 1ページあたりのデータ数
    * @param {QuoteRangeKey} rangeKey 検索範囲_キー
-   * - billing_date: 請求日
-   * - due_date: 支払期日
-   * - sales_date: 売上日
+   * - quote_date: 見積日
+   * - expired_date: 有効期限
    * - created_at: 作成日
    * - updated_at: 更新日
    * @returns {MfInvoiceApi.QuotesResponse} 見積書レスポンス
@@ -32,10 +31,15 @@ export class QuoteService extends ServiceBase {
     if (!from || !to) {
       throw new Error('from and to are required.');
     }
-    const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${from}&to=${to}&q=${query}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.fetchListWithRange<MfInvoiceApi.QuotesResponse>(
+      this.baseUrl,
+      from,
+      to,
+      query,
+      page,
+      perPage,
+      rangeKey
+    );
   }
 
   /**
@@ -47,11 +51,11 @@ export class QuoteService extends ServiceBase {
     if (!quoteReqBody) {
       throw new Error('quoteReqBody is required.');
     }
-    const reqUrl = this.baseUrl;
-    const method = ReqMethod.post;
-    const payload = JSON.stringify(quoteReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Quote>(
+      this.baseUrl,
+      ReqMethod.post,
+      JSON.stringify(quoteReqBody)
+    );
   }
 
   /**
@@ -64,9 +68,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Quote>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -83,10 +85,11 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and quoteReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
-    const method = ReqMethod.put;
-    const payload = JSON.stringify(quoteReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Quote>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify(quoteReqBody)
+    );
   }
 
   /**
@@ -99,9 +102,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
@@ -114,9 +115,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.QuoteItemResponse>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -130,15 +129,13 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(reqUrl, ReqMethod.get);
   }
 
   /**
    * 見積書に品目を追加
    * @param {string} quoteId 見積書ID
-   * @param {MfInvoiceApi.QuoteItemReqBody} quoteItemReqBody 見積書品目リクエストボディ
+   * @param {MfInvoiceApi.QuoteItemReqBody} quoteItemReqBody 見積書品目リクエストボディ(item_idまたはnameのいずれかが必須)
    * @returns {boolean} 成功時はtrue
    */
   attachQuoteItem(
@@ -148,11 +145,17 @@ export class QuoteService extends ServiceBase {
     if (!quoteId || !quoteItemReqBody) {
       throw new Error('quoteId and quoteItemReqBody are required.');
     }
+    if (!quoteItemReqBody.item_id && !quoteItemReqBody.name) {
+      throw new Error(
+        'quoteItemReqBody.item_id or quoteItemReqBody.name is required.'
+      );
+    }
     const reqUrl = `${this.baseUrl}/${quoteId}/items`;
-    const method = ReqMethod.post;
-    const payload = JSON.stringify(quoteItemReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<boolean>(
+      reqUrl,
+      ReqMethod.post,
+      JSON.stringify(quoteItemReqBody)
+    );
   }
 
   /**
@@ -166,9 +169,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
@@ -181,9 +182,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/posting`;
-    const method = ReqMethod.post;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.post);
   }
 
   /**
@@ -197,13 +196,14 @@ export class QuoteService extends ServiceBase {
     }
 
     const reqUrl = `${this.baseUrl}/${quoteId}/posting`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
    * 見積書の受注ステータス更新
+   * 注意: spec上、このPUTリクエストのenumは数値文字列('-1'〜'2')だが、
+   * Quoteレスポンスの order_status は別表記(語形: failure/default/not_received/received)になっている
+   * (仕様側の request/response enum不一致。本メソッドの送信値はrequest契約に準拠)
    * @param {string} quoteId 見積書ID
    * @param {MfInvoiceApi.OrderStatus} status 受注ステータス
    */
@@ -215,10 +215,11 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and status are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/order_status`;
-    const method = ReqMethod.put;
-    const payload = JSON.stringify({ order_status: orderStatus });
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<boolean>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify({ order_status: orderStatus })
+    );
   }
 
   /**
@@ -231,8 +232,6 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/convert_to_billing`;
-    const method = ReqMethod.post;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Billing>(reqUrl, ReqMethod.post);
   }
 }

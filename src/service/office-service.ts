@@ -17,9 +17,6 @@ export class OfficeService extends ServiceBase {
    * @returns {MfInvoiceApi.Office} 事業者情報
    */
   getMyOffice(): MfInvoiceApi.Office {
-    const reqUrl = this.baseUrl;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Office>(this.baseUrl, ReqMethod.get);
   }
 }

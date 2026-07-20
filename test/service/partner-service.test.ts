@@ -19,7 +19,7 @@ describe('PartnerService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    partnerService = new PartnerService(ACCESS_TOKEN);
+    partnerService = new PartnerService(() => ACCESS_TOKEN);
   });
 
   describe('getPartners', () => {

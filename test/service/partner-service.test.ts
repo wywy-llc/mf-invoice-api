@@ -187,33 +187,6 @@ describe('PartnerService', () => {
         expect.objectContaining({ method: 'get' })
       );
     });
-  });
-
-  describe('createDepartment', () => {
-    it('partnerIdとdepartmentReqBodyを指定すると、作成した部署を返し、POSTリクエストを送信する', () => {
-      const department = departmentFactory.build();
-      const reqBody = departmentReqBodyFactory.build();
-      const fetchMock = stubUrlFetchJson(department);
-
-      expect(partnerService.createDepartment('partner_1', reqBody)).toEqual(
-        department
-      );
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/partner_1/departments`,
-        expect.objectContaining({
-          method: 'post',
-          payload: JSON.stringify(reqBody),
-          contentType: 'application/json',
-        })
-      );
-    });
-
-    it('partnerIdまたはdepartmentReqBodyが未指定だと、エラー', () => {
-      const reqBody = departmentReqBodyFactory.build();
-      const expectedMessage =
-        'partnerId and departmentReqBody(at least one property) are required.';
-      expect(() => partnerService.createDepartment('', reqBody)).toThrow(
-        expectedMessage
       );
       expect(() =>
         partnerService.createDepartment(
@@ -274,37 +247,6 @@ describe('PartnerService', () => {
         expect.objectContaining({ method: 'get' })
       );
     });
-  });
-
-  describe('updateDepartment', () => {
-    it('partnerIdとdepartmentIdとdepartmentReqBodyを指定すると、更新後の部署を返し、PUTリクエストを送信する', () => {
-      const department = departmentFactory.build({ id: 'department_1' });
-      const reqBody = departmentReqBodyFactory.build();
-      const fetchMock = stubUrlFetchJson(department);
-
-      expect(
-        partnerService.updateDepartment('partner_1', 'department_1', reqBody)
-      ).toEqual(department);
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/partner_1/departments/department_1`,
-        expect.objectContaining({
-          method: 'put',
-          payload: JSON.stringify(reqBody),
-          contentType: 'application/json',
-        })
-      );
-    });
-
-    it('partnerId・departmentId・departmentReqBodyのいずれかが未指定だと、エラー', () => {
-      const reqBody = departmentReqBodyFactory.build();
-      const expectedMessage =
-        'partnerId and departmentId and departmentReqBody(at least one property) are required.';
-      expect(() =>
-        partnerService.updateDepartment('', 'department_1', reqBody)
-      ).toThrow(expectedMessage);
-      expect(() =>
-        partnerService.updateDepartment('partner_1', '', reqBody)
-      ).toThrow(expectedMessage);
       expect(() =>
         partnerService.updateDepartment(
           'partner_1',

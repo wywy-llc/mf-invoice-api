@@ -34,7 +34,14 @@ export class BillingService extends ServiceBase {
     if (!from || !to) {
       throw new Error('from and to are required.');
     }
-    const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${from}&to=${to}&q=${query}`;
+    const reqUrl = `${this.baseUrl}${this.buildQueryString({
+      page,
+      per_page: perPage,
+      range_key: rangeKey,
+      from,
+      to,
+      q: query,
+    })}`;
     const method = ReqMethod.get;
     const res = this.fetch(reqUrl, method);
     return this.processResponse(res);

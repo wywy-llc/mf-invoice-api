@@ -52,17 +52,20 @@ export class MfClient {
 
   /**
    * コンストラクタ
-   * @param {string} accessToken アクセストークン
+   * @param {() => string} getAccessToken アクセストークンを取得する関数(リクエストの都度呼び出される)
    * @param {Partial<MfClientServices>} services テスト用に注入するサービス(未指定時は各サービスを新規生成)
    */
-  constructor(accessToken: string, services: Partial<MfClientServices> = {}) {
-    if (!accessToken) {
+  constructor(
+    getAccessToken: () => string,
+    services: Partial<MfClientServices> = {}
+  ) {
+    if (typeof getAccessToken !== 'function') {
       throw new Error('アクセストークンが不正です');
     }
-    this.billings = services.billings ?? new BillingService(accessToken);
-    this.quotes = services.quotes ?? new QuoteService(accessToken);
-    this.partners = services.partners ?? new PartnerService(accessToken);
-    this.items = services.items ?? new ItemService(accessToken);
-    this.office = services.office ?? new OfficeService(accessToken);
+    this.billings = services.billings ?? new BillingService(getAccessToken);
+    this.quotes = services.quotes ?? new QuoteService(getAccessToken);
+    this.partners = services.partners ?? new PartnerService(getAccessToken);
+    this.items = services.items ?? new ItemService(getAccessToken);
+    this.office = services.office ?? new OfficeService(getAccessToken);
   }
 }

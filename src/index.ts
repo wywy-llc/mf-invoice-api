@@ -21,8 +21,14 @@ import {
  */
 function createClient(clientId: string, clientSecret: string): MfClient {
   const mfOAuth2 = MfOAuth2.create(clientId, clientSecret);
-  const accessToken = mfOAuth2.getMfService().getAccessToken();
-  return new MfClient(accessToken);
+  const mfService = mfOAuth2.getMfService();
+  // 生成時に一度だけ認証状態を確認する(未認証はここで即エラーにする)。
+  // 実際のAPIリクエストでは、都度 getAccessToken() を呼び出す関数を
+  // MfClientに渡し、OAuth2ライブラリの自動リフレッシュに追従させる。
+  if (!mfService.getAccessToken()) {
+    throw new Error('アクセストークンが不正です');
+  }
+  return new MfClient(() => mfService.getAccessToken());
 }
 
 /**

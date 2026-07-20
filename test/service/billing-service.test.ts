@@ -18,7 +18,7 @@ describe('BillingService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    billingService = new BillingService(ACCESS_TOKEN);
+    billingService = new BillingService(() => ACCESS_TOKEN);
   });
 
   describe('getBillings', () => {

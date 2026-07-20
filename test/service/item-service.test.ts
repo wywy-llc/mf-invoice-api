@@ -14,7 +14,7 @@ describe('ItemService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    itemService = new ItemService(ACCESS_TOKEN);
+    itemService = new ItemService(() => ACCESS_TOKEN);
   });
 
   describe('getItems', () => {

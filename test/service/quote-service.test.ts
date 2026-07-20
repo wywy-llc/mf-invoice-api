@@ -19,7 +19,7 @@ describe('QuoteService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    quoteService = new QuoteService(ACCESS_TOKEN);
+    quoteService = new QuoteService(() => ACCESS_TOKEN);
   });
 
   describe('getQuotes', () => {

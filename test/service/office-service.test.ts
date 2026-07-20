@@ -10,7 +10,7 @@ describe('OfficeService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    officeService = new OfficeService(ACCESS_TOKEN);
+    officeService = new OfficeService(() => ACCESS_TOKEN);
   });
 
   describe('getMyOffice', () => {

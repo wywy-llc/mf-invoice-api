@@ -86,19 +86,20 @@ export class ServiceBase {
   static readonly API_BASE_URL = 'https://invoice.moneyforward.com/api/v3';
 
   /**
-   * アクセストークン
+   * アクセストークンを取得する関数。リクエストの都度呼び出すことで、
+   * OAuth2ライブラリ側の有効期限チェック・自動リフレッシュに追従させる。
    */
-  private accessToken: string;
+  private getAccessToken: () => string;
 
   /**
    *  コンストラクタ
-   * @param accessToken アクセストークン
+   * @param getAccessToken アクセストークンを取得する関数
    */
-  constructor(accessToken: string) {
-    if (!accessToken) {
+  constructor(getAccessToken: () => string) {
+    if (typeof getAccessToken !== 'function') {
       throw new Error('accessToken is required.');
     }
-    this.accessToken = accessToken;
+    this.getAccessToken = getAccessToken;
   }
 
   /**
@@ -160,7 +161,7 @@ export class ServiceBase {
   getHeaders(): GoogleAppsScript.URL_Fetch.HttpHeaders {
     return {
       accept: 'application/json',
-      Authorization: 'Bearer ' + this.accessToken,
+      Authorization: 'Bearer ' + this.getAccessToken(),
     };
   }
 }

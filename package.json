@@ -26,7 +26,7 @@
     "prepare": "husky"
   },
   "engines": {
-    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+    "node": ">=24"
   },
   "dependencies": {
     "@google/clasp": "^3.3.0",

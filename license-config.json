@@ -6,6 +6,7 @@
     ".github",
     ".gitignore",
     ".husky",
+    ".nvmrc",
     ".prettierignore",
     "*.txt",
     "CLAUDE.md",
@@ -14,7 +15,8 @@
     "build",
     "eslint.config.mjs",
     "rollup.config.mjs",
-    "test"
+    "test",
+    "vitest.config.ts"
   ],
   "license": "license-header.txt",
   "licenseFormats": {

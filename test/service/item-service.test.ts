@@ -40,6 +40,32 @@ describe('ItemService', () => {
         expect.objectContaining({ method: 'get' })
       );
     });
+
+    it('name/codeを指定すると、クエリに反映したリクエストを送信する', () => {
+      const response = itemsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      itemService.getItems(1, 100, '商品A', 'CODE-1');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&name=${encodeURIComponent(
+          '商品A'
+        )}&code=CODE-1`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
+    it('name/codeを指定しないと、クエリに付与されない', () => {
+      const response = itemsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      itemService.getItems();
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
   });
 
   describe('createNew', () => {

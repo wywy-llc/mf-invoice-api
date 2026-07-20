@@ -269,6 +269,17 @@ declare namespace MfInvoiceApi {
   }
 
   /**
+   * 見積書一覧取得の絞込パラメータ(qを指定した場合はこれらは検索に使用されない)
+   */
+  interface QuoteListFilters {
+    partnerId?: string;
+    documentNumber?: string;
+    status?: string;
+    partnerName?: string;
+    tags?: string;
+  }
+
+  /**
    * Department
    * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/Department
    */

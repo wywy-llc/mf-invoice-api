@@ -199,6 +199,7 @@ export class ServiceBase {
    * @param page ページ番号
    * @param perPage 1ページあたりの件数
    * @param rangeKey 検索範囲キー
+   * @param extraQuery 追加の絞込クエリ(値が空の場合は付与しない)
    * @returns レスポンスを処理した結果
    */
   protected fetchListWithRange<T>(
@@ -208,11 +209,19 @@ export class ServiceBase {
     query: string,
     page: number,
     perPage: number,
-    rangeKey: string
+    rangeKey: string,
+    extraQuery?: Record<string, string | undefined>
   ): T {
-    const reqUrl = `${baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
+    let reqUrl = `${baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
       from
     )}&to=${encodeURIComponent(to)}&q=${encodeURIComponent(query)}`;
+    if (extraQuery) {
+      for (const [key, value] of Object.entries(extraQuery)) {
+        if (value) {
+          reqUrl += `&${key}=${encodeURIComponent(value)}`;
+        }
+      }
+    }
     return this.request<T>(reqUrl, ReqMethod.get);
   }
 }

@@ -16,6 +16,7 @@ declare namespace MfInvoiceApi {
      * - expired_date: 有効期限
      * - created_at: 作成日
      * - updated_at: 更新日
+     * @param {MfInvoiceApi.QuoteListFilters} filters 取引先ID・見積書番号・ステータス・取引先名・タグでの絞込(queryを指定した場合はこれらは検索に使用されない)
      * @returns {MfInvoiceApi.QuotesResponse} 見積書レスポンス
      */
     getQuotes(
@@ -24,7 +25,8 @@ declare namespace MfInvoiceApi {
       query?: string,
       page?: number,
       perPage?: number,
-      rangeKey?: QuoteRangeKey
+      rangeKey?: QuoteRangeKey,
+      filters?: MfInvoiceApi.QuoteListFilters
     ): MfInvoiceApi.QuotesResponse;
     /**
      * 見積書の作成

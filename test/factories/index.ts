@@ -26,6 +26,7 @@ import {
 import {
   departmentFactory,
   departmentReqBodyFactory,
+  departmentsResponseFactory,
 } from './department.factory';
 import {
   partnerFactory,
@@ -67,6 +68,7 @@ export function resetAllFactorySequences(): void {
     billingReqBodyFactory,
     departmentFactory,
     departmentReqBodyFactory,
+    departmentsResponseFactory,
     partnerFactory,
     partnersResponseFactory,
     partnerReqBodyFactory,

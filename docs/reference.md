@@ -19,21 +19,18 @@
 
 ## クイックスタート
 
-以降のサンプルコードは、次の認証まわりの定型コードが利用者側プロジェクトに定義済みという前提で書かれている(セットアップ手順の詳細は [README](../README.md) を参照)。
+スクリプトID `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4` でGASプロジェクトにこのライブラリを追加すると、名前空間 `MfInvoiceApi` から全メソッドにアクセスできる(追加手順は [README](../README.md) を参照)。
+
+以降のサンプルコードは、スクリプト プロパティに `CLIENT_ID` / `CLIENT_SECRET` を設定済みという前提で、各関数の中で次のように `MfInvoiceApi.createClient()` を呼んでクライアントを取得して使う。
 
 ```javascript
-function getMfCredentials_() {
-  const scriptProps = PropertiesService.getScriptProperties();
-  return {
-    clientId: scriptProps.getProperty('CLIENT_ID'),
-    clientSecret: scriptProps.getProperty('CLIENT_SECRET'),
-  };
-}
-
-/** @returns {MfInvoiceApi.MfClient} */
-function getMfClient_() {
-  const credentials = getMfCredentials_();
-  return MfInvoiceApi.createClient(credentials.clientId, credentials.clientSecret);
+function example() {
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(
+    props.getProperty('CLIENT_ID'),
+    props.getProperty('CLIENT_SECRET')
+  );
+  // client.billings / client.quotes / client.partners / client.items / client.office / client.sentHistories
 }
 ```
 
@@ -109,7 +106,7 @@ function getMfClient_() {
 
 ## サービス: billings(請求書API)
 
-`getMfClient_().billings.<method>(...)` の形でアクセスする。
+`client.billings.<method>(...)` の形でアクセスする(`client` は [クイックスタート](#クイックスタート) で取得したもの)。
 
 ### getBillings
 
@@ -118,7 +115,7 @@ function getMfClient_() {
 **構文**
 
 ```javascript
-const res = getMfClient_().billings.getBillings(from, to, query, page, perPage, rangeKey);
+const res = client.billings.getBillings(from, to, query, page, perPage, rangeKey);
 ```
 
 **引数**
@@ -140,8 +137,10 @@ const res = getMfClient_().billings.getBillings(from, to, query, page, perPage, 
 
 ```javascript
 function listPaidBillings() {
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
   const dateUtil = MfInvoiceApi.getDateUtil(new Date());
-  const res = getMfClient_().billings.getBillings(
+  const res = client.billings.getBillings(
     dateUtil.getEndDateLastMonth(),
     dateUtil.getEndDateNextMonth(),
     '入金済み'
@@ -158,7 +157,7 @@ function listPaidBillings() {
 **構文**
 
 ```javascript
-const billing = getMfClient_().billings.createNew(billingReqBody);
+const billing = client.billings.createNew(billingReqBody);
 ```
 
 **引数**
@@ -175,7 +174,9 @@ const billing = getMfClient_().billings.createNew(billingReqBody);
 
 ```javascript
 function createBilling() {
-  const billing = getMfClient_().billings.createNew({
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const billing = client.billings.createNew({
     department_id: 'hz06NCst0B89gCyoVcjgxA',
     title: '件名',
     billing_date: '2024-01-01',
@@ -192,7 +193,7 @@ function createBilling() {
 **構文**
 
 ```javascript
-const billing = getMfClient_().billings.getBilling(billingId);
+const billing = client.billings.getBilling(billingId);
 ```
 
 **引数**
@@ -209,7 +210,9 @@ const billing = getMfClient_().billings.getBilling(billingId);
 
 ```javascript
 function showBilling(billingId) {
-  const billing = getMfClient_().billings.getBilling(billingId);
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const billing = client.billings.getBilling(billingId);
   console.log(billing.title, billing.total_price);
 }
 ```
@@ -221,7 +224,7 @@ function showBilling(billingId) {
 **構文**
 
 ```javascript
-const billing = getMfClient_().billings.updateBilling(billingId, billingReqBody);
+const billing = client.billings.updateBilling(billingId, billingReqBody);
 ```
 
 **引数**
@@ -239,7 +242,9 @@ const billing = getMfClient_().billings.updateBilling(billingId, billingReqBody)
 
 ```javascript
 function renameBilling(billingId) {
-  getMfClient_().billings.updateBilling(billingId, { title: '新しい件名' });
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  client.billings.updateBilling(billingId, { title: '新しい件名' });
 }
 ```
 
@@ -250,7 +255,7 @@ function renameBilling(billingId) {
 **構文**
 
 ```javascript
-const billing = getMfClient_().billings.updatePaymentStatus(billingId, paymentStatus);
+const billing = client.billings.updatePaymentStatus(billingId, paymentStatus);
 ```
 
 **引数**
@@ -268,7 +273,9 @@ const billing = getMfClient_().billings.updatePaymentStatus(billingId, paymentSt
 
 ```javascript
 function markAsPaid(billingId) {
-  getMfClient_().billings.updatePaymentStatus(billingId, MfInvoiceApi.getPaymentStatus('completed'));
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  client.billings.updatePaymentStatus(billingId, MfInvoiceApi.getPaymentStatus('completed'));
 }
 ```
 
@@ -279,7 +286,7 @@ function markAsPaid(billingId) {
 **構文**
 
 ```javascript
-const ok = getMfClient_().billings.deleteBilling(billingId);
+const ok = client.billings.deleteBilling(billingId);
 ```
 
 **引数**
@@ -296,7 +303,9 @@ const ok = getMfClient_().billings.deleteBilling(billingId);
 
 ```javascript
 function removeBilling(billingId) {
-  getMfClient_().billings.deleteBilling(billingId);
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  client.billings.deleteBilling(billingId);
 }
 ```
 
@@ -307,7 +316,7 @@ function removeBilling(billingId) {
 **構文**
 
 ```javascript
-const res = getMfClient_().billings.getBillingItems(billingId);
+const res = client.billings.getBillingItems(billingId);
 ```
 
 **引数**
@@ -324,7 +333,9 @@ const res = getMfClient_().billings.getBillingItems(billingId);
 
 ```javascript
 function listBillingItems(billingId) {
-  const res = getMfClient_().billings.getBillingItems(billingId);
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const res = client.billings.getBillingItems(billingId);
   res.data.forEach(item => console.log(item.name, item.price));
 }
 ```
@@ -336,7 +347,7 @@ function listBillingItems(billingId) {
 **構文**
 
 ```javascript
-const item = getMfClient_().billings.getBillingItem(billingId, itemId);
+const item = client.billings.getBillingItem(billingId, itemId);
 ```
 
 **引数**
@@ -357,7 +368,7 @@ const item = getMfClient_().billings.getBillingItem(billingId, itemId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().billings.attachBillingItem(billingId, itemReqBody);
+const ok = client.billings.attachBillingItem(billingId, itemReqBody);
 ```
 
 **引数**
@@ -375,7 +386,9 @@ const ok = getMfClient_().billings.attachBillingItem(billingId, itemReqBody);
 
 ```javascript
 function addItem(billingId) {
-  getMfClient_().billings.attachBillingItem(billingId, {
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  client.billings.attachBillingItem(billingId, {
     name: '追加品目',
     price: 500,
     quantity: 1,
@@ -391,7 +404,7 @@ function addItem(billingId) {
 **構文**
 
 ```javascript
-const ok = getMfClient_().billings.deleteBillingItem(billingId, itemId);
+const ok = client.billings.deleteBillingItem(billingId, itemId);
 ```
 
 **引数**
@@ -412,7 +425,7 @@ const ok = getMfClient_().billings.deleteBillingItem(billingId, itemId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().billings.applyToPostBilling(billingId);
+const ok = client.billings.applyToPostBilling(billingId);
 ```
 
 **引数**
@@ -432,7 +445,7 @@ const ok = getMfClient_().billings.applyToPostBilling(billingId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().billings.cancelPostBilling(billingId);
+const ok = client.billings.cancelPostBilling(billingId);
 ```
 
 **引数**
@@ -447,7 +460,7 @@ const ok = getMfClient_().billings.cancelPostBilling(billingId);
 
 ## サービス: quotes(見積書API)
 
-`getMfClient_().quotes.<method>(...)` の形でアクセスする。
+`client.quotes.<method>(...)` の形でアクセスする(`client` は [クイックスタート](#クイックスタート) で取得したもの)。
 
 ### getQuotes
 
@@ -456,7 +469,7 @@ const ok = getMfClient_().billings.cancelPostBilling(billingId);
 **構文**
 
 ```javascript
-const res = getMfClient_().quotes.getQuotes(from, to, query, page, perPage, rangeKey, filters);
+const res = client.quotes.getQuotes(from, to, query, page, perPage, rangeKey, filters);
 ```
 
 **引数**
@@ -479,8 +492,10 @@ const res = getMfClient_().quotes.getQuotes(from, to, query, page, perPage, rang
 
 ```javascript
 function listQuotes() {
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
   const dateUtil = MfInvoiceApi.getDateUtil(new Date());
-  const res = getMfClient_().quotes.getQuotes(
+  const res = client.quotes.getQuotes(
     dateUtil.getEndDateLastMonth(),
     dateUtil.getEndDateNextMonth()
   );
@@ -495,7 +510,7 @@ function listQuotes() {
 **構文**
 
 ```javascript
-const quote = getMfClient_().quotes.createNew(quoteReqBody);
+const quote = client.quotes.createNew(quoteReqBody);
 ```
 
 **引数**
@@ -512,7 +527,9 @@ const quote = getMfClient_().quotes.createNew(quoteReqBody);
 
 ```javascript
 function createQuote() {
-  const quote = getMfClient_().quotes.createNew({
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const quote = client.quotes.createNew({
     department_id: 'hz06NCst0B89gCyoVcjgxA',
     quote_date: '2024-01-01',
     expired_date: '2024-01-31',
@@ -529,7 +546,7 @@ function createQuote() {
 **構文**
 
 ```javascript
-const quote = getMfClient_().quotes.getQuote(quoteId);
+const quote = client.quotes.getQuote(quoteId);
 ```
 
 **引数**
@@ -549,7 +566,7 @@ const quote = getMfClient_().quotes.getQuote(quoteId);
 **構文**
 
 ```javascript
-const quote = getMfClient_().quotes.updateQuote(quoteId, quoteReqBody);
+const quote = client.quotes.updateQuote(quoteId, quoteReqBody);
 ```
 
 **引数**
@@ -570,7 +587,7 @@ const quote = getMfClient_().quotes.updateQuote(quoteId, quoteReqBody);
 **構文**
 
 ```javascript
-const ok = getMfClient_().quotes.deleteQuote(quoteId);
+const ok = client.quotes.deleteQuote(quoteId);
 ```
 
 **引数**
@@ -590,7 +607,7 @@ const ok = getMfClient_().quotes.deleteQuote(quoteId);
 **構文**
 
 ```javascript
-const res = getMfClient_().quotes.getQuoteItems(quoteId);
+const res = client.quotes.getQuoteItems(quoteId);
 ```
 
 **引数**
@@ -610,7 +627,7 @@ const res = getMfClient_().quotes.getQuoteItems(quoteId);
 **構文**
 
 ```javascript
-const item = getMfClient_().quotes.getQuoteItem(quoteId, itemId);
+const item = client.quotes.getQuoteItem(quoteId, itemId);
 ```
 
 **引数**
@@ -631,7 +648,7 @@ const item = getMfClient_().quotes.getQuoteItem(quoteId, itemId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().quotes.attachQuoteItem(quoteId, quoteItemReqBody);
+const ok = client.quotes.attachQuoteItem(quoteId, quoteItemReqBody);
 ```
 
 **引数**
@@ -652,7 +669,7 @@ const ok = getMfClient_().quotes.attachQuoteItem(quoteId, quoteItemReqBody);
 **構文**
 
 ```javascript
-const ok = getMfClient_().quotes.deleteQuoteItem(quoteId, itemId);
+const ok = client.quotes.deleteQuoteItem(quoteId, itemId);
 ```
 
 **引数**
@@ -673,7 +690,7 @@ const ok = getMfClient_().quotes.deleteQuoteItem(quoteId, itemId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().quotes.applyToPostQuote(quoteId);
+const ok = client.quotes.applyToPostQuote(quoteId);
 ```
 
 **引数**
@@ -693,7 +710,7 @@ const ok = getMfClient_().quotes.applyToPostQuote(quoteId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().quotes.cancelPostQuote(quoteId);
+const ok = client.quotes.cancelPostQuote(quoteId);
 ```
 
 **引数**
@@ -713,7 +730,7 @@ const ok = getMfClient_().quotes.cancelPostQuote(quoteId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().quotes.updateOrderStatus(quoteId, orderStatus);
+const ok = client.quotes.updateOrderStatus(quoteId, orderStatus);
 ```
 
 **引数**
@@ -731,7 +748,9 @@ const ok = getMfClient_().quotes.updateOrderStatus(quoteId, orderStatus);
 
 ```javascript
 function markAsReceived(quoteId) {
-  getMfClient_().quotes.updateOrderStatus(quoteId, MfInvoiceApi.getOrderStatus('received'));
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  client.quotes.updateOrderStatus(quoteId, MfInvoiceApi.getOrderStatus('received'));
 }
 ```
 
@@ -744,7 +763,7 @@ function markAsReceived(quoteId) {
 **構文**
 
 ```javascript
-const billing = getMfClient_().quotes.convertQuoteToBilling(quoteId);
+const billing = client.quotes.convertQuoteToBilling(quoteId);
 ```
 
 **引数**
@@ -761,14 +780,16 @@ const billing = getMfClient_().quotes.convertQuoteToBilling(quoteId);
 
 ```javascript
 function convertQuote(quoteId) {
-  const billing = getMfClient_().quotes.convertQuoteToBilling(quoteId);
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const billing = client.quotes.convertQuoteToBilling(quoteId);
   console.log('請求書ID: ' + billing.id);
 }
 ```
 
 ## サービス: partners(取引先API)
 
-`getMfClient_().partners.<method>(...)` の形でアクセスする。
+`client.partners.<method>(...)` の形でアクセスする(`client` は [クイックスタート](#クイックスタート) で取得したもの)。
 
 ### getPartners
 
@@ -777,7 +798,7 @@ function convertQuote(quoteId) {
 **構文**
 
 ```javascript
-const res = getMfClient_().partners.getPartners(page, perPage);
+const res = client.partners.getPartners(page, perPage);
 ```
 
 **引数**
@@ -795,7 +816,9 @@ const res = getMfClient_().partners.getPartners(page, perPage);
 
 ```javascript
 function listPartners() {
-  const res = getMfClient_().partners.getPartners();
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const res = client.partners.getPartners();
   res.data.forEach(partner => console.log(partner.name));
 }
 ```
@@ -807,7 +830,7 @@ function listPartners() {
 **構文**
 
 ```javascript
-const partner = getMfClient_().partners.createNew(partnerReqBody);
+const partner = client.partners.createNew(partnerReqBody);
 ```
 
 **引数**
@@ -824,7 +847,9 @@ const partner = getMfClient_().partners.createNew(partnerReqBody);
 
 ```javascript
 function createPartner() {
-  const partner = getMfClient_().partners.createNew({ name: '取引先名' });
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const partner = client.partners.createNew({ name: '取引先名' });
   console.log(partner.id);
 }
 ```
@@ -836,7 +861,7 @@ function createPartner() {
 **構文**
 
 ```javascript
-const partner = getMfClient_().partners.getPartner(partnerId);
+const partner = client.partners.getPartner(partnerId);
 ```
 
 **引数**
@@ -856,7 +881,7 @@ const partner = getMfClient_().partners.getPartner(partnerId);
 **構文**
 
 ```javascript
-const partner = getMfClient_().partners.updatePartner(partnerId, partnerReqBody);
+const partner = client.partners.updatePartner(partnerId, partnerReqBody);
 ```
 
 **引数**
@@ -877,7 +902,7 @@ const partner = getMfClient_().partners.updatePartner(partnerId, partnerReqBody)
 **構文**
 
 ```javascript
-const ok = getMfClient_().partners.deletePartner(partnerId);
+const ok = client.partners.deletePartner(partnerId);
 ```
 
 **引数**
@@ -897,7 +922,7 @@ const ok = getMfClient_().partners.deletePartner(partnerId);
 **構文**
 
 ```javascript
-const res = getMfClient_().partners.getDepartments(partnerId, page, perPage);
+const res = client.partners.getDepartments(partnerId, page, perPage);
 ```
 
 **引数**
@@ -919,7 +944,7 @@ const res = getMfClient_().partners.getDepartments(partnerId, page, perPage);
 **構文**
 
 ```javascript
-const department = getMfClient_().partners.createDepartment(partnerId, departmentReqBody);
+const department = client.partners.createDepartment(partnerId, departmentReqBody);
 ```
 
 **引数**
@@ -937,7 +962,9 @@ const department = getMfClient_().partners.createDepartment(partnerId, departmen
 
 ```javascript
 function addDepartment(partnerId) {
-  const department = getMfClient_().partners.createDepartment(partnerId, {
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const department = client.partners.createDepartment(partnerId, {
     person_name: '担当者名',
     email: 'contact@example.com',
   });
@@ -952,7 +979,7 @@ function addDepartment(partnerId) {
 **構文**
 
 ```javascript
-const department = getMfClient_().partners.getDepartment(partnerId, departmentId);
+const department = client.partners.getDepartment(partnerId, departmentId);
 ```
 
 **引数**
@@ -973,7 +1000,7 @@ const department = getMfClient_().partners.getDepartment(partnerId, departmentId
 **構文**
 
 ```javascript
-const department = getMfClient_().partners.updateDepartment(partnerId, departmentId, departmentReqBody);
+const department = client.partners.updateDepartment(partnerId, departmentId, departmentReqBody);
 ```
 
 **引数**
@@ -995,7 +1022,7 @@ const department = getMfClient_().partners.updateDepartment(partnerId, departmen
 **構文**
 
 ```javascript
-const ok = getMfClient_().partners.deleteDepartment(partnerId, departmentId);
+const ok = client.partners.deleteDepartment(partnerId, departmentId);
 ```
 
 **引数**
@@ -1016,7 +1043,7 @@ const ok = getMfClient_().partners.deleteDepartment(partnerId, departmentId);
 **構文**
 
 ```javascript
-const partners = getMfClient_().partners.getAll();
+const partners = client.partners.getAll();
 ```
 
 **引数**
@@ -1031,14 +1058,16 @@ const partners = getMfClient_().partners.getAll();
 
 ```javascript
 function listAllPartners() {
-  const partners = getMfClient_().partners.getAll();
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const partners = client.partners.getAll();
   console.log('件数: ' + partners.length);
 }
 ```
 
 ## サービス: items(品目API)
 
-`getMfClient_().items.<method>(...)` の形でアクセスする。
+`client.items.<method>(...)` の形でアクセスする(`client` は [クイックスタート](#クイックスタート) で取得したもの)。
 
 ### getItems
 
@@ -1047,7 +1076,7 @@ function listAllPartners() {
 **構文**
 
 ```javascript
-const res = getMfClient_().items.getItems(page, perPage, name, code);
+const res = client.items.getItems(page, perPage, name, code);
 ```
 
 **引数**
@@ -1067,7 +1096,9 @@ const res = getMfClient_().items.getItems(page, perPage, name, code);
 
 ```javascript
 function listItems() {
-  const res = getMfClient_().items.getItems();
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const res = client.items.getItems();
   res.data.forEach(item => console.log(item.name, item.price));
 }
 ```
@@ -1079,7 +1110,7 @@ function listItems() {
 **構文**
 
 ```javascript
-const item = getMfClient_().items.createNew(itemReqBody);
+const item = client.items.createNew(itemReqBody);
 ```
 
 **引数**
@@ -1096,7 +1127,9 @@ const item = getMfClient_().items.createNew(itemReqBody);
 
 ```javascript
 function createItem() {
-  const item = getMfClient_().items.createNew({
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const item = client.items.createNew({
     name: '品目名',
     price: 1000,
     excise: 'ten_percent',
@@ -1112,7 +1145,7 @@ function createItem() {
 **構文**
 
 ```javascript
-const item = getMfClient_().items.getItem(itemId);
+const item = client.items.getItem(itemId);
 ```
 
 **引数**
@@ -1132,7 +1165,7 @@ const item = getMfClient_().items.getItem(itemId);
 **構文**
 
 ```javascript
-const ok = getMfClient_().items.deleteItem(itemId);
+const ok = client.items.deleteItem(itemId);
 ```
 
 **引数**
@@ -1152,7 +1185,7 @@ const ok = getMfClient_().items.deleteItem(itemId);
 **構文**
 
 ```javascript
-const item = getMfClient_().items.updateItem(itemId, itemReqBody);
+const item = client.items.updateItem(itemId, itemReqBody);
 ```
 
 **引数**
@@ -1170,13 +1203,15 @@ const item = getMfClient_().items.updateItem(itemId, itemReqBody);
 
 ```javascript
 function updateItemPrice(itemId) {
-  getMfClient_().items.updateItem(itemId, { price: 1200 });
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  client.items.updateItem(itemId, { price: 1200 });
 }
 ```
 
 ## サービス: office(事業所API)
 
-`getMfClient_().office.<method>(...)` の形でアクセスする。
+`client.office.<method>(...)` の形でアクセスする(`client` は [クイックスタート](#クイックスタート) で取得したもの)。
 
 ### getMyOffice
 
@@ -1185,7 +1220,7 @@ function updateItemPrice(itemId) {
 **構文**
 
 ```javascript
-const office = getMfClient_().office.getMyOffice();
+const office = client.office.getMyOffice();
 ```
 
 **引数**
@@ -1200,7 +1235,9 @@ const office = getMfClient_().office.getMyOffice();
 
 ```javascript
 function getMyOffice() {
-  const office = getMfClient_().office.getMyOffice();
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const office = client.office.getMyOffice();
   console.log(office.name, office.registration_code);
 }
 ```
@@ -1212,7 +1249,7 @@ function getMyOffice() {
 **構文**
 
 ```javascript
-const office = getMfClient_().office.updateOffice(officeReqBody);
+const office = client.office.updateOffice(officeReqBody);
 ```
 
 **引数**
@@ -1229,7 +1266,9 @@ const office = getMfClient_().office.updateOffice(officeReqBody);
 
 ```javascript
 function updateOfficeTel() {
-  getMfClient_().office.updateOffice({ tel: '03-1234-5678' });
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  client.office.updateOffice({ tel: '03-1234-5678' });
 }
 ```
 
@@ -1240,7 +1279,7 @@ function updateOfficeTel() {
 **構文**
 
 ```javascript
-const res = getMfClient_().office.updateRegistrationCode(registrationCode);
+const res = client.office.updateRegistrationCode(registrationCode);
 ```
 
 **引数**
@@ -1260,7 +1299,7 @@ const res = getMfClient_().office.updateRegistrationCode(registrationCode);
 **構文**
 
 ```javascript
-const ok = getMfClient_().office.deleteRegistrationCode();
+const ok = client.office.deleteRegistrationCode();
 ```
 
 **引数**
@@ -1273,7 +1312,7 @@ const ok = getMfClient_().office.deleteRegistrationCode();
 
 ## サービス: sentHistories(送付履歴API)
 
-`getMfClient_().sentHistories.<method>(...)` の形でアクセスする。
+`client.sentHistories.<method>(...)` の形でアクセスする(`client` は [クイックスタート](#クイックスタート) で取得したもの)。
 
 ### getSentHistories
 
@@ -1282,7 +1321,7 @@ const ok = getMfClient_().office.deleteRegistrationCode();
 **構文**
 
 ```javascript
-const res = getMfClient_().sentHistories.getSentHistories(page, perPage);
+const res = client.sentHistories.getSentHistories(page, perPage);
 ```
 
 **引数**
@@ -1300,7 +1339,9 @@ const res = getMfClient_().sentHistories.getSentHistories(page, perPage);
 
 ```javascript
 function listSentHistories() {
-  const res = getMfClient_().sentHistories.getSentHistories();
+  const props = PropertiesService.getScriptProperties();
+  const client = MfInvoiceApi.createClient(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
+  const res = client.sentHistories.getSentHistories();
   res.data.forEach(h => console.log(h.document_type, h.sent_at));
 }
 ```
@@ -1328,16 +1369,7 @@ const client = MfInvoiceApi.createClient(clientId, clientSecret);
 
 **戻り値**
 
-APIクライアント(`MfClient`)。`billings`/`quotes`/`partners`/`items`/`office`/`sentHistories`の6サービスを持つ。
-
-**実装例**
-
-```javascript
-function getMfClient_() {
-  const credentials = getMfCredentials_();
-  return MfInvoiceApi.createClient(credentials.clientId, credentials.clientSecret);
-}
-```
+APIクライアント(`MfClient`)。`billings`/`quotes`/`partners`/`items`/`office`/`sentHistories`の6サービスを持つ。生成時に一度だけ認証状態を確認し、未認証の場合は`Error`を投げる。取得方法は [クイックスタート](#クイックスタート) を参照。
 
 ### showMfApiAuthDialog
 
@@ -1427,8 +1459,8 @@ MfInvoiceApi.logout(clientId, clientSecret);
 
 ```javascript
 function logout() {
-  const credentials = getMfCredentials_();
-  MfInvoiceApi.logout(credentials.clientId, credentials.clientSecret);
+  const props = PropertiesService.getScriptProperties();
+  MfInvoiceApi.logout(props.getProperty('CLIENT_ID'), props.getProperty('CLIENT_SECRET'));
 }
 ```
 

@@ -89,11 +89,14 @@ function initialize() {
         ScriptApp.deleteTrigger(trigger);
         switch (fname) {
           case 'onOpen':
-            ScriptApp.newTrigger(fname).forSpreadsheet(spreadsheet).onOpen().create();
+            ScriptApp.newTrigger(fname)
+              .forSpreadsheet(spreadsheet)
+              .onOpen()
+              .create();
         }
       }
     }
-  }
+  };
   const schemas = {
     office: [
       'id',
@@ -110,170 +113,10 @@ function initialize() {
       'created_at',
       'updated_at',
     ],
-    partners: [
-      'id',
-      'code',
-      'name',
-      'name_kana',
-      'name_suffix',
-      'memo',
-      'created_at',
-      'updated_at',
-      'departments',
-    ],
-    items: [
-      'id',
-      'name',
-      'code',
-      'detail',
-      'unit',
-      'price',
-      'quantity',
-      'is_deduct_withholding_tax',
-      'excise',
-      'created_at',
-      'updated_at'
-    ],
-    billings: ['id',
-      'pdf_url',
-      'operator_id',
-      'department_id',
-      'member_id',
-      'member_name',
-      'partner_id',
-      'partner_name',
-      'office_id',
-      'office_name',
-      'office_detail',
-      'title',
-      'memo',
-      'payment_condition',
-      'billing_date',
-      'due_date',
-      'sales_date',
-      'billing_number',
-      'note',
-      'document_name',
-      'payment_status',
-      'email_status',
-      'posting_status',
-      'created_at',
-      'updated_at',
-      'is_downloaded',
-      'is_locked',
-      'deduct_price',
-      'tag_names',
-      'items',
-      'excise_price',
-      'excise_price_of_untaxable',
-      'excise_price_of_non_taxable',
-      'excise_price_of_tax_exemption',
-      'excise_price_of_five_percent',
-      'excise_price_of_eight_percent',
-      'excise_price_of_eight_percent_as_reduced_tax_rate',
-      'excise_price_of_ten_percent',
-      'subtotal_price',
-      'subtotal_of_untaxable_excise',
-      'subtotal_of_non_taxable_excise',
-      'subtotal_of_tax_exemption_excise',
-      'subtotal_of_five_percent_excise',
-      'subtotal_of_eight_percent_excise',
-      'subtotal_of_eight_percent_as_reduced_tax_rate_excise',
-      'subtotal_of_ten_percent_excise',
-      'subtotal_with_tax_of_untaxable_excise',
-      'subtotal_with_tax_of_non_taxable_excise',
-      'subtotal_with_tax_of_five_percent_excise',
-      'subtotal_with_tax_of_tax_exemption_excise',
-      'subtotal_with_tax_of_eight_percent_excise',
-      'subtotal_with_tax_of_eight_percent_as_reduced_tax_rate_excise',
-      'subtotal_with_tax_of_ten_percent_excise',
-      'total_price',
-      'registration_code',
-      'use_invoice_template',
-      'config'
-    ],
-    billingItems: [
-      'id',
-      'name',
-      'code',
-      'detail',
-      'unit',
-      'price',
-      'quantity',
-      'is_deduct_withholding_tax',
-      'excise',
-      'delivery_date',
-      'delivery_number',
-      'created_at',
-      'updated_at',
-      'billing_id'
-    ],
-    quotes: [
-      'id',
-      'pdf_url',
-      'operator_id',
-      'department_id',
-      'member_id',
-      'member_name',
-      'partner_id',
-      'partner_name',
-      'partner_detail',
-      'office_id',
-      'office_name',
-      'office_detail',
-      'title',
-      'memo',
-      'quote_date',
-      'quote_number',
-      'note',
-      'expired_date',
-      'document_name',
-      'order_status',
-      'transmit_status',
-      'posting_status',
-      'created_at',
-      'updated_at',
-      'is_downloaded',
-      'is_locked',
-      'deduct_price',
-      'tag_names',
-      'items',
-      'excise_price',
-      'excise_price_of_untaxable',
-      'excise_price_of_non_taxable',
-      'excise_price_of_tax_exemption',
-      'excise_price_of_five_percent',
-      'excise_price_of_eight_percent',
-      'excise_price_of_eight_percent_as_reduced_tax_rate',
-      'excise_price_of_ten_percent',
-      'subtotal_price',
-      'subtotal_of_untaxable_excise',
-      'subtotal_of_non_taxable_excise',
-      'subtotal_of_tax_exemption_excise',
-      'subtotal_of_five_percent_excise',
-      'subtotal_of_eight_percent_excise',
-      'subtotal_of_eight_percent_as_reduced_tax_rate_excise',
-      'subtotal_of_ten_percent_excise',
-      'total_price'
-    ],
-    quoteItems: [
-      'id',
-      'name',
-      'code',
-      'detail',
-      'unit',
-      'price',
-      'quantity',
-      'is_deduct_withholding_tax',
-      'excise',
-      'created_at',
-      'updated_at',
-      'quote_id'
-    ]
   };
   const initSheets = () => {
     // シート作成
-    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
 
     for (const schema of Object.keys(schemas)) {
       let sheet = spreadsheet.getSheetByName(schema);
@@ -285,15 +128,18 @@ function initialize() {
       sheet = spreadsheet.insertSheet(schema);
       const attrs = schemas[schema];
       const range = sheet.getRange(1, 1, 1, attrs.length);
-      range.setBackground("#bdbdbd");
+      range.setBackground('#bdbdbd');
       range.setValues([attrs]);
 
       // 不要な列を削除する
       if (attrs.length < sheet.getMaxColumns()) {
-        sheet.deleteColumns(attrs.length + 1, sheet.getMaxColumns() - attrs.length);
+        sheet.deleteColumns(
+          attrs.length + 1,
+          sheet.getMaxColumns() - attrs.length
+        );
       }
     }
-  }
+  };
   initTriggers();
   initSheets();
 }
@@ -306,7 +152,8 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
   const menu = ui
     .createMenu('MF請求書API連携')
-    .addItem('認証処理を開始する', 'showMfApiAuthDialog');
+    .addItem('認証処理を開始する', 'showMfApiAuthDialog')
+    .addItem('事業者情報を取得する', 'fetchOfficeInfo');
   menu.addToUi();
 }
 
@@ -355,15 +202,20 @@ function mfCallback(request) {
 }
 
 /**
- * MF請求書APIクライアントを生成します。
- * @returns {MfClient}
+ * 事業者情報を取得して office シートに反映します。
  */
-function getMfClient_() {
+function fetchOfficeInfo() {
   const credentials = getMfCredentials_();
-  return MfInvoiceApi.createClient(
+  const client = MfInvoiceApi.createClient(
     credentials.clientId,
     credentials.clientSecret
   );
+  const office = client.office.getMyOffice();
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('office');
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const row = headers.map(header => office[header]);
+  sheet.getRange(2, 1, 1, row.length).setValues([row]);
 }
 ```
 
@@ -397,30 +249,6 @@ function getMfClient_() {
        - 初期値は `CLIENT_SECRET_BASIC` のため、選択し忘れる場合があります。
 5. 認証成功を確認する
    - 「認証成功しました。このタブを閉じてください。」と表示されれば認証完了です。
-
-### ライブラリ更新でスコープが変わった場合の再認可
-
-ライブラリ更新で要求スコープが変わった場合(例: 読み取り用の `mfc/invoice/data.read` の追加)、認証済み環境では保存済みのアクセストークンがそのまま再利用され、追加スコープが反映されません。`apps-script-oauth2` の `hasAccess()` は保存済みトークンの有効期限のみを確認し、スコープの変更は検知しないためです。
-
-更新後は以下の `logout` を実行して保存済みトークンを破棄し、あらためて「認証処理を開始する」を実行して再認可してください。
-
-```javascript
-/**
- * 保存済みトークンを破棄します。
- */
-function logout() {
-  const credentials = getMfCredentials_();
-  MfInvoiceApi.logout(credentials.clientId, credentials.clientSecret);
-}
-```
-
-## 例1: 事業者情報を取得する
-
-`office.getMyOffice()` で自分の事業者情報を取得できます。実装例・引数・戻り値の詳細は [docs/reference.md](docs/reference.md#getmyoffice) を参照してください。
-
-## 例2: 請求書一覧を取得する
-
-`billings.getBillings()` で請求書一覧を取得できます。実装例・引数・戻り値の詳細は [docs/reference.md](docs/reference.md#getbillings) を参照してください。
 
 ## その他のサンプルコード
 

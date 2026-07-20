@@ -7,7 +7,7 @@
 - マネーフォワード クラウド請求書API v3 用のGAS(Google Apps Script)クライアントライブラリです。
 - ゼロから自分で開発するよりも素早くAPI連携を実現できます。
 
-## API対応状況とライブラリのリファレンス
+## ライブラリのリファレンス
 
 [docs/reference.md](docs/reference.md)
 

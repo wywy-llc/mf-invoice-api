@@ -5,7 +5,6 @@
 ## 目次
 
 - [クイックスタート](#クイックスタート)
-- [列挙型(enum)](#列挙型enum)
 - サービス
   - [billings(請求書API)](#サービス-billings請求書api)
   - [quotes(見積書API)](#サービス-quotes見積書api)
@@ -34,76 +33,6 @@ function example() {
 }
 ```
 
-## 列挙型(enum)
-
-`MfInvoiceApi.<EnumName>` からアクセスする。値はいずれも文字列(`string`)のリテラル型。
-
-### PaymentStatus
-
-入金ステータス。[`billings.updatePaymentStatus()`](#updatepaymentstatus) に渡せる値は `default`/`not_payment`/`completed` の3種のみ(下表参照)。
-
-| キー | 値 | 説明 |
-|---|---|---|
-| `default` | `'0'` | 未設定 |
-| `not_payment` | `'1'` | 未入金 |
-| `completed` | `'2'` | 入金済 |
-| `unpaid` | `'3'` | 未払い(API側で自動計算、`updatePaymentStatus()`への直接指定不可) |
-| `transferred` | `'4'` | 振込済(API側で自動計算、`updatePaymentStatus()`への直接指定不可) |
-
-`MfInvoiceApi.getPaymentStatus(status)` はキー名(例: `'completed'`)を渡すと対応する値(例: `'2'`)を返す変換関数。詳細は [`getPaymentStatus`](#getpaymentstatus) を参照。
-
-### OrderStatus
-
-受注ステータス。[`quotes.updateOrderStatus()`](#updateorderstatus) に渡す値。
-
-| キー | 値 | 説明 |
-|---|---|---|
-| `failure` | `'-1'` | 失注 |
-| `default` | `'0'` | 未設定 |
-| `not_received` | `'1'` | 未受注 |
-| `received` | `'2'` | 受注済 |
-
-注意: `Quote.order_status`(レスポンス側)はこのキー名の語形(`'failure'`/`'default'`/`'not_received'`/`'received'`)で返るが、`updateOrderStatus()`への送信値は上表の数値文字列(`'-1'`〜`'2'`)。request/responseでenumの表記が異なる点は [既知の注意点](#既知の注意点仕様上の齟齬) を参照。
-
-`MfInvoiceApi.getOrderStatus(status)` はキー名を渡すと対応する値を返す変換関数。詳細は [`getOrderStatus`](#getorderstatus) を参照。
-
-### BillingRangeKey
-
-請求書一覧([`billings.getBillings()`](#getbillings))の期間絞込対象を指定するキー。
-
-| キー | 値 | 説明 |
-|---|---|---|
-| `billing_date` | `'billing_date'` | 請求日 |
-| `due_date` | `'due_date'` | 支払期日 |
-| `sales_date` | `'sales_date'` | 売上計上日 |
-| `created_at` | `'created_at'` | 作成日 |
-| `updated_at` | `'updated_at'` | 更新日 |
-
-### QuoteRangeKey
-
-見積書一覧([`quotes.getQuotes()`](#getquotes))の期間絞込対象を指定するキー。
-
-| キー | 値 | 説明 |
-|---|---|---|
-| `quote_date` | `'quote_date'` | 見積日 |
-| `expired_date` | `'expired_date'` | 有効期限 |
-| `created_at` | `'created_at'` | 作成日 |
-| `updated_at` | `'updated_at'` | 更新日 |
-
-### Excise
-
-税率。品目・請求書品目・見積書品目の `excise` フィールドや各種リクエストボディで使う。
-
-| キー | 値 | 説明 |
-|---|---|---|
-| `untaxable` | `'untaxable'` | 課税対象外 |
-| `non_taxable` | `'non_taxable'` | 非課税 |
-| `tax_exemption` | `'tax_exemption'` | 不課税 |
-| `five_percent` | `'five_percent'` | 5% |
-| `eight_percent` | `'eight_percent'` | 8% |
-| `eight_percent_as_reduced_tax_rate` | `'eight_percent_as_reduced_tax_rate'` | 8%(軽減税率) |
-| `ten_percent` | `'ten_percent'` | 10% |
-
 ## サービス: billings(請求書API)
 
 `client.billings.<method>(...)` の形でアクセスする(`client` は [クイックスタート](#クイックスタート) で取得したもの)。
@@ -127,7 +56,7 @@ const res = client.billings.getBillings(from, to, query, page, perPage, rangeKey
 | `query` | string | - | 検索文字列(例: `'入金済み'`) |
 | `page` | number | - | ページ番号 |
 | `perPage` | number | - | 1ページあたりの件数 |
-| `rangeKey` | [BillingRangeKey](#billingrangekey) | - | 期間の絞込対象(省略時は請求日) |
+| `rangeKey` | `BillingRangeKey` | - | 期間の絞込対象(省略時は請求日) |
 
 **戻り値**
 
@@ -263,7 +192,7 @@ const billing = client.billings.updatePaymentStatus(billingId, paymentStatus);
 | 引数 | 型 | 必須 | 説明 |
 |---|---|---|---|
 | `billingId` | string | ○ | 請求書ID |
-| `paymentStatus` | string | ○ | [PaymentStatus](#paymentstatus) の値。渡せるのは `'0'`(未設定)/`'1'`(未入金)/`'2'`(入金済)の3種のみ |
+| `paymentStatus` | string | ○ | `PaymentStatus` の値。渡せるのは `'0'`(未設定)/`'1'`(未入金)/`'2'`(入金済)の3種のみ |
 
 **戻り値**
 
@@ -481,7 +410,7 @@ const res = client.quotes.getQuotes(from, to, query, page, perPage, rangeKey, fi
 | `query` | string | - | 検索文字列(指定時は`filters`は無視される) |
 | `page` | number | - | ページ番号 |
 | `perPage` | number | - | 1ページあたりの件数 |
-| `rangeKey` | [QuoteRangeKey](#quoterangekey) | - | 期間の絞込対象(省略時は見積日) |
+| `rangeKey` | `QuoteRangeKey` | - | 期間の絞込対象(省略時は見積日) |
 | `filters` | object | - | `{ partnerId?, documentNumber?, status?, partnerName?, tags? }`(取引先ID等での絞込) |
 
 **戻り値**
@@ -738,7 +667,7 @@ const ok = client.quotes.updateOrderStatus(quoteId, orderStatus);
 | 引数 | 型 | 必須 | 説明 |
 |---|---|---|---|
 | `quoteId` | string | ○ | 見積書ID |
-| `orderStatus` | string | ○ | [OrderStatus](#orderstatus) の値(数値文字列 `'-1'`〜`'2'`) |
+| `orderStatus` | string | ○ | `OrderStatus` の値(数値文字列 `'-1'`〜`'2'`) |
 
 **戻り値**
 
@@ -1516,7 +1445,7 @@ const value = MfInvoiceApi.getPaymentStatus(status);
 
 | 引数 | 型 | 必須 | 説明 |
 |---|---|---|---|
-| `status` | string | ○ | [PaymentStatus](#paymentstatus) のキー名(例: `'completed'`) |
+| `status` | string | ○ | `PaymentStatus` のキー名(例: `'completed'`) |
 
 **戻り値**
 
@@ -1542,7 +1471,7 @@ const value = MfInvoiceApi.getOrderStatus(status);
 
 | 引数 | 型 | 必須 | 説明 |
 |---|---|---|---|
-| `status` | string | ○ | [OrderStatus](#orderstatus) のキー名(例: `'received'`) |
+| `status` | string | ○ | `OrderStatus` のキー名(例: `'received'`) |
 
 **戻り値**
 

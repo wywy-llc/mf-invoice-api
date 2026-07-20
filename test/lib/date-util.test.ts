@@ -6,40 +6,40 @@ describe('DateUtil', () => {
   const dateUtil = new DateUtil(baseDate);
 
   describe('getDateString', () => {
-    test('type=1', () => {
+    it('typeに1を指定すると、"YYYY-MM-DD"形式の日付文字列を返す', () => {
       result = dateUtil.getDateString(1);
       expect(result).toBe('2024-06-20');
     });
-    test('type=2', () => {
+    it('typeに2を指定すると、"YYYYMM"形式の日付文字列を返す', () => {
       result = dateUtil.getDateString(2);
       expect(result).toBe('202406');
     });
-    test('type=3', () => {
+    it('typeに3を指定すると、"YYYY年MM月"形式の日付文字列を返す', () => {
       result = dateUtil.getDateString(3);
       expect(result).toBe('2024年6月');
     });
-    test('type=other', () => {
+    it('未定義のtypeを指定すると、デフォルトの"YYYY-MM-DD"形式の日付文字列を返す', () => {
       result = dateUtil.getDateString(4);
       expect(result).toBe('2024-06-20');
     });
   });
 
-  test('getTimeString', () => {
+  it('getTimeStringを呼び出すと、"YYYY-MM-DD hh:mm:ss"形式の日時文字列を返す', () => {
     result = dateUtil.getTimeString();
     expect(result).toBe('2024-06-20 00:00:00');
   });
 
-  test('getEndDateBaseMonth', () => {
+  it('getEndDateBaseMonthを呼び出すと、今月末日付を返す', () => {
     result = dateUtil.getEndDateBaseMonth();
     expect(result).toBe('2024-06-30');
   });
 
-  test('getEndDateLastMonth', () => {
+  it('getEndDateLastMonthを呼び出すと、先月末日付を返す', () => {
     result = dateUtil.getEndDateLastMonth();
     expect(result).toBe('2024-05-31');
   });
 
-  test('getEndDateNextMonth', () => {
+  it('getEndDateNextMonthを呼び出すと、来月末日付を返す', () => {
     result = dateUtil.getEndDateNextMonth();
     expect(result).toBe('2024-07-31');
   });

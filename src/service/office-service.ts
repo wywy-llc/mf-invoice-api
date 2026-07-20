@@ -13,6 +13,11 @@ export class OfficeService extends ServiceBase {
   baseUrl: string = ServiceBase.API_BASE_URL + '/office';
 
   /**
+   * 適格請求書発行事業者番号の形式(T+13桁)
+   */
+  private static readonly REGISTRATION_CODE_PATTERN = /^T\d{13}$/;
+
+  /**
    * 事業者情報の取得
    * @returns {MfInvoiceApi.Office} 事業者情報
    */
@@ -26,8 +31,8 @@ export class OfficeService extends ServiceBase {
    * @returns {MfInvoiceApi.Office} 更新後の事業者情報
    */
   updateOffice(officeReqBody: MfInvoiceApi.OfficeReqBody): MfInvoiceApi.Office {
-    if (!officeReqBody) {
-      throw new Error('officeReqBody is required.');
+    if (!officeReqBody || Object.keys(officeReqBody).length === 0) {
+      throw new Error('officeReqBody(at least one property) is required.');
     }
     return this.request<MfInvoiceApi.Office>(
       this.baseUrl,
@@ -46,6 +51,11 @@ export class OfficeService extends ServiceBase {
   ): MfInvoiceApi.RegistrationCodeResponse {
     if (!registrationCode) {
       throw new Error('registrationCode is required.');
+    }
+    if (!OfficeService.REGISTRATION_CODE_PATTERN.test(registrationCode)) {
+      throw new Error(
+        'registrationCode must match the format "T" followed by 13 digits.'
+      );
     }
     const reqUrl = `${this.baseUrl}/registration_code`;
     return this.request<MfInvoiceApi.RegistrationCodeResponse>(

@@ -357,7 +357,7 @@ declare namespace MfInvoiceApi {
   }
 
   /**
-   * 事業者情報更新のリクエストボディ(全フィールド任意)
+   * 事業者情報更新のリクエストボディ(全フィールド任意、少なくとも1項目指定)
    */
   interface OfficeReqBody {
     name?: string;

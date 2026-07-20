@@ -43,12 +43,15 @@ describe('OfficeService', () => {
       );
     });
 
-    it('officeReqBody未指定だと、"officeReqBody is required."エラー', () => {
+    it('officeReqBodyが未指定または空オブジェクトだと、エラー', () => {
+      const expectedMessage =
+        'officeReqBody(at least one property) is required.';
       expect(() =>
         officeService.updateOffice(
           undefined as unknown as MfInvoiceApi.OfficeReqBody
         )
-      ).toThrow('officeReqBody is required.');
+      ).toThrow(expectedMessage);
+      expect(() => officeService.updateOffice({})).toThrow(expectedMessage);
     });
   });
 
@@ -76,6 +79,20 @@ describe('OfficeService', () => {
       expect(() => officeService.updateRegistrationCode('')).toThrow(
         'registrationCode is required.'
       );
+    });
+
+    it('registrationCodeがT+13桁形式でないと、エラー', () => {
+      const expectedMessage =
+        'registrationCode must match the format "T" followed by 13 digits.';
+      expect(() => officeService.updateRegistrationCode('T123')).toThrow(
+        expectedMessage
+      );
+      expect(() =>
+        officeService.updateRegistrationCode('1234567890123')
+      ).toThrow(expectedMessage);
+      expect(() =>
+        officeService.updateRegistrationCode('T12345678901234')
+      ).toThrow(expectedMessage);
     });
   });
 

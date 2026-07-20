@@ -1,5 +1,9 @@
 import { OfficeService } from '../../src/service/office-service';
-import { officeFactory, officeReqBodyFactory } from '../factories';
+import {
+  officeFactory,
+  officeReqBodyFactory,
+  registrationCodeResponseFactory,
+} from '../factories';
 import { stubUrlFetchJson, stubUrlFetchEmpty } from '../helpers/gas-mock';
 
 const ACCESS_TOKEN = 'test_access_token';
@@ -54,7 +58,9 @@ describe('OfficeService', () => {
 
   describe('updateRegistrationCode', () => {
     it('registrationCodeを指定すると、登録番号レスポンスを返し、PUTリクエストを送信する', () => {
-      const response = { registration_code: 'T1234567890123' };
+      const response = registrationCodeResponseFactory.build({
+        registration_code: 'T1234567890123',
+      });
       const fetchMock = stubUrlFetchJson(response);
 
       expect(officeService.updateRegistrationCode('T1234567890123')).toEqual(

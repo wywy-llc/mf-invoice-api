@@ -55,3 +55,20 @@ export const officeReqBodyFactory = createFactoryWrapper(
     fax: '',
   })
 );
+
+/**
+ * 適格請求書発行事業者番号レスポンスのテストデータを生成するファクトリー
+ *
+ * @example
+ * const response = registrationCodeResponseFactory.build();
+ *
+ * @example
+ * const response = registrationCodeResponseFactory.build({
+ *   registration_code: 'T9876543210123',
+ * });
+ */
+export const registrationCodeResponseFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.RegistrationCodeResponse>({
+    registration_code: 'T1234567890123',
+  })
+);

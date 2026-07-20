@@ -1,0 +1,23 @@
+# mf-invoice-api
+
+> マネーフォワード クラウド請求書API v3 用の Google Apps Script(GAS)クライアントライブラリ。スクリプトID `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4` を GAS プロジェクトのライブラリとして追加すると、名前空間 `MfInvoiceApi` から利用できる。npm パッケージではなく GAS ライブラリとして配布(clasp push)。ライセンス Apache-2.0。
+
+このファイルは AI コーディングエージェント(Claude Code / Codex 等)向けの索引。全文は同ディレクトリの `llms-full.txt` を参照。
+
+## セットアップ
+
+- [README](https://github.com/wywy-llc/mf-invoice-api/blob/main/README.md): ライブラリ追加手順・Client ID/Secret 設定・認証フロー・コピペ動作サンプル
+- [ライブラリ公式リファレンス](https://wywy.jp/docs/mfapi-v3-client/reference): API対応状況・全フィールド仕様
+
+## 使い方(エージェント向け)
+
+- [AGENTS.md](https://github.com/wywy-llc/mf-invoice-api/blob/main/examples/agent-context/AGENTS.md): 名前空間・認証雛形・サービス早見表・動作サンプルを凝縮した配布用カンペ。利用者プロジェクトへのコピー用
+- [mf-invoice-api.d.ts](https://github.com/wywy-llc/mf-invoice-api/blob/main/examples/agent-context/mf-invoice-api.d.ts): 公開関数・型の統合 TypeScript 宣言(1ファイル)
+
+## サンプル
+
+- [サンプルリポジトリ](https://github.com/wywy-llc/mf-Invoice-api-sample): 実装例一式
+
+## Optional
+
+- [Money Forward Invoice API v3 OpenAPI仕様](https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/mf-invoice-api-document.yaml): 本ライブラリが呼び出す元Web APIの仕様(ライブラリ自体の使い方ではない点に注意)

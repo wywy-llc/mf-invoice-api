@@ -628,6 +628,14 @@ GitHubにサンプルコード(実装例)を公開しています。
 
 https://github.com/wywy-llc/mf-Invoice-api-sample/blob/main/%E3%82%B3%E3%83%BC%E3%83%89.gs
 
+## AIコーディングエージェントで使う
+
+Claude Code / Codex 等のエージェントに、このライブラリを使ったコードを書かせる場合は以下を利用してください。
+
+- [`examples/agent-context/AGENTS.md`](examples/agent-context/AGENTS.md) — 名前空間・認証の定型コード・6サービスの早見表・動作サンプルをまとめた配布用ファイル。利用者(ライブラリを追加する側)の GAS プロジェクトのリポジトリにコピーして使う(Claude Code なら `CLAUDE.md` から `@AGENTS.md` で import、Codex 等はファイル名のまま自動読込)
+- [`examples/agent-context/mf-invoice-api.d.ts`](examples/agent-context/mf-invoice-api.d.ts) — 公開関数・型の統合 TypeScript 宣言。型補完・型チェックを使いたい場合に `AGENTS.md` と一緒にコピーする
+- [`llms.txt`](llms.txt) / [`llms-full.txt`](llms-full.txt) — URLで渡して読み込ませる場合の索引・全文ドキュメント
+
 ## 問い合わせ
 
 以下のメール、またはIssue登録でご連絡ください。

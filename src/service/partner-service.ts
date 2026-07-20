@@ -103,7 +103,9 @@ export class PartnerService extends ServiceBase {
     if (!partnerId) {
       throw new Error('partnerId is required.');
     }
-    const reqUrl = `${this.baseUrl}/${partnerId}/departments?page=${page}&per_page=${perPage}`;
+    const reqUrl = `${this.baseUrl}/${encodeURIComponent(
+      partnerId
+    )}/departments?page=${page}&per_page=${perPage}`;
     return this.request<MfInvoiceApi.DepartmentsResponse>(
       reqUrl,
       ReqMethod.get
@@ -120,10 +122,18 @@ export class PartnerService extends ServiceBase {
     partnerId: string,
     departmentReqBody: MfInvoiceApi.DepartmentReqBody
   ): MfInvoiceApi.Department {
-    if (!partnerId || !departmentReqBody) {
-      throw new Error('partnerId and departmentReqBody are required.');
+    if (
+      !partnerId ||
+      !departmentReqBody ||
+      Object.keys(departmentReqBody).length === 0
+    ) {
+      throw new Error(
+        'partnerId and departmentReqBody(at least one property) are required.'
+      );
     }
-    const reqUrl = `${this.baseUrl}/${partnerId}/departments`;
+    const reqUrl = `${this.baseUrl}/${encodeURIComponent(
+      partnerId
+    )}/departments`;
     return this.request<MfInvoiceApi.Department>(
       reqUrl,
       ReqMethod.post,
@@ -144,7 +154,9 @@ export class PartnerService extends ServiceBase {
     if (!partnerId || !departmentId) {
       throw new Error('partnerId and departmentId are required.');
     }
-    const reqUrl = `${this.baseUrl}/${partnerId}/departments/${departmentId}`;
+    const reqUrl = `${this.baseUrl}/${encodeURIComponent(
+      partnerId
+    )}/departments/${encodeURIComponent(departmentId)}`;
     return this.request<MfInvoiceApi.Department>(reqUrl, ReqMethod.get);
   }
 
@@ -160,12 +172,19 @@ export class PartnerService extends ServiceBase {
     departmentId: string,
     departmentReqBody: MfInvoiceApi.DepartmentReqBody
   ): MfInvoiceApi.Department {
-    if (!partnerId || !departmentId || !departmentReqBody) {
+    if (
+      !partnerId ||
+      !departmentId ||
+      !departmentReqBody ||
+      Object.keys(departmentReqBody).length === 0
+    ) {
       throw new Error(
-        'partnerId and departmentId and departmentReqBody are required.'
+        'partnerId and departmentId and departmentReqBody(at least one property) are required.'
       );
     }
-    const reqUrl = `${this.baseUrl}/${partnerId}/departments/${departmentId}`;
+    const reqUrl = `${this.baseUrl}/${encodeURIComponent(
+      partnerId
+    )}/departments/${encodeURIComponent(departmentId)}`;
     return this.request<MfInvoiceApi.Department>(
       reqUrl,
       ReqMethod.put,
@@ -183,7 +202,9 @@ export class PartnerService extends ServiceBase {
     if (!partnerId || !departmentId) {
       throw new Error('partnerId and departmentId are required.');
     }
-    const reqUrl = `${this.baseUrl}/${partnerId}/departments/${departmentId}`;
+    const reqUrl = `${this.baseUrl}/${encodeURIComponent(
+      partnerId
+    )}/departments/${encodeURIComponent(departmentId)}`;
     return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 

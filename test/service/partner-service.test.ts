@@ -175,6 +175,18 @@ describe('PartnerService', () => {
         'partnerId is required.'
       );
     });
+
+    it('partnerIdにURL予約文字を含むと、エンコードしてリクエストを送信する', () => {
+      const response = departmentsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      partnerService.getDepartments('partner/1');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/partner%2F1/departments?page=1&per_page=100`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
   });
 
   describe('createDepartment', () => {
@@ -196,17 +208,35 @@ describe('PartnerService', () => {
       );
     });
 
-    it('partnerIdまたはdepartmentReqBodyが未指定だと、"partnerId and departmentReqBody are required."エラー', () => {
+    it('partnerIdまたはdepartmentReqBodyが未指定だと、エラー', () => {
       const reqBody = departmentReqBodyFactory.build();
+      const expectedMessage =
+        'partnerId and departmentReqBody(at least one property) are required.';
       expect(() => partnerService.createDepartment('', reqBody)).toThrow(
-        'partnerId and departmentReqBody are required.'
+        expectedMessage
       );
       expect(() =>
         partnerService.createDepartment(
           'partner_1',
           undefined as unknown as MfInvoiceApi.DepartmentReqBody
         )
-      ).toThrow('partnerId and departmentReqBody are required.');
+      ).toThrow(expectedMessage);
+      expect(() => partnerService.createDepartment('partner_1', {})).toThrow(
+        expectedMessage
+      );
+    });
+
+    it('partnerIdにURL予約文字を含むと、エンコードしてリクエストを送信する', () => {
+      const department = departmentFactory.build();
+      const reqBody = departmentReqBodyFactory.build();
+      const fetchMock = stubUrlFetchJson(department);
+
+      partnerService.createDepartment('partner/1', reqBody);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/partner%2F1/departments`,
+        expect.objectContaining({ method: 'post' })
+      );
     });
   });
 
@@ -232,6 +262,18 @@ describe('PartnerService', () => {
         'partnerId and departmentId are required.'
       );
     });
+
+    it('partnerId・departmentIdにURL予約文字を含むと、エンコードしてリクエストを送信する', () => {
+      const department = departmentFactory.build();
+      const fetchMock = stubUrlFetchJson(department);
+
+      partnerService.getDepartment('partner/1', 'department/1');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/partner%2F1/departments/department%2F1`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
   });
 
   describe('updateDepartment', () => {
@@ -255,24 +297,36 @@ describe('PartnerService', () => {
 
     it('partnerId・departmentId・departmentReqBodyのいずれかが未指定だと、エラー', () => {
       const reqBody = departmentReqBodyFactory.build();
+      const expectedMessage =
+        'partnerId and departmentId and departmentReqBody(at least one property) are required.';
       expect(() =>
         partnerService.updateDepartment('', 'department_1', reqBody)
-      ).toThrow(
-        'partnerId and departmentId and departmentReqBody are required.'
-      );
+      ).toThrow(expectedMessage);
       expect(() =>
         partnerService.updateDepartment('partner_1', '', reqBody)
-      ).toThrow(
-        'partnerId and departmentId and departmentReqBody are required.'
-      );
+      ).toThrow(expectedMessage);
       expect(() =>
         partnerService.updateDepartment(
           'partner_1',
           'department_1',
           undefined as unknown as MfInvoiceApi.DepartmentReqBody
         )
-      ).toThrow(
-        'partnerId and departmentId and departmentReqBody are required.'
+      ).toThrow(expectedMessage);
+      expect(() =>
+        partnerService.updateDepartment('partner_1', 'department_1', {})
+      ).toThrow(expectedMessage);
+    });
+
+    it('partnerId・departmentIdにURL予約文字を含むと、エンコードしてリクエストを送信する', () => {
+      const department = departmentFactory.build();
+      const reqBody = departmentReqBodyFactory.build();
+      const fetchMock = stubUrlFetchJson(department);
+
+      partnerService.updateDepartment('partner/1', 'department/1', reqBody);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/partner%2F1/departments/department%2F1`,
+        expect.objectContaining({ method: 'put' })
       );
     });
   });
@@ -296,6 +350,17 @@ describe('PartnerService', () => {
       );
       expect(() => partnerService.deleteDepartment('partner_1', '')).toThrow(
         'partnerId and departmentId are required.'
+      );
+    });
+
+    it('partnerId・departmentIdにURL予約文字を含むと、エンコードしてリクエストを送信する', () => {
+      const fetchMock = stubUrlFetchEmpty();
+
+      partnerService.deleteDepartment('partner/1', 'department/1');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/partner%2F1/departments/department%2F1`,
+        expect.objectContaining({ method: 'delete' })
       );
     });
   });

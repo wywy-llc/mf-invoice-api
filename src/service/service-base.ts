@@ -143,8 +143,15 @@ export class ServiceBase {
       res.getResponseCode() === 204
     ) {
       console.info('Request success.');
-      if (res.getContentText()) {
-        return JSON.parse(res.getContentText());
+      const contentText = res.getContentText();
+      if (contentText) {
+        try {
+          return JSON.parse(contentText);
+        } catch {
+          throw new Error(
+            `Response body is not valid JSON !!. ${res.getResponseCode()}: ${contentText}`
+          );
+        }
       }
       return true;
     } else {

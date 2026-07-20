@@ -7,6 +7,12 @@ export class PartnerService extends ServiceBase {
   baseUrl: string = ServiceBase.API_BASE_URL + '/partners';
 
   /**
+   * getAllで取得を打ち切るページ数の上限
+   * GASの実行時間上限(6分)超過を防ぐための安全弁
+   */
+  private static readonly MAX_PAGES = 100;
+
+  /**
    * 取引先一覧の取得
    * @param {number} page ページ番号
    * @param {number} perPage 1ページあたりのデータ数
@@ -95,7 +101,7 @@ export class PartnerService extends ServiceBase {
     const partners: MfInvoiceApi.Partner[] = [];
     let page = 1;
     let totalPages = 1;
-    while (page <= totalPages) {
+    while (page <= totalPages && page <= PartnerService.MAX_PAGES) {
       const partnersRes = this.getPartners(page);
       totalPages = partnersRes.pagination.total_pages;
       if (partnersRes.data.length === 0) {
@@ -103,6 +109,12 @@ export class PartnerService extends ServiceBase {
       }
       partners.push(...partnersRes.data);
       page += 1;
+    }
+    if (page <= totalPages) {
+      // MAX_PAGESで打ち切ったため取得漏れがある可能性を明示する
+      console.error(
+        `getAll: MAX_PAGES(${PartnerService.MAX_PAGES})に達したため取得を打ち切りました。全${totalPages}ページ中${PartnerService.MAX_PAGES}ページのみ取得。`
+      );
     }
     console.log(partners.length + '件の取引先取得に成功。');
     return partners;

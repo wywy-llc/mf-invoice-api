@@ -51,7 +51,9 @@ describe('QuoteService', () => {
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}?page=2&per_page=50&range_key=expired_date&from=2024-06-01&to=2024-06-30&q=検索語`,
+        `${BASE_URL}?page=2&per_page=50&range_key=expired_date&from=2024-06-01&to=2024-06-30&q=${encodeURIComponent(
+          '検索語'
+        )}`,
         expect.objectContaining({ method: 'get' })
       );
     });

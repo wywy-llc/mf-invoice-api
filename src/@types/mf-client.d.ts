@@ -33,5 +33,10 @@ declare namespace MfInvoiceApi {
      * @type {MfInvoiceApi.OfficeService}
      */
     office: OfficeService;
+    /**
+     * 送付履歴API
+     * @type {MfInvoiceApi.SentHistoryService}
+     */
+    sentHistories: SentHistoryService;
   }
 }

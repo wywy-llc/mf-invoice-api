@@ -4,6 +4,7 @@ import { ItemService } from '../../src/service/item-service';
 import { OfficeService } from '../../src/service/office-service';
 import { PartnerService } from '../../src/service/partner-service';
 import { QuoteService } from '../../src/service/quote-service';
+import { SentHistoryService } from '../../src/service/sent-history-service';
 
 describe('MfClient', () => {
   it('getAccessToken関数を指定すると、各リソース用サービスがインスタンス化される', () => {
@@ -13,6 +14,7 @@ describe('MfClient', () => {
     expect(client.partners).toBeInstanceOf(PartnerService);
     expect(client.items).toBeInstanceOf(ItemService);
     expect(client.office).toBeInstanceOf(OfficeService);
+    expect(client.sentHistories).toBeInstanceOf(SentHistoryService);
   });
 
   it('getAccessTokenが関数でないと、"アクセストークンが不正です"エラーを投げる', () => {
@@ -30,6 +32,7 @@ describe('MfClient', () => {
       expect(client.partners).toBeInstanceOf(PartnerService);
       expect(client.items).toBeInstanceOf(ItemService);
       expect(client.office).toBeInstanceOf(OfficeService);
+      expect(client.sentHistories).toBeInstanceOf(SentHistoryService);
     });
 
     it('全サービスを注入すると、実サービスを新規生成せず注入したインスタンスがそのまま設定される', () => {
@@ -39,6 +42,7 @@ describe('MfClient', () => {
         partners: {} as PartnerService,
         items: {} as ItemService,
         office: {} as OfficeService,
+        sentHistories: {} as SentHistoryService,
       };
       const client = new MfClient(() => 'token', services);
       expect(client.billings).toBe(services.billings);
@@ -46,6 +50,7 @@ describe('MfClient', () => {
       expect(client.partners).toBe(services.partners);
       expect(client.items).toBe(services.items);
       expect(client.office).toBe(services.office);
+      expect(client.sentHistories).toBe(services.sentHistories);
     });
   });
 });

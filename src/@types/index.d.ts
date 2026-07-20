@@ -11,7 +11,28 @@ declare namespace MfInvoiceApi {
   declare function createClient(
     clientId: string,
     clientSecret: string
-  ): MfInvoiceApi.MfInvoiceClient;
+  ): MfInvoiceApi.MfClient;
+  /**
+   * 入金ステータスを取得します。
+   * - default: '0', // 未設定
+   * - not_payment: '1', // 未入金
+   * - completed: '2', // 入金済
+   * - unpaid: '3', // 未払い
+   * - transferred: '4', // 振込済
+   * @param {string} status 入金ステータス
+   * @returns {string} 入金ステータス(数値)
+   */
+  declare function getPaymentStatus(status: string): string;
+  /**
+   * 受注ステータスを取得します。
+   * - failure: '-1', // 失注
+   * - default: '0', // 未設定
+   * - not_received: '1', // 未受注
+   * - received: '2', // 受注済
+   * @param {string} status 受注ステータス
+   * @returns {string} 受注ステータス(数値)
+   */
+  declare function getOrderStatus(status: string): string;
   /**
    * 日付操作用のユーティリティクラスを生成します。
    * @param {Date} baseDate

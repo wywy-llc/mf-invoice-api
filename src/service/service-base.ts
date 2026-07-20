@@ -122,8 +122,11 @@ export class ServiceBase {
       options.payload = payload;
       options.contentType = 'application/json';
     }
-    console.info(`Request URL: ${method} ${reqUrl}`);
     const res = UrlFetchApp.fetch(reqUrl, options);
+    if (res.getResponseCode() >= 400) {
+      // 機密情報を含むクエリ文字列を除いたパスのみを記録し、障害調査時の到達性を確保する
+      console.error(`Request failed: ${method} ${reqUrl.split('?')[0]}`);
+    }
     return res;
   }
 

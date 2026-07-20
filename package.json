@@ -14,6 +14,7 @@
     "clean": "rimraf build dist",
     "lint": "npm run license && eslint --fix --no-error-on-unmatched-pattern src/ test/",
     "lint:fix": "eslint --fix --no-error-on-unmatched-pattern src/ test/",
+    "lint:ci": "eslint --no-error-on-unmatched-pattern src/ test/",
     "format": "prettier --write src/ test/",
     "typecheck": "tsc --noEmit",
     "bundle": "rollup --no-treeshake -c rollup.config.mjs",
@@ -25,7 +26,7 @@
     "prepare": "husky"
   },
   "engines": {
-    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+    "node": ">=24"
   },
   "dependencies": {
     "@google/clasp": "^3.3.0",

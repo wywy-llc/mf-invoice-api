@@ -135,7 +135,7 @@ export class QuoteService extends ServiceBase {
   /**
    * 見積書に品目を追加
    * @param {string} quoteId 見積書ID
-   * @param {MfInvoiceApi.QuoteItemReqBody} quoteItemReqBody 見積書品目リクエストボディ
+   * @param {MfInvoiceApi.QuoteItemReqBody} quoteItemReqBody 見積書品目リクエストボディ(item_idまたはnameのいずれかが必須)
    * @returns {boolean} 成功時はtrue
    */
   attachQuoteItem(
@@ -144,6 +144,11 @@ export class QuoteService extends ServiceBase {
   ): boolean {
     if (!quoteId || !quoteItemReqBody) {
       throw new Error('quoteId and quoteItemReqBody are required.');
+    }
+    if (!quoteItemReqBody.item_id && !quoteItemReqBody.name) {
+      throw new Error(
+        'quoteItemReqBody.item_id or quoteItemReqBody.name is required.'
+      );
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items`;
     return this.request<boolean>(

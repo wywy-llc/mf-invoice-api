@@ -87,7 +87,7 @@ declare namespace MfInvoiceApi {
     /**
      * 請求書に品目を追加
      * @param billingId 請求書ID
-     * @param itemReqBody 品目リクエストボディ
+     * @param itemReqBody 品目リクエストボディ(item_idまたはnameのいずれかが必須)
      * @returns {boolean} 成功時はtrue
      */
     attachBillingItem(

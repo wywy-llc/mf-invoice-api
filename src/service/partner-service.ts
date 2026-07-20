@@ -90,6 +90,7 @@ export class PartnerService extends ServiceBase {
 
   /**
    * 全ての取引先を取得
+   * MAX_PAGES(100ページ)を超える場合は打ち切り、取得できた分のみを返す(console.errorで警告出力)
    * @returns {MfInvoiceApi.Partner[]} 取引先一覧
    */
   getAll(): MfInvoiceApi.Partner[] {
@@ -105,7 +106,7 @@ export class PartnerService extends ServiceBase {
       partners.push(...partnersRes.data);
       page += 1;
     }
-    if (page <= totalPages) {
+    if (page > PartnerService.MAX_PAGES) {
       // MAX_PAGESで打ち切ったため取得漏れがある可能性を明示する
       console.error(
         `getAll: MAX_PAGES(${PartnerService.MAX_PAGES})に達したため取得を打ち切りました。全${totalPages}ページ中${PartnerService.MAX_PAGES}ページのみ取得。`

@@ -70,7 +70,7 @@ declare namespace MfInvoiceApi {
     /**
      * 見積書に品目を追加
      * @param {string} quoteId 見積書ID
-     * @param {MfInvoiceApi.QuoteItemReqBody} quoteItemReqBody 見積書品目リクエストボディ
+     * @param {MfInvoiceApi.QuoteItemReqBody} quoteItemReqBody 見積書品目リクエストボディ(item_idまたはnameのいずれかが必須)
      * @returns {boolean} 成功時はtrue
      */
     attachQuoteItem(

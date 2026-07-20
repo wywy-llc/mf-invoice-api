@@ -43,6 +43,7 @@ declare namespace MfInvoiceApi {
     deletePartner(partnerId: string): boolean;
     /**
      * 全ての取引先を取得
+     * MAX_PAGES(100ページ)を超える場合は打ち切り、取得できた分のみを返す(console.errorで警告出力)
      * @returns {MfInvoiceApi.Partner[]} 取引先一覧
      */
     getAll(): MfInvoiceApi.Partner[];

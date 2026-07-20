@@ -7,7 +7,7 @@
 - マネーフォワード クラウド請求書API v3 用の TypeScript クライアントライブラリ
 - **Google Apps Script (GAS) ライブラリ**として配布(スタンドアロンアプリ・サーバーではない)
 - 利用者は自分の GAS プロジェクト(スプレッドシート紐付け)にスクリプトIDで追加する
-- 利用ドキュメント: <https://wywy.jp/docs/mfapi-v3-client/reference>
+- 利用ドキュメント: `docs/reference.md`
 
 ## コマンド
 

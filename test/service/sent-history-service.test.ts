@@ -10,7 +10,7 @@ describe('SentHistoryService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    sentHistoryService = new SentHistoryService(ACCESS_TOKEN);
+    sentHistoryService = new SentHistoryService(() => ACCESS_TOKEN);
   });
 
   describe('getSentHistories', () => {

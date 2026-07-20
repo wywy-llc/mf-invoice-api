@@ -55,6 +55,20 @@ describe('ItemService', () => {
       );
     });
 
+    it('name/codeにカンマ区切りで複数値を指定すると、エンコードしてクエリに反映したリクエストを送信する', () => {
+      const response = itemsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      itemService.getItems(1, 100, '商品A,商品B', 'CODE-1,CODE-2');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&name=${encodeURIComponent(
+          '商品A,商品B'
+        )}&code=${encodeURIComponent('CODE-1,CODE-2')}`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
     it('name/codeを指定しないと、クエリに付与されない', () => {
       const response = itemsResponseFactory.build();
       const fetchMock = stubUrlFetchJson(response);

@@ -20,13 +20,10 @@ export class ItemService extends ServiceBase {
     name?: string,
     code?: string
   ): MfInvoiceApi.ItemsResponse {
-    let reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}`;
-    if (name) {
-      reqUrl += `&name=${encodeURIComponent(name)}`;
-    }
-    if (code) {
-      reqUrl += `&code=${encodeURIComponent(code)}`;
-    }
+    const reqUrl = this.appendQuery(
+      `${this.baseUrl}?page=${page}&per_page=${perPage}`,
+      { name, code }
+    );
     return this.request<MfInvoiceApi.ItemsResponse>(reqUrl, ReqMethod.get);
   }
 

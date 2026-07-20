@@ -12,9 +12,8 @@ declare namespace MfInvoiceApi {
      * @param {number} page ページ番号
      * @param {number} perPage 1ページあたりのデータ数
      * @param {QuoteRangeKey} rangeKey 検索範囲_キー
-     * - billing_date: 請求日
-     * - due_date: 支払期日
-     * - sales_date: 売上日
+     * - quote_date: 見積日
+     * - expired_date: 有効期限
      * - created_at: 作成日
      * - updated_at: 更新日
      * @returns {MfInvoiceApi.QuotesResponse} 見積書レスポンス
@@ -99,6 +98,9 @@ declare namespace MfInvoiceApi {
     cancelPostQuote(quoteId: string): boolean;
     /**
      * 見積書の受注ステータス更新
+     * 注意: spec上、このPUTリクエストのenumは数値文字列('-1'〜'2')だが、
+     * Quoteレスポンスの order_status は別表記(語形: failure/default/not_received/received)になっている
+     * (仕様側の request/response enum不一致。本メソッドの送信値はrequest契約に準拠)
      * @param {string} quoteId 見積書ID
      * @param {MfInvoiceApi.OrderStatus} status 受注ステータス
      */

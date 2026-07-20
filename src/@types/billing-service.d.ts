@@ -56,17 +56,19 @@ declare namespace MfInvoiceApi {
     ): MfInvoiceApi.Billing;
     /**
      * 請求書の入金ステータス変更
+     * このエンドポイントは仕様上、未設定・未入金・入金済みの3値のみ受け付ける
+     * (未払い・振込済みはAPI側で自動計算されるため直接指定不可)
      * @param {string} billingId 請求書ID
-     * @param {MfInvoiceApi.PaymentStatus} paymentStatus 入金ステータス
+     * @param {Extract<MfInvoiceApi.PaymentStatus, '0' | '1' | '2'>} paymentStatus 入金ステータス
      */
     updatePaymentStatus(
       billingId: string,
-      paymentStatus: MfInvoiceApi.PaymentStatus
+      paymentStatus: Extract<MfInvoiceApi.PaymentStatus, '0' | '1' | '2'>
     ): MfInvoiceApi.Billing;
     /**
      * 請求書の削除
      * @param {string} billingId 請求書ID
-     * @returns {MfInvoiceApi.Billing} 請求書
+     * @returns {boolean} 削除成功時はtrue
      */
     deleteBilling(billingId: string): boolean;
     /**
@@ -91,7 +93,7 @@ declare namespace MfInvoiceApi {
     attachBillingItem(
       billingId: string,
       itemReqBody: MfInvoiceApi.BillingItemReqBody
-    ): MfInvoiceApi.BillingItem;
+    ): boolean;
     /**
      * 請求書に紐づく品目の削除
      * @param {string} billingId 請求書ID

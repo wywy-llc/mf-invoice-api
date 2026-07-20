@@ -98,12 +98,14 @@ export class BillingService extends ServiceBase {
 
   /**
    * 請求書の入金ステータス変更
+   * このエンドポイントは仕様上、未設定・未入金・入金済みの3値のみ受け付ける
+   * (未払い・振込済みはAPI側で自動計算されるため直接指定不可)
    * @param {string} billingId 請求書ID
-   * @param {MfInvoiceApi.PaymentStatus} paymentStatus 入金ステータス
+   * @param {Extract<MfInvoiceApi.PaymentStatus, '0' | '1' | '2'>} paymentStatus 入金ステータス
    */
   updatePaymentStatus(
     billingId: string,
-    paymentStatus: MfInvoiceApi.PaymentStatus
+    paymentStatus: Extract<MfInvoiceApi.PaymentStatus, '0' | '1' | '2'>
   ): MfInvoiceApi.Billing {
     if (!billingId || !paymentStatus) {
       throw new Error('billingId and paymentStatus are required.');
@@ -165,12 +167,12 @@ export class BillingService extends ServiceBase {
   attachBillingItem(
     billingId: string,
     itemReqBody: MfInvoiceApi.BillingItemReqBody
-  ): MfInvoiceApi.BillingItem {
+  ): boolean {
     if (!billingId || !itemReqBody) {
       throw new Error('billingId and item are required.');
     }
     const reqUrl = `${this.baseUrl}/${billingId}/items`;
-    return this.request<MfInvoiceApi.BillingItem>(
+    return this.request<boolean>(
       reqUrl,
       ReqMethod.post,
       JSON.stringify(itemReqBody)

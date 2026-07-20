@@ -3,6 +3,7 @@
  */
 import * as Factory from 'factory.ts';
 import { createFactoryWrapper } from './base.factory';
+import { paginationDataFactory } from './pagination-data.factory';
 
 /**
  * 取引先部署のテストデータを生成するファクトリー
@@ -59,5 +60,23 @@ export const departmentReqBodyFactory = createFactoryWrapper(
     office_member_name: '',
     email: Factory.each(i => `contact${i + 1}@example.com`),
     cc_emails: '',
+  })
+);
+
+/**
+ * 取引先部署一覧レスポンスのテストデータを生成するファクトリー
+ *
+ * @example
+ * const response = departmentsResponseFactory.build();
+ *
+ * @example
+ * const response = departmentsResponseFactory.build({
+ *   data: departmentFactory.buildList(3),
+ * });
+ */
+export const departmentsResponseFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.DepartmentsResponse>({
+    data: Factory.each(() => departmentFactory.buildList(1)),
+    pagination: Factory.each(() => paginationDataFactory.build()),
   })
 );

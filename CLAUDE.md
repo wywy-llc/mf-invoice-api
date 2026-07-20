@@ -12,8 +12,8 @@ TypeScript client library for the MoneyForward Cloud Invoice API v3 (マネー�
 - `npm run lint:fix` — `eslint --fix` only, no license header pass.
 - `npm run format` — `prettier --write src/ test/`.
 - `npm run typecheck` — `tsc --noEmit`.
-- `npm test` — `jest test/ --passWithNoTests --detectOpenHandles`. Run a single file: `npx jest test/lib/date-util.test.ts`.
-- A `husky` pre-commit hook (`.husky/pre-commit`) runs `lint-staged` (eslint --fix + prettier --write, plus `jest --findRelatedTests` for `src/**/*.ts`) followed by `tsc --noEmit` on every commit — most lint/format issues are caught automatically at commit time.
+- `npm test` — `vitest run`. Run a single file: `npx vitest run test/lib/date-util.test.ts`.
+- A `husky` pre-commit hook (`.husky/pre-commit`) runs `lint-staged` (eslint --fix + prettier --write, plus `vitest related --run` for `src/**/*.ts`) followed by `tsc --noEmit` on every commit — most lint/format issues are caught automatically at commit time.
 - `npm run build` — cleans, bundles via Rollup into `dist/` (note: `package.json` `main` says `build/index.js`, but the actual bundler output directory is `dist/` — this is a pre-existing inconsistency, not a bug to silently "fix").
 - `npm run deploy` — lint + test + build, then swaps in `.clasp-dev.json` and `clasp push -f` to the **dev** GAS project. Safe for Claude to run autonomously.
 - `npm run deploy:prod` — same but swaps in `.clasp-prod.json` and `clasp push` (no `-f`) to the **production** GAS project consumed by real users. **Always confirm with the user before running this** — it is a production deploy, not a reversible local action.

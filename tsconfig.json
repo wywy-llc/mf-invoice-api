@@ -6,6 +6,7 @@
       "es2020"
     ],
     "moduleResolution": "node",
+    "types": ["vitest/globals"],
     "outDir": "dist",
     "rootDir": ".",
     "strict": true,

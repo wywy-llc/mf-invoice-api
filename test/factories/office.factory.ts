@@ -34,3 +34,24 @@ export const officeFactory = createFactoryWrapper(
     updated_at: '2024-01-01T00:00:00.000Z',
   })
 );
+
+/**
+ * 事業者情報更新リクエストボディのテストデータを生成するファクトリー
+ *
+ * @example
+ * const reqBody = officeReqBodyFactory.build();
+ *
+ * @example
+ * const reqBody = officeReqBodyFactory.build({ name: '株式会社サンプル' });
+ */
+export const officeReqBodyFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.OfficeReqBody>({
+    name: 'テスト事業者',
+    zip: '100-0001',
+    prefecture: '東京都',
+    address1: '千代田区1-1-1',
+    address2: '',
+    tel: '03-1234-5678',
+    fax: '',
+  })
+);

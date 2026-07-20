@@ -19,4 +19,48 @@ export class OfficeService extends ServiceBase {
   getMyOffice(): MfInvoiceApi.Office {
     return this.request<MfInvoiceApi.Office>(this.baseUrl, ReqMethod.get);
   }
+
+  /**
+   * 事業者情報の更新
+   * @param {MfInvoiceApi.OfficeReqBody} officeReqBody 事業者情報リクエストボディ
+   * @returns {MfInvoiceApi.Office} 更新後の事業者情報
+   */
+  updateOffice(officeReqBody: MfInvoiceApi.OfficeReqBody): MfInvoiceApi.Office {
+    if (!officeReqBody) {
+      throw new Error('officeReqBody is required.');
+    }
+    return this.request<MfInvoiceApi.Office>(
+      this.baseUrl,
+      ReqMethod.put,
+      JSON.stringify(officeReqBody)
+    );
+  }
+
+  /**
+   * 適格請求書発行事業者番号の作成・更新
+   * @param {string} registrationCode 適格請求書発行事業者番号(T+13桁)
+   * @returns {MfInvoiceApi.RegistrationCodeResponse} 登録番号レスポンス
+   */
+  updateRegistrationCode(
+    registrationCode: string
+  ): MfInvoiceApi.RegistrationCodeResponse {
+    if (!registrationCode) {
+      throw new Error('registrationCode is required.');
+    }
+    const reqUrl = `${this.baseUrl}/registration_code`;
+    return this.request<MfInvoiceApi.RegistrationCodeResponse>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify({ registration_code: registrationCode })
+    );
+  }
+
+  /**
+   * 適格請求書発行事業者番号の削除
+   * @returns {boolean} 削除成功時はtrue
+   */
+  deleteRegistrationCode(): boolean {
+    const reqUrl = `${this.baseUrl}/registration_code`;
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
+  }
 }

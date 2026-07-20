@@ -38,7 +38,7 @@ import {
   itemsResponseFactory,
   itemReqBodyFactory,
 } from './item.factory';
-import { officeFactory } from './office.factory';
+import { officeFactory, officeReqBodyFactory } from './office.factory';
 import {
   quoteFactory,
   quotesResponseFactory,
@@ -76,6 +76,7 @@ export function resetAllFactorySequences(): void {
     itemsResponseFactory,
     itemReqBodyFactory,
     officeFactory,
+    officeReqBodyFactory,
     quoteFactory,
     quotesResponseFactory,
     quoteItemReqBodyFactory,

@@ -35,3 +35,26 @@ export const billingItemFactory = createFactoryWrapper(
     delivery_date: '',
   })
 );
+
+/**
+ * 請求書品目作成リクエストボディのテストデータを生成するファクトリー
+ *
+ * @example
+ * const reqBody = billingItemReqBodyFactory.build();
+ *
+ * @example
+ * const reqBody = billingItemReqBodyFactory.build({ item_id: 'item_1', quantity: 2 });
+ */
+export const billingItemReqBodyFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.BillingItemReqBody>({
+    item_id: Factory.each(i => `item_${i + 1}`),
+    delivery_number: '',
+    delivery_date: '',
+    detail: '',
+    unit: '個',
+    price: 1000,
+    quantity: 1,
+    is_deduct_withholding_tax: false,
+    excise: Excise.ten_percent,
+  })
+);

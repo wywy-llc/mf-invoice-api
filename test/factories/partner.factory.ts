@@ -2,7 +2,10 @@
  * Copyright 2026 wywy LLC and contributors
  */
 import * as Factory from 'factory.ts';
-import { departmentFactory } from './department.factory';
+import {
+  departmentFactory,
+  departmentReqBodyFactory,
+} from './department.factory';
 import { paginationDataFactory } from './pagination-data.factory';
 import { createFactoryWrapper } from './base.factory';
 
@@ -46,5 +49,25 @@ export const partnersResponseFactory = createFactoryWrapper(
   Factory.Sync.makeFactory<MfInvoiceApi.PartnersResponse>({
     data: Factory.each(() => partnerFactory.buildList(1)),
     pagination: Factory.each(() => paginationDataFactory.build()),
+  })
+);
+
+/**
+ * 取引先作成リクエストボディのテストデータを生成するファクトリー
+ *
+ * @example
+ * const reqBody = partnerReqBodyFactory.build();
+ *
+ * @example
+ * const reqBody = partnerReqBodyFactory.build({ name: '株式会社サンプル' });
+ */
+export const partnerReqBodyFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.PartnerReqBody>({
+    code: Factory.each(i => `PTN-${String(i + 1).padStart(4, '0')}`),
+    name: Factory.each(i => `テスト取引先${i + 1}`),
+    name_kana: '',
+    name_suffix: '御中',
+    memo: '',
+    departments: Factory.each(() => departmentReqBodyFactory.buildList(1)),
   })
 );

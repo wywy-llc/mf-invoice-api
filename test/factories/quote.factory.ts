@@ -2,7 +2,7 @@
  * Copyright 2026 wywy LLC and contributors
  */
 import * as Factory from 'factory.ts';
-import { OrderStatus } from '../../src/service/service-base';
+import { Excise, OrderStatus } from '../../src/service/service-base';
 import { paginationDataFactory } from './pagination-data.factory';
 import { createFactoryWrapper } from './base.factory';
 
@@ -82,5 +82,47 @@ export const quotesResponseFactory = createFactoryWrapper(
   Factory.Sync.makeFactory<MfInvoiceApi.QuotesResponse>({
     data: Factory.each(() => quoteFactory.buildList(1)),
     pagination: Factory.each(() => paginationDataFactory.build()),
+  })
+);
+
+/**
+ * 見積書品目作成リクエストボディのテストデータを生成するファクトリー
+ *
+ * @example
+ * const reqBody = quoteItemReqBodyFactory.build();
+ */
+export const quoteItemReqBodyFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.QuoteItemReqBody>({
+    item_id: Factory.each(i => `item_${i + 1}`),
+    detail: '',
+    unit: '個',
+    price: 1000,
+    quantity: 1,
+    is_deduct_withholding_tax: false,
+    excise: Excise.ten_percent,
+  })
+);
+
+/**
+ * 見積書作成リクエストボディのテストデータを生成するファクトリー
+ *
+ * @example
+ * const reqBody = quoteReqBodyFactory.build();
+ *
+ * @example
+ * const reqBody = quoteReqBodyFactory.build({ title: '2024年6月分見積書' });
+ */
+export const quoteReqBodyFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.QuoteReqBody>({
+    department_id: 'department_1',
+    quote_number: Factory.each(i => `QUO-${String(i + 1).padStart(6, '0')}`),
+    title: Factory.each(i => `見積書${i + 1}`),
+    memo: '',
+    quote_date: '2024-06-01',
+    expired_date: '2024-07-01',
+    note: '',
+    tag_names: [],
+    document_name: '',
+    items: Factory.each(() => quoteItemReqBodyFactory.buildList(1)),
   })
 );

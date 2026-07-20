@@ -1,0 +1,161 @@
+import { ServiceBase, ReqMethod } from '../../src/service/service-base';
+import {
+  stubUrlFetch,
+  stubUrlFetchJson,
+  makeHttpResponse,
+} from '../helpers/gas-mock';
+
+describe('ServiceBase', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('constructor', () => {
+    it('accessTokenを指定すると、インスタンスが生成される', () => {
+      expect(() => new ServiceBase('token_1')).not.toThrow();
+    });
+
+    it('accessTokenが空文字だと、"accessToken is required."エラー', () => {
+      expect(() => new ServiceBase('')).toThrow('accessToken is required.');
+    });
+  });
+
+  describe('getHeaders', () => {
+    it('accessTokenを含むBearer認証ヘッダーを返す', () => {
+      const service = new ServiceBase('token_1');
+      expect(service.getHeaders()).toEqual({
+        accept: 'application/json',
+        Authorization: 'Bearer token_1',
+      });
+    });
+  });
+
+  describe('fetch', () => {
+    it('GETメソッドで呼び出すと、payloadとcontentTypeを付与せずUrlFetchAppを呼ぶ', () => {
+      const fetchMock = stubUrlFetchJson({});
+      const service = new ServiceBase('token_1');
+
+      service.fetch('https://example.com', ReqMethod.get);
+
+      expect(fetchMock).toHaveBeenCalledWith('https://example.com', {
+        method: 'get',
+        muteHttpExceptions: true,
+        headers: service.getHeaders(),
+      });
+    });
+
+    it('POSTメソッドかつpayloadを指定すると、payloadとcontentTypeを付与する', () => {
+      const fetchMock = stubUrlFetchJson({});
+      const service = new ServiceBase('token_1');
+
+      service.fetch('https://example.com', ReqMethod.post, '{"a":1}');
+
+      expect(fetchMock).toHaveBeenCalledWith('https://example.com', {
+        method: 'post',
+        muteHttpExceptions: true,
+        headers: service.getHeaders(),
+        payload: '{"a":1}',
+        contentType: 'application/json',
+      });
+    });
+
+    it('POSTメソッドでもpayloadが空文字だと、payloadとcontentTypeを付与しない', () => {
+      const fetchMock = stubUrlFetchJson({});
+      const service = new ServiceBase('token_1');
+
+      service.fetch('https://example.com', ReqMethod.post);
+
+      expect(fetchMock).toHaveBeenCalledWith('https://example.com', {
+        method: 'post',
+        muteHttpExceptions: true,
+        headers: service.getHeaders(),
+      });
+    });
+
+    it('PUTメソッドかつpayloadを指定すると、payloadとcontentTypeを付与する', () => {
+      const fetchMock = stubUrlFetchJson({});
+      const service = new ServiceBase('token_1');
+
+      service.fetch('https://example.com', ReqMethod.put, '{"a":1}');
+
+      expect(fetchMock).toHaveBeenCalledWith('https://example.com', {
+        method: 'put',
+        muteHttpExceptions: true,
+        headers: service.getHeaders(),
+        payload: '{"a":1}',
+        contentType: 'application/json',
+      });
+    });
+
+    it('DELETEメソッドでpayloadを指定しても、payloadとcontentTypeを付与しない', () => {
+      const fetchMock = stubUrlFetchJson({});
+      const service = new ServiceBase('token_1');
+
+      service.fetch('https://example.com', ReqMethod.delete, '{"a":1}');
+
+      expect(fetchMock).toHaveBeenCalledWith('https://example.com', {
+        method: 'delete',
+        muteHttpExceptions: true,
+        headers: service.getHeaders(),
+      });
+    });
+
+    it('UrlFetchAppが返したレスポンスをそのまま返す', () => {
+      stubUrlFetch(200, 'body');
+      const service = new ServiceBase('token_1');
+
+      const res = service.fetch('https://example.com', ReqMethod.get);
+
+      expect(res.getResponseCode()).toBe(200);
+      expect(res.getContentText()).toBe('body');
+    });
+  });
+
+  describe('processResponse', () => {
+    it('レスポンスコード200かつJSONボディの場合、パース済みオブジェクトを返す', () => {
+      const service = new ServiceBase('token_1');
+      const res = makeHttpResponse(200, JSON.stringify({ id: 'billing_1' }));
+
+      expect(service.processResponse(res)).toEqual({ id: 'billing_1' });
+    });
+
+    it('レスポンスコード201かつJSONボディの場合、パース済みオブジェクトを返す', () => {
+      const service = new ServiceBase('token_1');
+      const res = makeHttpResponse(201, JSON.stringify({ id: 'billing_1' }));
+
+      expect(service.processResponse(res)).toEqual({ id: 'billing_1' });
+    });
+
+    it('レスポンスコード204かつ空ボディの場合、trueを返す', () => {
+      const service = new ServiceBase('token_1');
+      const res = makeHttpResponse(204, '');
+
+      expect(service.processResponse(res)).toBe(true);
+    });
+
+    it('レスポンスコード200でもボディが空文字の場合、trueを返す', () => {
+      const service = new ServiceBase('token_1');
+      const res = makeHttpResponse(200, '');
+
+      expect(service.processResponse(res)).toBe(true);
+    });
+
+    it('レスポンスコードが400以上の場合、コードとボディを含むエラーをthrowする', () => {
+      const service = new ServiceBase('token_1');
+      const res = makeHttpResponse(404, 'Not Found');
+
+      expect(() => service.processResponse(res)).toThrow(
+        'Request Failed !!. 404: Not Found'
+      );
+    });
+
+    it('レスポンスコードが500の場合、コードとボディを含むエラーをthrowする', () => {
+      const service = new ServiceBase('token_1');
+      const res = makeHttpResponse(500, 'Internal Server Error');
+
+      expect(() => service.processResponse(res)).toThrow(
+        'Request Failed !!. 500: Internal Server Error'
+      );
+    });
+  });
+});

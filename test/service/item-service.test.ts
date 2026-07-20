@@ -85,7 +85,6 @@ describe('ItemService', () => {
 
   describe('deleteItem', () => {
     it('itemIdを指定すると、trueを返し、DELETEリクエストを送信する', () => {
-      // 型宣言はvoidだが、実装はprocessResponseの戻り値(true)をそのまま返す
       const fetchMock = stubUrlFetchEmpty();
 
       expect(itemService.deleteItem('item_1')).toBe(true);

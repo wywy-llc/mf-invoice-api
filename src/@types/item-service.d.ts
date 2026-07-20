@@ -28,7 +28,7 @@ declare namespace MfInvoiceApi {
      * @param {string} itemId 品目ID
      * @returns {boolean} 成功時はtrue
      */
-    deleteItem(itemId: string): void;
+    deleteItem(itemId: string): boolean;
     /**
      * 品目の更新
      * @param {string} itemId 品目ID

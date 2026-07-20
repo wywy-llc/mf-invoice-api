@@ -58,7 +58,7 @@ export class ItemService extends ServiceBase {
    * @param {string} itemId 品目ID
    * @returns {boolean} 成功時はtrue
    */
-  deleteItem(itemId: string): void {
+  deleteItem(itemId: string): boolean {
     if (!itemId) {
       throw new Error('itemId is required.');
     }

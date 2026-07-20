@@ -154,5 +154,21 @@ describe('ItemService', () => {
         )
       ).toThrow('itemId and itemReqBody are required.');
     });
+
+    it('priceのみのような部分的なリクエストボディでも、PUTリクエストを送信する(部分更新可)', () => {
+      const item = itemFactory.build({ id: 'item_1' });
+      const reqBody: MfInvoiceApi.ItemUpdateReqBody = { price: 2000 };
+      const fetchMock = stubUrlFetchJson(item);
+
+      expect(itemService.updateItem('item_1', reqBody)).toEqual(item);
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/item_1`,
+        expect.objectContaining({
+          method: 'put',
+          payload: JSON.stringify(reqBody),
+          contentType: 'application/json',
+        })
+      );
+    });
   });
 });

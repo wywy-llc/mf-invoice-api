@@ -58,6 +58,50 @@ describe('QuoteService', () => {
       );
     });
 
+    it('filtersを指定すると、クエリに反映したリクエストを送信する', () => {
+      const response = quotesResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      quoteService.getQuotes(
+        '2024-06-01',
+        '2024-06-30',
+        '',
+        1,
+        100,
+        'quote_date',
+        {
+          partnerId: 'partner_1',
+          documentNumber: 'QUO-0001',
+          status: '下書き',
+          partnerName: '株式会社サンプル',
+          tags: 'タグ1',
+        }
+      );
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&range_key=quote_date&from=2024-06-01&to=2024-06-30&q=` +
+          `&partner_id=partner_1&document_number=QUO-0001&status=${encodeURIComponent(
+            '下書き'
+          )}` +
+          `&partner_name=${encodeURIComponent(
+            '株式会社サンプル'
+          )}&tags=${encodeURIComponent('タグ1')}`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
+    it('filtersを指定しないと、絞込クエリが付与されない', () => {
+      const response = quotesResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      quoteService.getQuotes('2024-06-01', '2024-06-30');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&range_key=quote_date&from=2024-06-01&to=2024-06-30&q=`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
     it('fromまたはtoが未指定だと、"from and to are required."エラー', () => {
       expect(() => quoteService.getQuotes('', '2024-06-30')).toThrow(
         'from and to are required.'

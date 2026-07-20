@@ -18,6 +18,7 @@ export class QuoteService extends ServiceBase {
    * - expired_date: 有効期限
    * - created_at: 作成日
    * - updated_at: 更新日
+   * @param {MfInvoiceApi.QuoteListFilters} filters 取引先ID・見積書番号・ステータス・取引先名・タグでの絞込(queryを指定した場合はこれらは検索に使用されない)
    * @returns {MfInvoiceApi.QuotesResponse} 見積書レスポンス
    */
   getQuotes(
@@ -26,7 +27,8 @@ export class QuoteService extends ServiceBase {
     query: string = '',
     page: number = 1,
     perPage: number = 100,
-    rangeKey: QuoteRangeKey = 'quote_date'
+    rangeKey: QuoteRangeKey = 'quote_date',
+    filters?: MfInvoiceApi.QuoteListFilters
   ): MfInvoiceApi.QuotesResponse {
     if (!from || !to) {
       throw new Error('from and to are required.');
@@ -38,7 +40,14 @@ export class QuoteService extends ServiceBase {
       query,
       page,
       perPage,
-      rangeKey
+      rangeKey,
+      {
+        partner_id: filters?.partnerId,
+        document_number: filters?.documentNumber,
+        status: filters?.status,
+        partner_name: filters?.partnerName,
+        tags: filters?.tags,
+      }
     );
   }
 

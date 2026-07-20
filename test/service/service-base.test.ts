@@ -173,7 +173,7 @@ describe('ServiceBase', () => {
     });
 
     it('レスポンスコード200でもボディが不正なJSONの場合、コードとボディを含む明示的なエラーをthrowする', () => {
-      const service = new ServiceBase('token_1');
+      const service = new ServiceBase(() => 'token_1');
       const res = makeHttpResponse(200, '<html>Not JSON</html>');
 
       expect(() => service.processResponse(res)).toThrow(

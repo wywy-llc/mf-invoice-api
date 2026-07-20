@@ -17,9 +17,7 @@ export class ItemService extends ServiceBase {
     perPage: number = 100
   ): MfInvoiceApi.ItemsResponse {
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.ItemsResponse>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -31,11 +29,11 @@ export class ItemService extends ServiceBase {
     if (!itemReqBody) {
       throw new Error('itemReqBody is required.');
     }
-    const reqUrl = this.baseUrl;
-    const method = ReqMethod.post;
-    const payload = JSON.stringify(itemReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(
+      this.baseUrl,
+      ReqMethod.post,
+      JSON.stringify(itemReqBody)
+    );
   }
 
   /**
@@ -48,9 +46,7 @@ export class ItemService extends ServiceBase {
       throw new Error('itemId is required.');
     }
     const reqUrl = `${this.baseUrl}/${itemId}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -63,9 +59,7 @@ export class ItemService extends ServiceBase {
       throw new Error('itemId is required.');
     }
     const reqUrl = `${this.baseUrl}/${itemId}`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
@@ -82,9 +76,10 @@ export class ItemService extends ServiceBase {
       throw new Error('itemId and itemReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${itemId}`;
-    const method = ReqMethod.put;
-    const payload = JSON.stringify(itemReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify(itemReqBody)
+    );
   }
 }

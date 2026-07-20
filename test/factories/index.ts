@@ -10,6 +10,7 @@ export * from './partner.factory';
 export * from './item.factory';
 export * from './office.factory';
 export * from './quote.factory';
+export * from './sent-history.factory';
 
 import { resetAllFactories } from './base.factory';
 import { paginationDataFactory } from './pagination-data.factory';
@@ -45,6 +46,10 @@ import {
   quoteItemReqBodyFactory,
   quoteReqBodyFactory,
 } from './quote.factory';
+import {
+  sentHistoryFactory,
+  sentHistoriesResponseFactory,
+} from './sent-history.factory';
 
 /**
  * すべてのファクトリーのシーケンス番号をリセットする
@@ -80,6 +85,8 @@ export function resetAllFactorySequences(): void {
     quoteFactory,
     quotesResponseFactory,
     quoteItemReqBodyFactory,
-    quoteReqBodyFactory
+    quoteReqBodyFactory,
+    sentHistoryFactory,
+    sentHistoriesResponseFactory
   );
 }

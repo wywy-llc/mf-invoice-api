@@ -190,6 +190,25 @@ export class ServiceBase {
   }
 
   /**
+   * 値が空でないクエリパラメータのみをURLに付与する
+   * @param reqUrl 元のリクエストURL
+   * @param query 付与するクエリ(値が空の場合は付与しない)
+   * @returns クエリを付与したURL
+   */
+  protected appendQuery(
+    reqUrl: string,
+    query: Record<string, string | undefined>
+  ): string {
+    let result = reqUrl;
+    for (const [key, value] of Object.entries(query)) {
+      if (value) {
+        result += `&${key}=${encodeURIComponent(value)}`;
+      }
+    }
+    return result;
+  }
+
+  /**
    * 期間・検索文字列・ページングで絞り込む一覧取得リクエストを送信する
    * (billing/quoteのgetBillings・getQuotesで共通の実装)
    * @param baseUrl リソースのベースURL
@@ -199,6 +218,7 @@ export class ServiceBase {
    * @param page ページ番号
    * @param perPage 1ページあたりの件数
    * @param rangeKey 検索範囲キー
+   * @param extraQuery 追加の絞込クエリ(値が空の場合は付与しない)
    * @returns レスポンスを処理した結果
    */
   protected fetchListWithRange<T>(
@@ -208,11 +228,15 @@ export class ServiceBase {
     query: string,
     page: number,
     perPage: number,
-    rangeKey: string
+    rangeKey: string,
+    extraQuery?: Record<string, string | undefined>
   ): T {
-    const reqUrl = `${baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
-      from
-    )}&to=${encodeURIComponent(to)}&q=${encodeURIComponent(query)}`;
+    const reqUrl = this.appendQuery(
+      `${baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
+        from
+      )}&to=${encodeURIComponent(to)}&q=${encodeURIComponent(query)}`,
+      extraQuery ?? {}
+    );
     return this.request<T>(reqUrl, ReqMethod.get);
   }
 }

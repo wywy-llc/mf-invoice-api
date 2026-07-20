@@ -10,13 +10,20 @@ export class ItemService extends ServiceBase {
    * 品目一覧の取得
    * @param {number} page ページ番号
    * @param {number} perPage 1ページあたりのデータ数
+   * @param {string} name 品目名で絞り込む(部分一致、カンマ区切りで複数指定可)
+   * @param {string} code 品目コードで絞り込む(カンマ区切りで複数指定可)
    * @returns {MfInvoiceApi.ItemsResponse} 品目一覧レスポンス
    */
   getItems(
     page: number = 1,
-    perPage: number = 100
+    perPage: number = 100,
+    name?: string,
+    code?: string
   ): MfInvoiceApi.ItemsResponse {
-    const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}`;
+    const reqUrl = this.appendQuery(
+      `${this.baseUrl}?page=${page}&per_page=${perPage}`,
+      { name, code }
+    );
     return this.request<MfInvoiceApi.ItemsResponse>(reqUrl, ReqMethod.get);
   }
 

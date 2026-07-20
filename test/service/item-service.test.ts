@@ -40,6 +40,46 @@ describe('ItemService', () => {
         expect.objectContaining({ method: 'get' })
       );
     });
+
+    it('name/codeを指定すると、クエリに反映したリクエストを送信する', () => {
+      const response = itemsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      itemService.getItems(1, 100, '商品A', 'CODE-1');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&name=${encodeURIComponent(
+          '商品A'
+        )}&code=CODE-1`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
+    it('name/codeにカンマ区切りで複数値を指定すると、エンコードしてクエリに反映したリクエストを送信する', () => {
+      const response = itemsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      itemService.getItems(1, 100, '商品A,商品B', 'CODE-1,CODE-2');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&name=${encodeURIComponent(
+          '商品A,商品B'
+        )}&code=${encodeURIComponent('CODE-1,CODE-2')}`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
+    it('name/codeを指定しないと、クエリに付与されない', () => {
+      const response = itemsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      itemService.getItems();
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
   });
 
   describe('createNew', () => {
@@ -127,6 +167,22 @@ describe('ItemService', () => {
           undefined as unknown as MfInvoiceApi.ItemReqBody
         )
       ).toThrow('itemId and itemReqBody are required.');
+    });
+
+    it('priceのみのような部分的なリクエストボディでも、PUTリクエストを送信する(部分更新可)', () => {
+      const item = itemFactory.build({ id: 'item_1' });
+      const reqBody: MfInvoiceApi.ItemUpdateReqBody = { price: 2000 };
+      const fetchMock = stubUrlFetchJson(item);
+
+      expect(itemService.updateItem('item_1', reqBody)).toEqual(item);
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}/item_1`,
+        expect.objectContaining({
+          method: 'put',
+          payload: JSON.stringify(reqBody),
+          contentType: 'application/json',
+        })
+      );
     });
   });
 });

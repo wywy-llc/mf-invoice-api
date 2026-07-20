@@ -8,9 +8,16 @@ declare namespace MfInvoiceApi {
      * 品目一覧の取得
      * @param {number} page ページ番号
      * @param {number} perPage 1ページあたりのデータ数
+     * @param {string} name 品目名で絞り込む(部分一致、カンマ区切りで複数指定可)
+     * @param {string} code 品目コードで絞り込む(カンマ区切りで複数指定可)
      * @returns {MfInvoiceApi.ItemsResponse} 品目一覧レスポンス
      */
-    getItems(page?: number, perPage?: number): MfInvoiceApi.ItemsResponse;
+    getItems(
+      page?: number,
+      perPage?: number,
+      name?: string,
+      code?: string
+    ): MfInvoiceApi.ItemsResponse;
     /**
      * 品目の作成
      * @param {MfInvoiceApi.ItemReqBody} itemReqBody 品目リクエストボディ

@@ -1,0 +1,277 @@
+# mf-invoice-api — llms-full
+
+マネーフォワード クラウド請求書API v3 用の Google Apps Script(GAS)クライアントライブラリの全文リファレンス(AIコーディングエージェント向け)。
+
+- リポジトリ: https://github.com/wywy-llc/mf-invoice-api
+- ライセンス: Apache-2.0
+- 配布形態: npm パッケージではなく **GAS ライブラリ**(clasp push)。利用者は GAS エディタでスクリプトIDを検索して自分のプロジェクトへ追加する
+- スクリプトID: `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4`
+- 名前空間: `MfInvoiceApi`(ライブラリ追加時のデフォルト識別子)
+- 公式リファレンス: https://wywy.jp/docs/mfapi-v3-client/reference
+- サンプルリポジトリ: https://github.com/wywy-llc/mf-Invoice-api-sample
+
+## セットアップ手順
+
+1. スプレッドシートを準備し GAS エディタを起動する(拡張機能 > Apps Script)。準備を省略する場合は[完成版スプレッドシート](https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy)をコピーしてもよい
+2. GAS エディタ > ライブラリの「＋」> スクリプトID `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4` を検索 > 最新バージョンを追加 → `MfInvoiceApi` が使えるようになる
+3. MFアプリポータルでアプリを新規登録し `Client ID` / `Client Secret` を取得
+   - リダイレクトURI: `https://script.google.com/macros/d/{このGASのスクリプトID}/usercallback`
+   - クライアント認証方式: `CLIENT_SECRET_POST` を選択(初期値の `CLIENT_SECRET_BASIC` のままだと認証に失敗する)
+4. GASのスクリプト プロパティに `CLIENT_ID` / `CLIENT_SECRET` を設定する
+5. 下記の「初期設定」「認証まわりの定型コード」を利用者側プロジェクトの `.gs` に配置し、`initialize` 実行 → 認証処理の順で実行する
+
+## 初期設定(トリガー・シート作成、利用者側プロジェクトに書くコード)
+
+`office`/`partners`/`items`/`billings`/`billingItems`/`quotes`/`quoteItems` の7シートをスプレッドシートに作成し、スプレッドシートを開いた際のメニュー(`onOpen` トリガー)を登録する。各シートの列は対応するモデル(`Office`/`Partner`/`Item`/`Billing`/`BillingItem`/`Quote`/`QuoteItem`)のフィールド名。
+
+```javascript
+/**
+ * 初期設定(トリガー作成・シート作成)
+ */
+function initialize() {
+  const initTriggers = () => {
+    const functionNames = ['onOpen'];
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const triggers = ScriptApp.getProjectTriggers();
+    for (const trigger of triggers) {
+      const fname = trigger.getHandlerFunction();
+      if (functionNames.includes(fname)) {
+        ScriptApp.deleteTrigger(trigger);
+        if (fname === 'onOpen') {
+          ScriptApp.newTrigger(fname).forSpreadsheet(spreadsheet).onOpen().create();
+        }
+      }
+    }
+  };
+  const schemas = {
+    office: ['id', 'name', 'zip', 'prefecture', 'address1', 'address2', 'tel', 'fax', 'office_type', 'office_code', 'registration_code', 'created_at', 'updated_at'],
+    partners: ['id', 'code', 'name', 'name_kana', 'name_suffix', 'memo', 'created_at', 'updated_at', 'departments'],
+    items: ['id', 'name', 'code', 'detail', 'unit', 'price', 'quantity', 'is_deduct_withholding_tax', 'excise', 'created_at', 'updated_at'],
+    billings: ['id', 'pdf_url', 'operator_id', 'department_id', 'member_id', 'member_name', 'partner_id', 'partner_name', 'office_id', 'office_name', 'office_detail', 'title', 'memo', 'payment_condition', 'billing_date', 'due_date', 'sales_date', 'billing_number', 'note', 'document_name', 'payment_status', 'email_status', 'posting_status', 'created_at', 'updated_at', 'is_downloaded', 'is_locked', 'deduct_price', 'tag_names', 'items', 'excise_price', 'subtotal_price', 'total_price', 'registration_code', 'use_invoice_template', 'config'],
+    billingItems: ['id', 'name', 'code', 'detail', 'unit', 'price', 'quantity', 'is_deduct_withholding_tax', 'excise', 'delivery_date', 'delivery_number', 'created_at', 'updated_at', 'billing_id'],
+    quotes: ['id', 'pdf_url', 'operator_id', 'department_id', 'member_id', 'member_name', 'partner_id', 'partner_name', 'partner_detail', 'office_id', 'office_name', 'office_detail', 'title', 'memo', 'quote_date', 'quote_number', 'note', 'expired_date', 'document_name', 'order_status', 'transmit_status', 'posting_status', 'created_at', 'updated_at', 'is_downloaded', 'is_locked', 'deduct_price', 'tag_names', 'items', 'excise_price', 'subtotal_price', 'total_price'],
+    quoteItems: ['id', 'name', 'code', 'detail', 'unit', 'price', 'quantity', 'is_deduct_withholding_tax', 'excise', 'created_at', 'updated_at', 'quote_id'],
+  };
+  const initSheets = () => {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    for (const schema of Object.keys(schemas)) {
+      let sheet = spreadsheet.getSheetByName(schema);
+      if (sheet) spreadsheet.deleteSheet(sheet);
+      sheet = spreadsheet.insertSheet(schema);
+      const attrs = schemas[schema];
+      const range = sheet.getRange(1, 1, 1, attrs.length);
+      range.setBackground('#bdbdbd');
+      range.setValues([attrs]);
+      if (attrs.length < sheet.getMaxColumns()) {
+        sheet.deleteColumns(attrs.length + 1, sheet.getMaxColumns() - attrs.length);
+      }
+    }
+  };
+  initTriggers();
+  initSheets();
+}
+
+/**
+ * シンプルトリガー: スプレッドシートを開いた時に呼び出される
+ */
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('MF請求書API連携').addItem('認証処理を開始する', 'showMfApiAuthDialog').addToUi();
+}
+```
+
+`initialize` 実行後にスプレッドシートを再読み込みすると、メニュー「MF請求書API連携」が追加される(billingsの `excise_price_of_*` / `subtotal_*` 系の詳細列は上記では代表列のみ抜粋。全列は `Billing`/`Quote` interface(`examples/agent-context/mf-invoice-api.d.ts`)を参照)。
+
+## 認証まわりの定型コード(利用者側プロジェクトに書くコード)
+
+```javascript
+function getMfCredentials_() {
+  const scriptProps = PropertiesService.getScriptProperties();
+  const clientId = scriptProps.getProperty('CLIENT_ID');
+  if (!clientId) throw new Error('CLIENT_IDが設定されていません。');
+  const clientSecret = scriptProps.getProperty('CLIENT_SECRET');
+  if (!clientSecret) throw new Error('CLIENT_SECRETが設定されていません。');
+  return { clientId, clientSecret };
+}
+
+function showMfApiAuthDialog() {
+  const credentials = getMfCredentials_();
+  MfInvoiceApi.showMfApiAuthDialog(credentials.clientId, credentials.clientSecret);
+}
+
+// 関数名は mfCallback で固定(ライブラリ内部の OAuth2 設定 setCallbackFunction('mfCallback') が
+// この名前を直接参照するため、リネームすると認証コールバックが届かない)
+function mfCallback(request) {
+  const credentials = getMfCredentials_();
+  return MfInvoiceApi.mfCallback(request, credentials.clientId, credentials.clientSecret);
+}
+
+/** @returns {MfInvoiceApi.MfClient} */
+function getMfClient_() {
+  const credentials = getMfCredentials_();
+  return MfInvoiceApi.createClient(credentials.clientId, credentials.clientSecret);
+}
+
+// ライブラリ更新でスコープが増えた場合の再認可用
+function logout() {
+  const credentials = getMfCredentials_();
+  MfInvoiceApi.logout(credentials.clientId, credentials.clientSecret);
+}
+```
+
+再認可の注意: ライブラリ更新でスコープが増えても保存済みトークンは自動失効しない(`hasAccess()` は有効期限のみ確認)。スコープ変更時は `logout()` → 再度「認証処理を開始する」の順で再認証する。
+
+## トップレベル関数(`MfInvoiceApi.xxx`)
+
+| 関数 | シグネチャ | 説明 |
+|---|---|---|
+| `createClient` | `(clientId: string, clientSecret: string): MfClient` | APIクライアントを生成。生成時に一度だけ認証状態を確認し、未認証なら即 `Error` を投げる |
+| `showMfApiAuthDialog` | `(clientId: string, clientSecret: string): void` | 認証用モーダルダイアログを表示 |
+| `createMfAuthUrl` | `(clientId: string, clientSecret: string): string` | 認証URLを直接取得(通常は `showMfApiAuthDialog` で十分) |
+| `mfCallback` | `(request: any, clientId: string, clientSecret: string): HtmlOutput` | OAuth2コールバックの処理関数。利用者側の関数名は `mfCallback` に固定(リネーム不可、下記参照) |
+| `logout` | `(clientId: string, clientSecret: string): void` | 保存済みアクセストークンを破棄 |
+| `getDateUtil` | `(baseDate: Date): DateUtil` | 日付操作ユーティリティを生成 |
+| `getPaymentStatus` | `(status: string): string` | 入金ステータス名(`default`/`not_payment`/`completed`/`unpaid`/`transferred`) → 数値文字列 |
+| `getOrderStatus` | `(status: string): string` | 受注ステータス名(`failure`/`default`/`not_received`/`received`) → 数値文字列 |
+| `getRedirectUri` | `(): string` | このGASのリダイレクトURIを取得(`https://script.google.com/macros/d/{scriptId}/usercallback`) |
+
+## `DateUtil`(`getDateUtil` の戻り値)
+
+| メソッド | 説明 |
+|---|---|
+| `getDateString(type?: number): string` | 1: `YYYY-MM-DD` / 2: `YYYYMM` / 3: `YYYY年MM月` |
+| `getTimeString(): string` | 本日日時(`YYYY-MM-DD hh:mm:dd`) |
+| `getEndDateBaseMonth(): string` | 基準日の月末(`YYYY-MM-DD`) |
+| `getEndDateLastMonth(): string` | 先月末 |
+| `getEndDateNextMonth(): string` | 来月末 |
+
+## `MfClient`(`createClient` の戻り値。6サービスを束ねる)
+
+`getMfClient_().<service>.<method>(...)` の形でアクセスする。
+
+### `billings`(請求書API)
+
+| メソッド | シグネチャ | 説明 |
+|---|---|---|
+| `getBillings` | `(from, to, query?, page?, perPage?, rangeKey?)` | 請求書一覧取得。`rangeKey`: `billing_date`/`due_date`/`sales_date`/`created_at`/`updated_at` |
+| `createNew` | `(billingReqBody)` | インボイス制度対応形式の請求書を作成 |
+| `getBilling` | `(billingId)` | 請求書1件取得 |
+| `updateBilling` | `(billingId, billingReqBody)` | 請求書更新 |
+| `updatePaymentStatus` | `(billingId, paymentStatus)` | 入金ステータス変更。渡せる値は `'0'\|'1'\|'2'` の3値のみ(未払い・振込済みはAPI側自動計算のため直接指定不可) |
+| `deleteBilling` | `(billingId)` | 請求書削除 |
+| `getBillingItems` | `(billingId)` | 請求書に紐づく品目一覧取得 |
+| `getBillingItem` | `(billingId, itemId)` | 請求書品目1件取得 |
+| `attachBillingItem` | `(billingId, itemReqBody)` | 品目追加(`item_id` または `name` のいずれかが必須) |
+| `deleteBillingItem` | `(billingId, itemId)` | 品目削除 |
+| `applyToPostBilling` | `(billingId)` | 郵送依頼 |
+| `cancelPostBilling` | `(billingId)` | 郵送キャンセル |
+
+### `quotes`(見積書API)
+
+| メソッド | シグネチャ | 説明 |
+|---|---|---|
+| `getQuotes` | `(from, to, query?, page?, perPage?, rangeKey?, filters?)` | 見積書一覧取得。`rangeKey`: `quote_date`/`expired_date`/`created_at`/`updated_at` |
+| `createNew` | `(quoteReqBody)` | 見積書作成 |
+| `getQuote` | `(quoteId)` | 見積書1件取得 |
+| `updateQuote` | `(quoteId, quoteReqBody)` | 見積書更新 |
+| `deleteQuote` | `(quoteId)` | 見積書削除 |
+| `getQuoteItems` | `(quoteId)` | 品目一覧取得 |
+| `getQuoteItem` | `(quoteId, itemId)` | 品目1件取得 |
+| `attachQuoteItem` | `(quoteId, quoteItemReqBody)` | 品目追加(`item_id` または `name` のいずれかが必須) |
+| `deleteQuoteItem` | `(quoteId, itemId)` | 品目削除 |
+| `applyToPostQuote` | `(quoteId)` | 郵送依頼 |
+| `cancelPostQuote` | `(quoteId)` | 郵送キャンセル |
+| `updateOrderStatus` | `(quoteId, orderStatus)` | 受注ステータス更新(送信値は request 契約準拠の数値文字列。レスポンス側 `order_status` は別表記語形になる場合がある) |
+| `convertQuoteToBilling` | `(quoteId)` | 見積書 → 請求書へ変換 |
+
+### `partners`(取引先API)
+
+| メソッド | シグネチャ | 説明 |
+|---|---|---|
+| `getPartners` | `(page?, perPage?)` | 取引先一覧取得 |
+| `createNew` | `(partnerReqBody)` | 取引先作成 |
+| `getPartner` | `(partnerId)` | 取引先1件取得 |
+| `updatePartner` | `(partnerId, partnerReqBody)` | 取引先更新 |
+| `deletePartner` | `(partnerId)` | 取引先削除 |
+| `getDepartments` | `(partnerId, page?, perPage?)` | 部署一覧取得 |
+| `createDepartment` | `(partnerId, departmentReqBody)` | 部署追加 |
+| `getDepartment` | `(partnerId, departmentId)` | 部署1件取得 |
+| `updateDepartment` | `(partnerId, departmentId, departmentReqBody)` | 部署更新 |
+| `deleteDepartment` | `(partnerId, departmentId)` | 部署削除 |
+| `getAll` | `()` | 全取引先を全ページ走査して取得(最大100ページ、超過時は打ち切り+`console.error`警告) |
+
+### `items`(品目API)
+
+| メソッド | シグネチャ | 説明 |
+|---|---|---|
+| `getItems` | `(page?, perPage?, name?, code?)` | 品目一覧取得。`name`/`code` は部分一致・カンマ区切り複数指定可 |
+| `createNew` | `(itemReqBody)` | 品目作成 |
+| `getItem` | `(itemId)` | 品目1件取得 |
+| `deleteItem` | `(itemId)` | 品目削除 |
+| `updateItem` | `(itemId, itemReqBody)` | 品目更新(部分更新可、全フィールド任意) |
+
+### `office`(事業所API)
+
+| メソッド | シグネチャ | 説明 |
+|---|---|---|
+| `getMyOffice` | `()` | 自事業者情報取得 |
+| `updateOffice` | `(officeReqBody)` | 事業者情報更新 |
+| `updateRegistrationCode` | `(registrationCode)` | 適格請求書発行事業者番号(T+13桁)の作成・更新 |
+| `deleteRegistrationCode` | `()` | 適格請求書発行事業者番号の削除 |
+
+### `sentHistories`(送付履歴API)
+
+| メソッド | シグネチャ | 説明 |
+|---|---|---|
+| `getSentHistories` | `(page?, perPage?)` | 送付履歴一覧取得 |
+
+## 列挙型
+
+- `PaymentStatus`: `default:'0'` `not_payment:'1'` `completed:'2'` `unpaid:'3'` `transferred:'4'`
+- `OrderStatus`: `failure:'-1'` `default:'0'` `not_received:'1'` `received:'2'`
+- `BillingRangeKey`: `billing_date` `due_date` `sales_date` `created_at` `updated_at`
+- `QuoteRangeKey`: `quote_date` `expired_date` `created_at` `updated_at`
+- `Excise`(税率): `untaxable` `non_taxable` `tax_exemption` `five_percent` `eight_percent` `eight_percent_as_reduced_tax_rate` `ten_percent`
+
+## 動作サンプル
+
+### 事業者情報を取得する
+
+```javascript
+function getMyOffice() {
+  const office = getMfClient_().office.getMyOffice();
+  console.log(office);
+  // { id, name, zip, prefecture, address1, address2, tel, fax,
+  //   office_type, office_code, registration_code, created_at, updated_at }
+}
+```
+
+### 請求書一覧を取得する(先月末〜来月末・入金済み)
+
+```javascript
+function getBillings() {
+  const dateUtil = MfInvoiceApi.getDateUtil(new Date());
+  const from = dateUtil.getEndDateLastMonth();
+  const to = dateUtil.getEndDateNextMonth();
+  const billings = getMfClient_().billings.getBillings(from, to, '入金済み');
+  console.log(billings.data[0]);
+  console.log('件数: ' + billings.pagination.total_count);
+}
+```
+
+一覧系メソッドは全て `{ data: [...], pagination: { total_count, total_pages, per_page, current_page } }` 形。`billings.data[0]` は請求書1件分のフルデータ(`id`/`pdf_url`/`partner_name`/`billing_date`/`items`/各種`excise_price_of_*`等)。
+
+## 既知の注意点
+
+- `BillingsResponse.data` の宣言型は `.d.ts` 上 `BillingItem[]` だが、`getBillings()` の実際の要素は `Billing`(請求書本体)の形。エージェントがコード生成する際は本ドキュメントの実例形を優先する(`getBillingItems()` は正しく `BillingItem[]` を返す)
+- 未認証状態で `createClient()` を呼ぶと即 `Error` を投げる。先に `showMfApiAuthDialog()` での認証フローが必要
+- ライブラリ更新でスコープが増えた場合は `logout()` → 再認証が必要(保存済みトークンは自動失効しない)。要求スコープは `mfc/invoice/data.write mfc/invoice/data.read`
+- コールバック用関数名は `mfCallback` に固定(ライブラリ内部の `setCallbackFunction('mfCallback')` が直接参照するため、利用者側でリネーム不可)
+- API呼び出しが成功すると実行ログに `Request success.` が出力される(動作確認の目印)
+
+## 型定義・詳細ドキュメント
+
+- 統合TypeScript宣言: `examples/agent-context/mf-invoice-api.d.ts`(公開関数・6サービス・全DTO・enum)
+- 配布用使い方カンペ: `examples/agent-context/AGENTS.md`
+- 全フィールド仕様: https://wywy.jp/docs/mfapi-v3-client/reference
+- 実装サンプル一式: https://github.com/wywy-llc/mf-Invoice-api-sample

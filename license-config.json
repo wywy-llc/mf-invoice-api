@@ -16,6 +16,7 @@
     "README.md",
     "build",
     "docs",
+    "examples",
     "eslint.config.mjs",
     "rollup.config.mjs",
     "test",

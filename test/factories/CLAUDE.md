@@ -13,6 +13,7 @@
     - ファイル名: `{domain}.factory.ts`（例: billing.factory.ts, quote.factory.ts）
     - エクスポート名: `{domain}Factory`（例: billingFactory）
     - レスポンス型（一覧+pagination）は同一ファイル内に `{domain}sResponseFactory` として併記
+    - 共通基盤（`createFactoryWrapper` / `resetAllFactories`）は base.factory.ts に集約する
   </always>
 </constraints>
 
@@ -38,20 +39,22 @@
 </constraints>
 
 ```typescript
-export const billingFactory = Factory.Sync.makeFactory<MfInvoiceApi.Billing>({
-  id: Factory.each((i) => `billing_${i + 1}`),
-  items: Factory.each(() => billingItemFactory.buildList(1)),
-  // ...
-});
+export const billingFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.Billing>({
+    id: Factory.each(i => `billing_${i + 1}`),
+    items: Factory.each(() => billingItemFactory.buildList(1)),
+    // ...
+  })
+);
 ```
 
 ## §4 リセット
 
 <constraints scope="factory-reset">
   <always>
-    - 各ファクトリーは factory.ts が標準搭載する `.resetSequenceNumber()` をそのまま利用する（独自ラッパーは作らない）
-    - すべてのファクトリーの reset は test/factories/index.ts の `resetAllFactorySequences()` に集約する
-    - 新規ファクトリー追加時は index.ts の export と `resetAllFactorySequences()` の両方を更新する
+    - 各ファクトリーは生の `Factory.Sync.makeFactory` の結果を base.factory.ts の `createFactoryWrapper()` でラップしてエクスポートする（build/buildList/resetSequenceNumber の統一インターフェース + `_factory` での内部アクセスを提供）
+    - すべてのファクトリーの reset は test/factories/index.ts の `resetAllFactorySequences()` に集約する（内部で base.factory.ts の `resetAllFactories(...)` を呼ぶ）
+    - 新規ファクトリー追加時は index.ts の export と `resetAllFactorySequences()` 内の `resetAllFactories(...)` 呼び出しの両方を更新する
     - リセットの呼び出し自体は test/setup.ts の全体 beforeEach が自動で行うため、個別テストファイルでの呼び出しは不要
   </always>
   <rationale>テスト間の連番依存を排除し、実行順序に依存しないテストにする</rationale>

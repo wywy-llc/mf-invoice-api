@@ -2,6 +2,7 @@
  * Copyright 2026 wywy LLC and contributors
  */
 import * as Factory from 'factory.ts';
+import { createFactoryWrapper } from './base.factory';
 
 /**
  * ページネーション情報のテストデータを生成するファクトリー
@@ -16,10 +17,11 @@ import * as Factory from 'factory.ts';
  * // シーケンス番号のリセット(通常は test/setup.ts の beforeEach で自動実行される)
  * paginationDataFactory.resetSequenceNumber();
  */
-export const paginationDataFactory =
+export const paginationDataFactory = createFactoryWrapper(
   Factory.Sync.makeFactory<MfInvoiceApi.PaginationData>({
     total_count: 1,
     total_pages: 1,
     per_page: 100,
     current_page: 1,
-  });
+  })
+);

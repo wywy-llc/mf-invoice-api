@@ -1,6 +1,7 @@
 /**
  * Copyright 2026 wywy LLC and contributors
  */
+export * from './base.factory';
 export * from './pagination-data.factory';
 export * from './billing-item.factory';
 export * from './billing.factory';
@@ -10,6 +11,7 @@ export * from './item.factory';
 export * from './office.factory';
 export * from './quote.factory';
 
+import { resetAllFactories } from './base.factory';
 import { paginationDataFactory } from './pagination-data.factory';
 import { billingItemFactory } from './billing-item.factory';
 import {
@@ -27,6 +29,7 @@ import { quoteFactory, quotesResponseFactory } from './quote.factory';
  * すべてのファクトリーのシーケンス番号をリセットする
  *
  * テストの独立性を保つため、beforeEach で必ず呼び出す(test/setup.ts で自動実行される)。
+ * 新規ファクトリー追加時はここに登録する。
  *
  * @example
  * beforeEach(() => {
@@ -34,17 +37,19 @@ import { quoteFactory, quotesResponseFactory } from './quote.factory';
  * });
  */
 export function resetAllFactorySequences(): void {
-  paginationDataFactory.resetSequenceNumber();
-  billingItemFactory.resetSequenceNumber();
-  billingConfigFactory.resetSequenceNumber();
-  billingFactory.resetSequenceNumber();
-  billingsResponseFactory.resetSequenceNumber();
-  departmentFactory.resetSequenceNumber();
-  partnerFactory.resetSequenceNumber();
-  partnersResponseFactory.resetSequenceNumber();
-  itemFactory.resetSequenceNumber();
-  itemsResponseFactory.resetSequenceNumber();
-  officeFactory.resetSequenceNumber();
-  quoteFactory.resetSequenceNumber();
-  quotesResponseFactory.resetSequenceNumber();
+  resetAllFactories(
+    paginationDataFactory,
+    billingItemFactory,
+    billingConfigFactory,
+    billingFactory,
+    billingsResponseFactory,
+    departmentFactory,
+    partnerFactory,
+    partnersResponseFactory,
+    itemFactory,
+    itemsResponseFactory,
+    officeFactory,
+    quoteFactory,
+    quotesResponseFactory
+  );
 }

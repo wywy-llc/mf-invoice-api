@@ -2,6 +2,7 @@
  * Copyright 2026 wywy LLC and contributors
  */
 import * as Factory from 'factory.ts';
+import { createFactoryWrapper } from './base.factory';
 
 /**
  * 取引先部署のテストデータを生成するファクトリー
@@ -16,7 +17,7 @@ import * as Factory from 'factory.ts';
  * // シーケンス番号のリセット(通常は test/setup.ts の beforeEach で自動実行される)
  * departmentFactory.resetSequenceNumber();
  */
-export const departmentFactory =
+export const departmentFactory = createFactoryWrapper(
   Factory.Sync.makeFactory<MfInvoiceApi.Department>({
     id: Factory.each(i => `department_${i + 1}`),
     zip: '100-0001',
@@ -33,4 +34,5 @@ export const departmentFactory =
     office_member_name: '',
     created_at: '2024-01-01T00:00:00.000Z',
     updated_at: '2024-01-01T00:00:00.000Z',
-  });
+  })
+);

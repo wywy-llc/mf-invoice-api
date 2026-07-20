@@ -3,6 +3,7 @@
  */
 import * as Factory from 'factory.ts';
 import { Excise } from '../../src/service/service-base';
+import { createFactoryWrapper } from './base.factory';
 
 /**
  * 請求書品目のテストデータを生成するファクトリー
@@ -17,7 +18,7 @@ import { Excise } from '../../src/service/service-base';
  * // シーケンス番号のリセット(通常は test/setup.ts の beforeEach で自動実行される)
  * billingItemFactory.resetSequenceNumber();
  */
-export const billingItemFactory =
+export const billingItemFactory = createFactoryWrapper(
   Factory.Sync.makeFactory<MfInvoiceApi.BillingItem>({
     id: Factory.each(i => `billing_item_${i + 1}`),
     name: Factory.each(i => `テスト品目${i + 1}`),
@@ -32,4 +33,5 @@ export const billingItemFactory =
     updated_at: '2024-01-01T00:00:00.000Z',
     delivery_number: '',
     delivery_date: '',
-  });
+  })
+);

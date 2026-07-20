@@ -18,6 +18,7 @@ export default defineConfig([
       'dist/**',
       'testing/**',
       'template/**',
+      'examples/**',
     ],
   },
 
@@ -79,9 +80,9 @@ export default defineConfig([
   },
 
   {
-    files: ['test/**/*.ts'],
+    files: ['test/**/*.ts', 'vitest.config.ts'],
     rules: {
-      // テストコードは npm パッケージとして配布されないため devDependencies の import を許可する
+      // テストコード・テスト設定は npm パッケージとして配布されないため devDependencies の import を許可する
       'n/no-unpublished-import': 'off',
     },
   },

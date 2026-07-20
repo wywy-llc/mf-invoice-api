@@ -3,7 +3,7 @@
 <metadata>
   <scope>test/factories/ 配下</scope>
   <purpose>テストデータ生成の一元管理(手動オブジェクトリテラル禁止)</purpose>
-  <parent>test/CLAUDE.md（競合時は親が優先）</parent>
+  <parent>test/CLAUDE.md（本ファイルはより具体的なスコープのため、競合時は本ファイルが優先）</parent>
 </metadata>
 
 ## §1 命名
@@ -23,7 +23,8 @@
   <always>
     - ネスト深度 &lt;= 1 かつ状態パターン &lt;= 2種 → Factory.ts（`Factory.Sync.makeFactory`）
     - ネスト深度 &gt;= 2 または状態パターン &gt;= 3種 → Builder（class + メソッドチェーン + build() でのdeep copy）
-    - mf-invoice-api の型（MfInvoiceApi.* namespace）は基本的にフラット〜1段ネストのため、現状すべて Factory.ts パターンで統一
+    - mf-invoice-api の型（MfInvoiceApi.* namespace）は基本的にフラット〜1段ネストのため、現状（2026-07時点）すべて Factory.ts パターンで統一
+    - ネスト深度 &gt;= 2 または状態パターン &gt;= 3種 の型を追加した際は Builder パターンを導入し、本節の現状記述を更新する
   </always>
   <rationale>単純な型に Builder は過剰、複雑な型に Factory.ts はチェーン不能で可読性が落ちる</rationale>
 </constraints>

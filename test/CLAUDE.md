@@ -3,7 +3,7 @@
 <metadata>
   <scope>test/ 配下全テストファイル</scope>
   <purpose>テストの一貫性・可読性・保守性を担保</purpose>
-  <parent>プロジェクトルート CLAUDE.md（競合時は親が優先）</parent>
+  <parent>プロジェクトルート CLAUDE.md（競合時はより具体的なスコープの規約が優先。test/factories/CLAUDE.md は本ファイルより具体的）</parent>
 </metadata>
 
 ## §1 構造
@@ -15,6 +15,7 @@
     - 正常系と異常系を明確に分離
     - エッジケースは明示指示時のみ生成
   </always>
+  <rationale>過剰なケース生成によるテスト保守コスト増加を回避（必要性が明確な時のみ追加）</rationale>
 </constraints>
 
 ## §2 データ
@@ -28,24 +29,23 @@
 
 ```typescript
 // ファクトリーを使用
-const user = UserFactory.build({ role: 'admin' });
+const billing = billingFactory.build({ title: '2024年6月分請求書' });
 ```
 
 ## §3 実行
 
 <constraints scope="test-execution">
   <always>
-    - 全 describe に beforeEach を設置
-    - beforeEach でモック + ファクトリーシーケンスをリセット
+    - モックを使う describe には beforeEach を設置し vi.clearAllMocks() を実行
+    - ファクトリーのシーケンスリセットは test/setup.ts のグローバル beforeEach が自動実行するため、個別テストファイルで呼び出さない
   </always>
-  <rationale>テスト間依存排除 → 実行順序非依存</rationale>
+  <rationale>テスト間依存排除 → 実行順序非依存（ファクトリーリセットの詳細 → test/factories/CLAUDE.md §4）</rationale>
 </constraints>
 
 ```typescript
-describe('Service', () => {
+describe('BillingService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    Factory.resetSequenceNumber();
   });
 });
 ```
@@ -62,8 +62,8 @@ describe('Service', () => {
 
 ```typescript
 // 具体的なエラーメッセージで検証
-it('無効メールで"Invalid email format"エラー', () => {
-  expect(() => Service.call(user)).toThrow('Invalid email format');
+it('billingId未指定で"billingId is required."エラー', () => {
+  expect(() => billingService.getBilling('')).toThrow('billingId is required.');
 });
 ```
 
@@ -81,18 +81,20 @@ it('無効メールで"Invalid email format"エラー', () => {
 </constraints>
 
 ```typescript
-it('既存バッチジョブ存在時、そのバッチ結果返却', () => {
-  // テストデータ: PROCESSING状態バッチキュー（処理中）
-  const queue = Factory.createBatch({ status: PROCESSING });
-  const expected = Result.success('既存ジョブ実行中');
+it('請求書ID指定時、該当する請求書を返却', () => {
+  // テストデータ: ファクトリーで生成した請求書
+  const billing = billingFactory.build({ id: 'billing_1' });
 
-  // モック: 既存ジョブ存在（重複実行防止）
-  checkExisting.mockReturnValue(expected);
+  // モック: UrlFetchAppが請求書レスポンスを返す
+  vi.stubGlobal('UrlFetchApp', {
+    fetch: vi.fn().mockReturnValue({
+      getResponseCode: () => 200,
+      getContentText: () => JSON.stringify(billing),
+    }),
+  });
 
-  // 実行+検証: 早期リターンで重複実行防止
-  expect(Handler.call(queue)).toBe(expected);
-  expect(checkExisting).toHaveBeenCalledWith(queue);
-  expect(generateService.call).not.toHaveBeenCalled();
+  // 実行+検証: レスポンスがそのまま返却される
+  expect(billingService.getBilling('billing_1')).toEqual(billing);
 });
 ```
 
@@ -106,6 +108,24 @@ it('既存バッチジョブ存在時、そのバッチ結果返却', () => {
   <fallback>複数テストファイルで同じ GAS モック形状が繰り返し必要になった場合、test/setup.ts に共通ヘルパーとして切り出す</fallback>
 </constraints>
 
+```typescript
+// UrlFetchApp モック例（service-base.ts の fetch/processResponse が参照する形に合わせる）
+vi.stubGlobal('UrlFetchApp', {
+  fetch: vi.fn().mockReturnValue({
+    getResponseCode: () => 200,
+    getContentText: () => JSON.stringify({ id: 'billing_1' }),
+  }),
+});
+
+// PropertiesService モック例
+vi.stubGlobal('PropertiesService', {
+  getScriptProperties: vi.fn().mockReturnValue({
+    getProperty: vi.fn().mockReturnValue('dummy-value'),
+    setProperty: vi.fn(),
+  }),
+});
+```
+
 ## §7 適用除外
 
 <constraints scope="test-exclusions">
@@ -118,6 +138,6 @@ it('既存バッチジョブ存在時、そのバッチ結果返却', () => {
 <reminders>
   CRITICAL:
   - テストデータは必ずファクトリーから生成（手動オブジェクトリテラル禁止）
-  - beforeEach で vi.clearAllMocks() + Factory.resetSequenceNumber()
+  - beforeEach で vi.clearAllMocks()（ファクトリーのシーケンスリセットは test/setup.ts が自動実行）
   - it 名は「何を」「どうすると」「どうなる」を日本語で明記
 </reminders>

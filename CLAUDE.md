@@ -1,39 +1,47 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、本リポジトリで作業する Claude Code (claude.ai/code) 向けのガイダンス。
 
-## Project
+## プロジェクト概要
 
-TypeScript client library for the MoneyForward Cloud Invoice API v3 (マネーフォワード クラウド請求書API v3), distributed as a **Google Apps Script (GAS) library** — not a standalone app or server. Consumers add it by script ID inside their own GAS project bound to a spreadsheet. Full usage docs: https://wywy.jp/docs/mfapi-v3-client/reference
+- マネーフォワード クラウド請求書API v3 用の TypeScript クライアントライブラリ
+- **Google Apps Script (GAS) ライブラリ**として配布(スタンドアロンアプリ・サーバーではない)
+- 利用者は自分の GAS プロジェクト(スプレッドシート紐付け)にスクリプトIDで追加する
+- 利用ドキュメント: <https://wywy.jp/docs/mfapi-v3-client/reference>
 
-## Commands
+## コマンド
 
-- `npm run lint` — runs `license-check-and-add add` (prepends Apache-2.0 headers; per `license-config.json` this covers `.ts`/`.js`/`.mjs` **and** `.md`/`.html`/shell scripts, excluding only `README.md` and a few ignored paths) **then** `eslint --fix`. This is **not read-only**: it mutates files.
-- `npm run lint:fix` — `eslint --fix` only, no license header pass.
-- `npm run format` — `prettier --write src/ test/`.
-- `npm run typecheck` — `tsc --noEmit`.
-- `npm test` — `vitest run`. Run a single file: `npx vitest run test/lib/date-util.test.ts`.
-- A `husky` pre-commit hook (`.husky/pre-commit`) runs `lint-staged` (eslint --fix + prettier --write, plus `vitest related --run` for `src/**/*.ts`) followed by `tsc --noEmit` on every commit — most lint/format issues are caught automatically at commit time.
-- `npm run build` — cleans, bundles via Rollup into `dist/` (note: `package.json` `main` says `build/index.js`, but the actual bundler output directory is `dist/` — this is a pre-existing inconsistency, not a bug to silently "fix").
-- `npm run deploy` — lint + test + build, then swaps in `.clasp-dev.json` and `clasp push -f` to the **dev** GAS project. Safe for Claude to run autonomously.
-- `npm run deploy:prod` — same but swaps in `.clasp-prod.json` and `clasp push` (no `-f`) to the **production** GAS project consumed by real users. **Always confirm with the user before running this** — it is a production deploy, not a reversible local action.
-- Both deploy commands require `.clasp-dev.json` / `.clasp-prod.json` locally (gitignored, not in-repo) and a `clasp login` session.
+- `npm run lint` — ライセンスヘッダー付与(`license-check-and-add`)→ `eslint --fix`。ファイルを書き換える(read-onlyではない)
+- `npm run lint:fix` — `eslint --fix` のみ(ライセンスヘッダー付与なし)
+- `npm run lint:ci` — `eslint`(`--fix` なし)。CI が使用する
+- `npm run format` — `prettier --write src/ test/`
+- `npm run typecheck` — `tsc --noEmit`
+- `npm test` — `vitest run`。coverage 常時有効(v8 provider、text + html レポート)。単一ファイル実行: `npx vitest run test/lib/date-util.test.ts`
+- `npm run build` — clean → Rollup バンドル → `dist/` に出力。`package.json` の `main` は `build/index.js` を指しているが実際の出力先は `dist/`(既知の不整合、黙って直さない)
+- `npm run deploy` — lint + test + build 後、`.clasp-dev.json` を使い **dev** GAS プロジェクトへ `clasp push -f`。Claude が自律実行してよい
+- `npm run deploy:prod` — 同様に `.clasp-prod.json` を使い **本番** GAS プロジェクトへ `clasp push`(`-f` なし)。**実行前に必ずユーザーに確認する**(不可逆な本番デプロイ)
+- deploy 系コマンドは `.clasp-dev.json` / `.clasp-prod.json`(gitignore対象、リポジトリ外)とローカルの `clasp login` セッションが必要
+- pre-commit hook(`.husky/pre-commit`): `lint-staged`(eslint --fix + prettier --write + `src/**/*.ts` は `vitest related --run`)→ `tsc --noEmit`
+- CI(`.github/workflows/ci.yml`): push・PR で `npm ci` → `typecheck` → `lint:ci` → `test` を実行(Node.js 24)
 
-## Structure
+## ディレクトリ構成
 
-- `src/index.ts` — the GAS-exposed public API surface (`createClient`, `getPaymentStatus`, `getOrderStatus`, `mfCallback`, etc.) that consuming GAS projects call directly.
-- `src/lib/` — core infra: `mf-client.ts` (API client), `mf-oauth2.ts` (OAuth2 flow), `date-util.ts`, `text-link-util.ts`.
-- `src/service/` — one file per MF Invoice API resource (`billing-service.ts`, `quote-service.ts`, `partner-service.ts`, `item-service.ts`, `office-service.ts`), all extending `service-base.ts`.
-- `src/@types/` — `.d.ts` declarations mirroring each `lib/`/`service/` module 1:1.
-- Runtime depends on an external GAS library (`OAuth2` / `apps-script-oauth2`, declared in `appsscript.json`) that is **not** an npm dependency — it won't show up in `package.json`.
+- `src/index.ts` — GAS から直接呼ばれる公開API(`createClient`, `getPaymentStatus`, `getOrderStatus`, `mfCallback` など)
+- `src/lib/` — 基盤処理: `mf-client.ts`(APIクライアント)/ `mf-oauth2.ts`(OAuth2フロー)/ `date-util.ts` / `text-link-util.ts`
+- `src/service/` — MF請求書APIリソース単位のサービス(`billing-service.ts` / `quote-service.ts` / `partner-service.ts` / `item-service.ts` / `office-service.ts`)、いずれも `service-base.ts` を継承
+- `src/@types/` — `lib/` / `service/` 各モジュールに1:1対応する `.d.ts` 宣言
+- 外部GASライブラリ(`OAuth2` / apps-script-oauth2、`appsscript.json` で宣言)に依存するが npm 依存には現れない
 
-## Testing
+## テスト
 
-- Only `src/lib/date-util.ts` has unit tests (`test/lib/date-util.test.ts`). Everything in `src/service/`, the OAuth flow, and the HTTP client is currently validated manually against the live MF API via a bound spreadsheet, not locally.
-- When modifying a `src/service/*.ts` or `src/lib/*.ts` file, add unit tests where feasible (mock GAS globals like `UrlFetchApp`/`PropertiesService` rather than hitting the live API), following the existing style in `test/lib/date-util.test.ts`.
+- `test/lib/date-util.test.ts` — `DateUtil` の単体テスト
+- `test/factories/` — factory.ts ベースのテストデータ生成基盤(7ドメイン型・13ファクトリー)。規約詳細は `test/CLAUDE.md` / `test/factories/CLAUDE.md` 参照
+- `src/service/*`・OAuthフロー・HTTPクライアントは未テスト。現状はスプレッドシート経由で実際のMF APIに対し手動検証している
+- `src/service/*.ts` / `src/lib/*.ts` を変更する際は、可能な範囲で単体テストを追加する(`UrlFetchApp` / `PropertiesService` 等のGASグローバルはモックし、実APIは叩かない)。テストデータは `test/factories/` のファクトリー経由で生成する
 
-## Conventions
+## 開発規約
 
-- Commit messages: `<English capitalized verb> <Japanese description>` (e.g. `Add 品目の削除`, `Fix OAuth スコープに data.read を追加`). This is **not** Conventional Commits (`feat:`/`fix:`) — use `Add`/`Fix`/`Refactor`/`Del`/`Verup`/`Doc`-style prefixes with a Japanese subject.
-- Formatting: 2-space indent, single quotes, trailing commas (`es5`), enforced via ESLint flat config (`eslint.config.mjs`, ESLint v9 + `typescript-eslint` + `eslint-plugin-n` + `prettier`) — see `eslint.config.mjs` / `.prettierrc.json`.
-- No CI pipeline exists in this repo. The husky pre-commit hook covers lint/format/typecheck automatically, but `npm run build` and the full `npm test` suite must still be run manually before pushing or deploying.
+- コミットメッセージ: `{Prefix}: [{scope}] 日本語の説明`(例: `Add: [factories] テストファクトリー基盤を追加`, `Mod: [test] 既存テストの規約違反を修正`)。Conventional Commits(`feat:`/`fix:`)ではない。Prefix は `Add`/`Fix`/`Mod`/`Refactor`/`Del`/`Verup`/`Doc` のいずれか
+- フォーマット: 2-space indent、シングルクォート、trailing comma(`es5`)、arrow関数の引数括弧は単一引数時省略(`arrowParens: avoid`)。ESLint flat config(`eslint.config.mjs`、ESLint v9 + typescript-eslint + eslint-plugin-n + prettier)と `.prettierrc.json` で強制
+- Node.js バージョン: `>=24`(`.nvmrc` も `24`)
+- ライセンスヘッダー: `src/**/*.ts`(および `.js`/`.mjs`)にのみ単一行の Copyright 表記を付与。`test/`・`CLAUDE.md`・ルート設定ファイル類は対象外(`license-config.json` 参照)

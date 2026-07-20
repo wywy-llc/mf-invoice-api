@@ -3,7 +3,10 @@
  */
 import * as Factory from 'factory.ts';
 import { PaymentStatus } from '../../src/service/service-base';
-import { billingItemFactory } from './billing-item.factory';
+import {
+  billingItemFactory,
+  billingItemReqBodyFactory,
+} from './billing-item.factory';
 import { paginationDataFactory } from './pagination-data.factory';
 import { createFactoryWrapper } from './base.factory';
 
@@ -121,5 +124,31 @@ export const billingsResponseFactory = createFactoryWrapper(
   Factory.Sync.makeFactory<MfInvoiceApi.BillingsResponse>({
     data: Factory.each(() => billingItemFactory.buildList(1)),
     pagination: Factory.each(() => paginationDataFactory.build()),
+  })
+);
+
+/**
+ * 請求書作成リクエストボディのテストデータを生成するファクトリー
+ *
+ * @example
+ * const reqBody = billingReqBodyFactory.build();
+ *
+ * @example
+ * const reqBody = billingReqBodyFactory.build({ title: '2024年6月分請求書' });
+ */
+export const billingReqBodyFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.BillingReqBody>({
+    department_id: 'department_1',
+    title: Factory.each(i => `請求書${i + 1}`),
+    memo: '',
+    payment_condition: '',
+    billing_date: '2024-06-01',
+    due_date: '2024-06-30',
+    sales_date: '2024-06-01',
+    billing_number: Factory.each(i => `INV-${String(i + 1).padStart(6, '0')}`),
+    note: '',
+    document_name: '',
+    tag_names: [],
+    items: Factory.each(() => billingItemReqBodyFactory.buildList(1)),
   })
 );

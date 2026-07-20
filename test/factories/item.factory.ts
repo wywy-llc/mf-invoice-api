@@ -47,3 +47,25 @@ export const itemsResponseFactory = createFactoryWrapper(
     pagination: Factory.each(() => paginationDataFactory.build()),
   })
 );
+
+/**
+ * 品目作成リクエストボディのテストデータを生成するファクトリー
+ *
+ * @example
+ * const reqBody = itemReqBodyFactory.build();
+ *
+ * @example
+ * const reqBody = itemReqBodyFactory.build({ name: 'コンサルティング費用' });
+ */
+export const itemReqBodyFactory = createFactoryWrapper(
+  Factory.Sync.makeFactory<MfInvoiceApi.ItemReqBody>({
+    name: Factory.each(i => `テスト品目${i + 1}`),
+    code: Factory.each(i => `ITEM-${String(i + 1).padStart(4, '0')}`),
+    detail: '',
+    unit: '個',
+    price: 1000,
+    quantity: 1,
+    is_deduct_withholding_tax: false,
+    excise: Excise.ten_percent,
+  })
+);

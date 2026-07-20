@@ -13,17 +13,37 @@ export * from './quote.factory';
 
 import { resetAllFactories } from './base.factory';
 import { paginationDataFactory } from './pagination-data.factory';
-import { billingItemFactory } from './billing-item.factory';
+import {
+  billingItemFactory,
+  billingItemReqBodyFactory,
+} from './billing-item.factory';
 import {
   billingConfigFactory,
   billingFactory,
   billingsResponseFactory,
+  billingReqBodyFactory,
 } from './billing.factory';
-import { departmentFactory } from './department.factory';
-import { partnerFactory, partnersResponseFactory } from './partner.factory';
-import { itemFactory, itemsResponseFactory } from './item.factory';
+import {
+  departmentFactory,
+  departmentReqBodyFactory,
+} from './department.factory';
+import {
+  partnerFactory,
+  partnersResponseFactory,
+  partnerReqBodyFactory,
+} from './partner.factory';
+import {
+  itemFactory,
+  itemsResponseFactory,
+  itemReqBodyFactory,
+} from './item.factory';
 import { officeFactory } from './office.factory';
-import { quoteFactory, quotesResponseFactory } from './quote.factory';
+import {
+  quoteFactory,
+  quotesResponseFactory,
+  quoteItemReqBodyFactory,
+  quoteReqBodyFactory,
+} from './quote.factory';
 
 /**
  * すべてのファクトリーのシーケンス番号をリセットする
@@ -40,16 +60,23 @@ export function resetAllFactorySequences(): void {
   resetAllFactories(
     paginationDataFactory,
     billingItemFactory,
+    billingItemReqBodyFactory,
     billingConfigFactory,
     billingFactory,
     billingsResponseFactory,
+    billingReqBodyFactory,
     departmentFactory,
+    departmentReqBodyFactory,
     partnerFactory,
     partnersResponseFactory,
+    partnerReqBodyFactory,
     itemFactory,
     itemsResponseFactory,
+    itemReqBodyFactory,
     officeFactory,
     quoteFactory,
-    quotesResponseFactory
+    quotesResponseFactory,
+    quoteItemReqBodyFactory,
+    quoteReqBodyFactory
   );
 }

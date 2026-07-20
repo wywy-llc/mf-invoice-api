@@ -16,16 +16,11 @@
 1. スプレッドシートとGASを準備する
 2. ライブラリを追加する
 3. Client ID / Client Secret を設定する
-4. 初期設定(トリガー・シート作成)
-5. クラウド請求書APIに認証する
+4. 初期設定・認証する
 
 ## 1. スプレッドシートとGASを準備する
 
 このライブラリはスプレッドシート + GAS の利用を前提とします。
-
-準備を省略する場合は、以下のURLから完成版のスプレッドシートをコピーしてください。
-
-https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy
 
 ### GASエディタを起動する
 
@@ -67,7 +62,7 @@ API連携にはMFアプリポータルで発行する `Client ID` と `Client Se
    - CLIENT_SECRET: MFアプリポータルの `Client Secret`
    - <img width="500" alt="スクリーンショット 2023-08-06 22 39 43" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/1312398a-ca8b-4aa5-af6c-808f83bf9564">
 
-## 4. 初期設定(トリガー・シート作成)
+## 4. 初期設定・認証する
 
 1. GASエディタで `コード.gs` に以下をコピー&ペーストする
 
@@ -226,19 +221,12 @@ function fetchOfficeInfo() {
    - スプレッドシートの画面を再読み込みします。再読み込み時にトリガーが実行されます。
    - 「MF請求書API連携」メニューが表示されれば完了です。
    - <img width="500" alt="スクリーンショット 2023-08-07 8 23 06" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/c7dd2a57-1cae-4f31-bd4e-be687b859e85">
-
-ここまでで、スプレッドシートとGASの準備は完了です。
-
-## 5. クラウド請求書APIに認証する
-
-必要な情報が揃ったので、クラウド請求書APIに認証します。
-
-1. 認証処理を開始する
+4. 認証処理を開始する
    - スプレッドシートメニュー > MF請求書API連携 > 認証処理を開始する
    - <img width="300" alt="スクリーンショット 2023-08-07 8 35 50" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/ae2320bb-29fd-41d4-a450-3373e0cb0c02">
-2. Google権限を許可する
-3. 「認証処理を開始する」を再実行する
-4. クラウド請求書APIのサイトで認証処理を継続する
+5. Google権限を許可する
+6. 「認証処理を開始する」を再実行する
+7. クラウド請求書APIのサイトで認証処理を継続する
    - <img width="256" alt="スクリーンショット 2023-08-07 8 40 32" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/5393fa9b-96f2-4bbd-8347-4f90c76afa0d">
    - 「こちらをクリックして認証処理を継続してください」をクリックする
    - URLに認証に必要な情報が記載されています。
@@ -247,8 +235,20 @@ function fetchOfficeInfo() {
        - 認証処理しているGASとマネーフォワード クラウド請求書に登録したリダイレクトURIが不一致の場合があります。
      - クライアント認証方式で `CLIENT_SECRET_POST` を選択したか
        - 初期値は `CLIENT_SECRET_BASIC` のため、選択し忘れる場合があります。
-5. 認証成功を確認する
+8. 認証成功を確認する
    - 「認証成功しました。このタブを閉じてください。」と表示されれば認証完了です。
+
+ここまでで、スプレッドシートとGASの準備・認証は完了です。
+
+## 事業者情報を取得する
+
+認証まで完了すると、`fetchOfficeInfo` 関数(「4. 初期設定・認証する」でコピペ済み)で事業者情報を取得できます。
+
+1. スプレッドシートメニュー > MF請求書API連携 > 事業者情報を取得する、を実行する
+2. `office` シートを開く
+   - 2行目に `office.getMyOffice()` で取得した事業者情報が反映されていれば成功です。
+
+`office.getMyOffice()` 自体の引数・戻り値の詳細は [docs/reference.md](docs/reference.md#getmyoffice) を参照してください。
 
 ## その他のサンプルコード
 

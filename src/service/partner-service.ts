@@ -23,9 +23,7 @@ export class PartnerService extends ServiceBase {
     perPage: number = 100
   ): MfInvoiceApi.PartnersResponse {
     const reqUrl = `${this.baseUrl}?page=${page}&per_page=${perPage}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.PartnersResponse>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -37,11 +35,11 @@ export class PartnerService extends ServiceBase {
     if (!partnerReqBody) {
       throw new Error('partnerReqBody is required.');
     }
-    const reqUrl = this.baseUrl;
-    const method = ReqMethod.post;
-    const payload = JSON.stringify(partnerReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Partner>(
+      this.baseUrl,
+      ReqMethod.post,
+      JSON.stringify(partnerReqBody)
+    );
   }
 
   /**
@@ -54,9 +52,7 @@ export class PartnerService extends ServiceBase {
       throw new Error('partnerId is required.');
     }
     const reqUrl = `${this.baseUrl}/${partnerId}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Partner>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -73,10 +69,11 @@ export class PartnerService extends ServiceBase {
       throw new Error('partnerId and partnerReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${partnerId}`;
-    const method = ReqMethod.put;
-    const payload = JSON.stringify(partnerReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Partner>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify(partnerReqBody)
+    );
   }
   /**
    * 取引先の削除
@@ -88,9 +85,7 @@ export class PartnerService extends ServiceBase {
       throw new Error('partnerId is required.');
     }
     const reqUrl = `${this.baseUrl}/${partnerId}`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
@@ -116,7 +111,7 @@ export class PartnerService extends ServiceBase {
         `getAll: MAX_PAGES(${PartnerService.MAX_PAGES})に達したため取得を打ち切りました。全${totalPages}ページ中${PartnerService.MAX_PAGES}ページのみ取得。`
       );
     }
-    console.log(partners.length + '件の取引先取得に成功。');
+    console.info(partners.length + '件の取引先取得に成功。');
     return partners;
   }
 }

@@ -32,14 +32,15 @@ export class QuoteService extends ServiceBase {
     if (!from || !to) {
       throw new Error('from and to are required.');
     }
-    const reqUrl = `${
-      this.baseUrl
-    }?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
-      from
-    )}&to=${encodeURIComponent(to)}&q=${encodeURIComponent(query)}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.fetchListWithRange<MfInvoiceApi.QuotesResponse>(
+      this.baseUrl,
+      from,
+      to,
+      query,
+      page,
+      perPage,
+      rangeKey
+    );
   }
 
   /**
@@ -51,11 +52,11 @@ export class QuoteService extends ServiceBase {
     if (!quoteReqBody) {
       throw new Error('quoteReqBody is required.');
     }
-    const reqUrl = this.baseUrl;
-    const method = ReqMethod.post;
-    const payload = JSON.stringify(quoteReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Quote>(
+      this.baseUrl,
+      ReqMethod.post,
+      JSON.stringify(quoteReqBody)
+    );
   }
 
   /**
@@ -68,9 +69,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Quote>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -87,10 +86,11 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and quoteReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
-    const method = ReqMethod.put;
-    const payload = JSON.stringify(quoteReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Quote>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify(quoteReqBody)
+    );
   }
 
   /**
@@ -103,9 +103,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
@@ -118,9 +116,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.QuoteItemResponse>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -134,9 +130,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
-    const method = ReqMethod.get;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Item>(reqUrl, ReqMethod.get);
   }
 
   /**
@@ -153,10 +147,11 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and quoteItemReqBody are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items`;
-    const method = ReqMethod.post;
-    const payload = JSON.stringify(quoteItemReqBody);
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<boolean>(
+      reqUrl,
+      ReqMethod.post,
+      JSON.stringify(quoteItemReqBody)
+    );
   }
 
   /**
@@ -170,9 +165,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and itemId are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/items/${itemId}`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
@@ -185,9 +178,7 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/posting`;
-    const method = ReqMethod.post;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.post);
   }
 
   /**
@@ -201,9 +192,7 @@ export class QuoteService extends ServiceBase {
     }
 
     const reqUrl = `${this.baseUrl}/${quoteId}/posting`;
-    const method = ReqMethod.delete;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<boolean>(reqUrl, ReqMethod.delete);
   }
 
   /**
@@ -219,10 +208,11 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId and status are required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/order_status`;
-    const method = ReqMethod.put;
-    const payload = JSON.stringify({ order_status: orderStatus });
-    const res = this.fetch(reqUrl, method, payload);
-    return this.processResponse(res);
+    return this.request<boolean>(
+      reqUrl,
+      ReqMethod.put,
+      JSON.stringify({ order_status: orderStatus })
+    );
   }
 
   /**
@@ -235,8 +225,6 @@ export class QuoteService extends ServiceBase {
       throw new Error('quoteId is required.');
     }
     const reqUrl = `${this.baseUrl}/${quoteId}/convert_to_billing`;
-    const method = ReqMethod.post;
-    const res = this.fetch(reqUrl, method);
-    return this.processResponse(res);
+    return this.request<MfInvoiceApi.Billing>(reqUrl, ReqMethod.post);
   }
 }

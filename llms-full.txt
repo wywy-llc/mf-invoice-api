@@ -7,7 +7,7 @@
 - 配布形態: npm パッケージではなく **GAS ライブラリ**(clasp push)。利用者は GAS エディタでスクリプトIDを検索して自分のプロジェクトへ追加する
 - スクリプトID: `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4`
 - 名前空間: `MfInvoiceApi`(ライブラリ追加時のデフォルト識別子)
-- 公式リファレンス: https://wywy.jp/docs/mfapi-v3-client/reference
+- 詳細リファレンス: https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md
 - サンプルリポジトリ: https://github.com/wywy-llc/mf-Invoice-api-sample
 
 ## セットアップ手順
@@ -273,5 +273,5 @@ function getBillings() {
 
 - 統合TypeScript宣言: `examples/agent-context/mf-invoice-api.d.ts`(公開関数・6サービス・全DTO・enum)
 - 配布用使い方カンペ: `examples/agent-context/AGENTS.md`
-- 全フィールド仕様: https://wywy.jp/docs/mfapi-v3-client/reference
+- 全メソッドの詳細リファレンス: https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md
 - 実装サンプル一式: https://github.com/wywy-llc/mf-Invoice-api-sample

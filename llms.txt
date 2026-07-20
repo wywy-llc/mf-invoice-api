@@ -7,7 +7,7 @@
 ## セットアップ
 
 - [README](https://github.com/wywy-llc/mf-invoice-api/blob/main/README.md): ライブラリ追加手順・Client ID/Secret 設定・認証フロー・コピペ動作サンプル
-- [ライブラリ公式リファレンス](https://wywy.jp/docs/mfapi-v3-client/reference): API対応状況・全フィールド仕様
+- [docs/reference.md](https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md): API対応状況・全メソッドの構文/引数/戻り値/実装例
 
 ## 使い方(エージェント向け)
 

@@ -8,7 +8,7 @@
 - Codex / Cursor / Amp 等: `AGENTS.md` というファイル名のまま置けば自動で読み込まれる
 - 型補完・型チェックも使いたい場合は同ディレクトリの `mf-invoice-api.d.ts` も一緒にコピーする
 
-ライブラリ本体のソース・詳細リファレンス: <https://github.com/wywy-llc/mf-invoice-api> / <https://wywy.jp/docs/mfapi-v3-client/reference>
+ライブラリ本体のソース: <https://github.com/wywy-llc/mf-invoice-api> / 詳細リファレンス: <https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md>
 
 ## ライブラリの追加
 
@@ -181,7 +181,7 @@ function getBillings() {
 }
 ```
 
-`billings.data[0]` は請求書1件分のフルデータ(`id` / `pdf_url` / `partner_name` / `billing_date` / `items` / 各種 `excise_price_of_*` など)。詳細フィールドは `mf-invoice-api.d.ts` の `Billing` interface、または <https://wywy.jp/docs/mfapi-v3-client/reference> を参照。
+`billings.data[0]` は請求書1件分のフルデータ(`id` / `pdf_url` / `partner_name` / `billing_date` / `items` / 各種 `excise_price_of_*` など)。詳細フィールドは `mf-invoice-api.d.ts` の `Billing` interface、または <https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md> を参照。
 
 ## 既知の注意点
 

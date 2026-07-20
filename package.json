@@ -20,7 +20,7 @@
     "bundle": "rollup --no-treeshake -c rollup.config.mjs",
     "build": "npm run clean && npm run bundle && ncp appsscript.json dist/appsscript.json",
     "license": "license-check-and-add add -f license-config.json",
-    "test": "jest test/ --passWithNoTests --detectOpenHandles",
+    "test": "vitest run",
     "deploy": "npm run lint && npm run test && npm run build && ncp .clasp-dev.json .clasp.json && clasp push -f",
     "deploy:prod": "npm run lint && npm run test && npm run build && ncp .clasp-prod.json .clasp.json && clasp push",
     "prepare": "husky"
@@ -31,8 +31,6 @@
   "dependencies": {
     "@google/clasp": "^3.3.0",
     "@types/google-apps-script": "^2.0.11",
-    "@types/jest": "^29.5.3",
-    "jest": "^29.6.2",
     "license-check-and-add": "^4.0.5",
     "ncp": "^2.0.0",
     "prettier": "^3.0.1",
@@ -40,26 +38,28 @@
     "rollup": "^3.27.1",
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-license": "^3.0.1",
-    "rollup-plugin-typescript2": "^0.35.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.1.6"
+    "rollup-plugin-typescript2": "^0.35.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-n": "^18.2.2",
     "eslint-plugin-prettier": "^5.5.6",
+    "factory.ts": "^1.4.2",
     "globals": "^17.7.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.1.0",
-    "typescript-eslint": "^8.64.0"
+    "typescript": "^5.1.6",
+    "typescript-eslint": "^8.64.0",
+    "vitest": "^4.1.10"
   },
   "lint-staged": {
     "src/**/*.ts": [
       "eslint --fix",
       "prettier --write",
-      "jest --findRelatedTests --passWithNoTests"
+      "vitest related --run"
     ],
     "test/**/*.ts": [
       "eslint --fix",

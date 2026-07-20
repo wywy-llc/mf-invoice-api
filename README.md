@@ -4,68 +4,72 @@
 
 ## 概要
 
-- マネーフォワードクラウド請求書API v3 用のGAS(Google Apps Script)のクライアントライブラリです。
-- 0から自分で開発するよりも素早くAPI連携を実現できます。
+- マネーフォワード クラウド請求書API v3 用のGAS(Google Apps Script)クライアントライブラリです。
+- ゼロから自分で開発するよりも素早くAPI連携を実現できます。
 
 ## API対応状況とライブラリのリファレンス
 
 https://wywy.jp/docs/mfapi-v3-client/reference
 
-## 使い方
+## セットアップの流れ
 
-### スプレッドシートとGASの準備
+1. スプレッドシートとGASを準備する
+2. ライブラリを追加する
+3. Client ID / Client Secret を設定する
+4. 初期設定(トリガー・シート作成)
+5. クラウド請求書APIに認証する
 
-このライブラリは、スプレッドシート + GASを前提として話を進めます。
+## 1. スプレッドシートとGASを準備する
 
-この準備を省略する場合は以下のURLより、完成版のスプレッドシートをコピーしてください。
+このライブラリはスプレッドシート + GAS の利用を前提とします。
+
+準備を省略する場合は、以下のURLから完成版のスプレッドシートをコピーしてください。
+
 https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy
 
-### GASエディタを起動
+### GASエディタを起動する
 
-1. Googleドライブで、スプレッドシートを新規作成
-2. GASエディタの起動
-   - メニュー > 拡張機能 > App Scriptをクリック
-3. GASエディタの表示
+1. Googleドライブでスプレッドシートを新規作成する
+2. GASエディタを起動する
+   - メニュー > 拡張機能 > Apps Script をクリック
+3. GASエディタが表示される
 
-### ライブラリ追加
+## 2. ライブラリを追加する
 
-このライブラリを利用するには、GASエディタで以下の設定をしてください。
+GASエディタで以下を設定します。
 
-1. ライブラリの "＋" をクリック
+1. ライブラリの「＋」をクリック
    - <img width="256" alt="スクリーンショット 2023-08-06 22 22 26" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/9d3aa366-f65e-41ee-aa31-22b9051686d9">
-2. スクリプトIDに以下入力して検索する
+2. スクリプトIDに以下を入力して検索する
    - `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4`
    - <img width="256" alt="スクリーンショット 2023-08-06 22 26 40" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/d423222e-21f0-4324-ba31-6e7c8815663a">
-3. 最新のバージョンを選択
-4. 「追加」ボタンをクリック
-5. 「MfInvoiceApi」というライブラリが追加
+3. 最新のバージョンを選択する
+4. 「追加」ボタンをクリックする
+5. 「MfInvoiceApi」というライブラリが追加される
 
-次に、API認証に必要な`Client ID`と`Client Secret`をMFのアプリポータルから取得します。
+## 3. Client ID / Client Secret を設定する
 
-## MFのClient IDとClient Secretを取得する
+API連携にはMFアプリポータルで発行する `Client ID` と `Client Secret` が必要です。取得してGASのスクリプト プロパティに設定します。
 
-まず、MFのアプリポータルからAPI連携に必要な`Client ID`と`Client Secret`を取得し、GASのスクリプト プロパティに設定します。
-
-1. MFのアプリポータルのアプリ新規登録画面に遷移
+1. MFアプリポータルのアプリ新規登録画面に遷移する
    - <img width="500" alt="スクリーンショット 2023-08-06 22 54 48" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/72f8448b-b22e-4138-beb2-8a6b5fb0a527">
-   - アプリ名称： [検証用]MFクライアント
-   - リダイレクトURI： `https://script.google.com/macros/d/{SCRIPT ID}/usercallback`
-     - 例：スクリプト IDが`1Yu-155Yao3Zzwv9fMR-axTKskkDEdngs-M3z1GhhG6dS2HK15rlod59D`の場合は、`https://script.google.com/macros/d/1Yu-155Yao3Zzwv9fMR-axTKskkDEdngs-M3z1GhhG6dS2HK15rlod59D/usercallback`
-     - スクリプトIDは、GASエディタの `プロジェクト設定 > スクリプト ID`から取得してください。
+   - アプリ名称: [検証用]MFクライアント
+   - リダイレクトURI: `https://script.google.com/macros/d/{SCRIPT ID}/usercallback`
+     - 例: スクリプトIDが `1Yu-155Yao3Zzwv9fMR-axTKskkDEdngs-M3z1GhhG6dS2HK15rlod59D` の場合、`https://script.google.com/macros/d/1Yu-155Yao3Zzwv9fMR-axTKskkDEdngs-M3z1GhhG6dS2HK15rlod59D/usercallback`
+     - スクリプトIDは GASエディタの `プロジェクト設定 > スクリプト ID` から取得できます。
        - <img width="500" alt="スクリーンショット 2023-08-06 22 51 51" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/52fb5c23-106d-4063-82d7-84973eafe119">
-   - クライアント認証方式： `CLIENT_SECRET_POST` を選択してください。
-2. アプリ詳細画面の`Client ID`と`Client Secret`をメモ
-3. GASエディタのプロジェクト設定画面に遷移
+   - クライアント認証方式: `CLIENT_SECRET_POST` を選択する
+2. アプリ詳細画面の `Client ID` と `Client Secret` を控える
+3. GASエディタのプロジェクト設定画面に遷移する
    - <img width="256" alt="スクリーンショット 2023-08-06 22 38 17" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/ed2fc686-399a-48a9-a413-c2442261d403">
-4. スクリプト プロパティに`CLIENT_ID`と`CLIENT_SECRET`を追加
-   - CLIENT_ID： MFアプリポータルの`Client ID`
-   - CLIENT_SECRET： MFアプリポータルの`Client Secret`
+4. スクリプト プロパティに `CLIENT_ID` と `CLIENT_SECRET` を追加する
+   - CLIENT_ID: MFアプリポータルの `Client ID`
+   - CLIENT_SECRET: MFアプリポータルの `Client Secret`
    - <img width="500" alt="スクリーンショット 2023-08-06 22 39 43" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/1312398a-ca8b-4aa5-af6c-808f83bf9564">
 
-## 初期設定
+## 4. 初期設定(トリガー・シート作成)
 
-1. GASエディタを起動してください。
-2. 以下、`コード.gs` にコピー＆ペーストしてください。
+1. GASエディタで `コード.gs` に以下をコピー&ペーストする
 
 ```javascript
 /**
@@ -105,17 +109,6 @@ function initialize() {
       'registration_code',
       'created_at',
       'updated_at',
-    ],
-    items: [
-      'id',
-      'code',
-      'name',
-      'name_kana',
-      'name_suffix',
-      'memo',
-      'created_at',
-      'updated_at',
-      'departments',
     ],
     partners: [
       'id',
@@ -374,42 +367,42 @@ function getMfClient_() {
 }
 ```
 
-2. `initialize関数`を実行
-   - 自動でトリガー作成とシート作成いたします。
-   - このトリガーによってMF請求書API連携用のメニューをスプレッドシートのメニューに追加します。
-3. `MF請求書API連携`メニューの表示
-   - スプレッドシートの画面を再読み込みしてください。再読み込みすると、スプレッドシートの起動時にトリガーが実行されます。
-   - `MF請求書API連携`メニューの表示されたらOKです。
+2. `initialize` 関数を実行する
+   - トリガー作成とシート作成が自動で行われます。
+   - このトリガーにより、スプレッドシートのメニューに「MF請求書API連携」が追加されます。
+3. 「MF請求書API連携」メニューを確認する
+   - スプレッドシートの画面を再読み込みします。再読み込み時にトリガーが実行されます。
+   - 「MF請求書API連携」メニューが表示されれば完了です。
    - <img width="500" alt="スクリーンショット 2023-08-07 8 23 06" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/c7dd2a57-1cae-4f31-bd4e-be687b859e85">
 
-ここまでで、スプレッドシートとGASの準備が完了です。
+ここまでで、スプレッドシートとGASの準備は完了です。
 
-## マネーフォワード クラウド請求APIへの認証
+## 5. クラウド請求書APIに認証する
 
-ここまでで、接続に必要な環境と情報が揃ったので、MFクラウド請求APIに認証して接続します。
+必要な情報が揃ったので、クラウド請求書APIに認証します。
 
-1. マネーフォワード クラウド請求APIへの認証処理を開始
-   - スプレッドシートメニュ > MF請求書API連携 > 認証処理を開始する
+1. 認証処理を開始する
+   - スプレッドシートメニュー > MF請求書API連携 > 認証処理を開始する
    - <img width="300" alt="スクリーンショット 2023-08-07 8 35 50" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/ae2320bb-29fd-41d4-a450-3373e0cb0c02">
-2. Google権限を許可
-3. `認証処理を開始する` を再実行する
-4. マネーフォワード クラウド請求APIのサイトで認証処理を継続する
+2. Google権限を許可する
+3. 「認証処理を開始する」を再実行する
+4. クラウド請求書APIのサイトで認証処理を継続する
    - <img width="256" alt="スクリーンショット 2023-08-07 8 40 32" src="https://github.com/wywy-llc/mf-invoice-api/assets/10007402/5393fa9b-96f2-4bbd-8347-4f90c76afa0d">
-   - `こちらをクリックして認証処理を継続してください` をクリックする
+   - 「こちらをクリックして認証処理を継続してください」をクリックする
    - URLに認証に必要な情報が記載されています。
-   - ここでエラーが発生する場合は、以下、確認してください。
-     - リダイレクトURIが間違っていませんか？
-       - 認証処理しているGASとマネーフォワード請求書に登録したリダイレクトURIが不一致の場合があります。
-     - クライアント認証方式で`CLIENT_SECRET_POST`を選択しましたか？
-       - 初期値だと、`CLIENT_SECRET_BASIC` になっているので間違って設定する場合があります。
-5. 認証が成功したことを確認
-   - `認証成功しました。このタブを閉じてください。` と表示されたら認証完了です
+   - エラーが発生する場合は以下を確認してください。
+     - リダイレクトURIが正しいか
+       - 認証処理しているGASとマネーフォワード クラウド請求書に登録したリダイレクトURIが不一致の場合があります。
+     - クライアント認証方式で `CLIENT_SECRET_POST` を選択したか
+       - 初期値は `CLIENT_SECRET_BASIC` のため、選択し忘れる場合があります。
+5. 認証成功を確認する
+   - 「認証成功しました。このタブを閉じてください。」と表示されれば認証完了です。
 
-### ライブラリのアップデートで要求スコープが変わった場合の再認可
+### ライブラリ更新でスコープが変わった場合の再認可
 
-ライブラリのアップデートで要求スコープが変わった場合（例: 読み取り用の `mfc/invoice/data.read` の追加）、既に認証済みの環境では保存済みのアクセストークンがそのまま再利用されるため、追加されたスコープが反映されません（`apps-script-oauth2` の `hasAccess()` は保存済みトークンの有効期限のみを確認し、スコープの変更は検知しないためです）。
+ライブラリ更新で要求スコープが変わった場合(例: 読み取り用の `mfc/invoice/data.read` の追加)、認証済み環境では保存済みのアクセストークンがそのまま再利用され、追加スコープが反映されません。`apps-script-oauth2` の `hasAccess()` は保存済みトークンの有効期限のみを確認し、スコープの変更は検知しないためです。
 
-アップデート後は、以下の `logout` を一度実行して保存済みトークンを破棄してから、あらためて `認証処理を開始する` を実行して再認可してください。
+更新後は以下の `logout` を実行して保存済みトークンを破棄し、あらためて「認証処理を開始する」を実行して再認可してください。
 
 ```javascript
 /**
@@ -421,13 +414,13 @@ function logout() {
 }
 ```
 
-## 事業者情報をAPIから取得してみよう！
+## 例1: 事業者情報を取得する
 
-まずは、自分の事業者情報をAPIから取得してみましょう。リファレンスは以下を参考にします。
+自分の事業者情報をAPIから取得します。リファレンス:
 
 [事業者情報の取得 | MF Invoice API v3 GASクライアントのリファレンス](https://wywy.jp/54bea26952aa430b928ca9a09deafc4c)
 
-1. 以下、`コード.gs` にコピー＆ペーストしてください。
+1. `コード.gs` に以下をコピー&ペーストする
 
 ```javascript
 /**
@@ -449,14 +442,14 @@ function getMyOffice() {
 }
 ```
 
-2. getMyOffice関数を実行します。
-3. ログで事業者情報が無事に取得できたことを確認します。
-    - `Request success.`と表示されたら成功です。
-4. スプレッドシートの`office`に取得したデータが追加されたことを確認します。
+2. `getMyOffice` 関数を実行する
+3. ログを確認する
+   - `Request success.` と表示されれば成功です。
+4. スプレッドシートの `office` シートにデータが追加されたことを確認する
 
 ### 事業者情報のデータ
 
-上記、`const office = getMfClient_().office.getMyOffice();` の変数officeには、以下のようなデータが格納されます。
+`const office = getMfClient_().office.getMyOffice();` の `office` には以下のようなデータが格納されます。
 
 ```javascript
 {
@@ -476,21 +469,19 @@ function getMyOffice() {
 }
 ```
 
-例えば、name(事業者名) を取得したい場合は、`office.name` で取得することができます。
+例えば事業者名を取得する場合は `office.name` で取得できます。
 
-他のデータに関してもリファレンスを公開してますので、データ例を確認する場合は、以下のページで確認してください。
+他のデータもリファレンスで確認できます。
 
 [MF Invoice API v3 GASクライアントのリファレンス](https://wywy.jp/docs/mfapi-v3-client/reference)
 
-## 請求書一覧をAPIから取得してみよう！
+## 例2: 請求書一覧を取得する
 
-続けて、請求書一覧をAPIから取得してみましょう。
-
-リファレンスは以下を参考にします。
+請求書一覧をAPIから取得します。リファレンス:
 
 [請求書一覧の取得 | MF Invoice API v3 GASクライアントのリファレンス](https://wywy.jp/56b6b828e6eb4a758142759ae4643fbf)
 
-1. 以下、`コード.gs`にコピー＆ペーストしてください。
+1. `コード.gs` に以下をコピー&ペーストする
 
 ```javascript
 /**
@@ -532,14 +523,14 @@ function getBillings() {
 }
 ```
 
-2. getBillings関数を実行します。
-3. ログで請求書一覧が無事に取得できたことを確認します。
-    - `Request success.`と表示されたら成功です。
-4. スプレッドシートの`billings`に取得したデータが追加されたことを確認します。
+2. `getBillings` 関数を実行する
+3. ログを確認する
+   - `Request success.` と表示されれば成功です。
+4. スプレッドシートの `billings` シートにデータが追加されたことを確認する
 
 ### 請求書のデータ
 
-上記、`const billings = getMfClient_().billings.getBillings(from, to, query);` の変数billingsには、以下のようなデータが格納されます。
+`const billings = getMfClient_().billings.getBillings(from, to, query);` の `billings` には以下のようなデータが格納されます。
 
 ```javascript
 {
@@ -629,17 +620,17 @@ function getBillings() {
 };
 ```
 
-例えば、1件目の請求書データが欲しい場合には、`billings.data[0]` で取得することができます。
+例えば1件目の請求書データは `billings.data[0]` で取得できます。
 
-## その他サンプルコード
+## その他のサンプルコード
 
-以下、Githubにサンプルコード(実装例)がありますので、そちらもぜひ、参考にしてみてください。
+GitHubにサンプルコード(実装例)を公開しています。
 
 https://github.com/wywy-llc/mf-Invoice-api-sample/blob/main/%E3%82%B3%E3%83%BC%E3%83%89.gs
 
 ## 問い合わせ
 
-以下にメールしていただくか、Issue登録していただければ対応いたします。
+以下のメール、またはIssue登録でご連絡ください。
 
-- FUJISAWA Yuki 
+- FUJISAWA Yuki
 - yuki_fujisawa@wywy.jp

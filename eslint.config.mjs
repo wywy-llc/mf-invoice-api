@@ -12,7 +12,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig([
   {
-    ignores: ['node_modules/**', 'build/**', 'dist/**', 'testing/**', 'template/**'],
+    ignores: [
+      'node_modules/**',
+      'build/**',
+      'dist/**',
+      'testing/**',
+      'template/**',
+    ],
   },
 
   js.configs.recommended,
@@ -30,13 +36,13 @@ export default defineConfig([
     rules: {
       'prettier/prettier': 'error',
       'block-scoped-var': 'error',
-      eqeqeq: 'error',
+      'eqeqeq': 'error',
       'no-var': 'error',
       'prefer-const': 'error',
       'eol-last': 'error',
       'prefer-arrow-callback': 'error',
       'no-trailing-spaces': 'error',
-      quotes: ['warn', 'single', { avoidEscape: true }],
+      'quotes': ['warn', 'single', { avoidEscape: true }],
       'no-restricted-properties': [
         'error',
         { object: 'describe', property: 'only' },
@@ -69,6 +75,14 @@ export default defineConfig([
       'n/hashbang': 'off',
       'no-dupe-class-members': 'off',
       'require-atomic-updates': 'off',
+    },
+  },
+
+  {
+    files: ['test/**/*.ts'],
+    rules: {
+      // テストコードは npm パッケージとして配布されないため devDependencies の import を許可する
+      'n/no-unpublished-import': 'off',
     },
   },
 ]);

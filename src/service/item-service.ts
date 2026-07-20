@@ -63,14 +63,14 @@ export class ItemService extends ServiceBase {
   }
 
   /**
-   * 品目の更新
+   * 品目の更新(部分更新可、全フィールド任意)
    * @param {string} itemId 品目ID
-   * @param {MfInvoiceApi.ItemReqBody} itemReqBody 品目リクエストボディ
+   * @param {MfInvoiceApi.ItemUpdateReqBody} itemReqBody 品目更新リクエストボディ
    * @returns {MfInvoiceApi.Item} 品目
    */
   updateItem(
     itemId: string,
-    itemReqBody: MfInvoiceApi.ItemReqBody
+    itemReqBody: MfInvoiceApi.ItemUpdateReqBody
   ): MfInvoiceApi.Item {
     if (!itemId || !itemReqBody) {
       throw new Error('itemId and itemReqBody are required.');

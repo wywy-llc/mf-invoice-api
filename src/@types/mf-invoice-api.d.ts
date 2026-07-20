@@ -35,9 +35,11 @@ declare namespace MfInvoiceApi {
 
   /**
    * 請求書の品目作成のリクエストボディ
+   * item_id未指定の場合はname(+excise)を指定して新規品目として追加できる
    */
   interface BillingItemReqBody {
-    item_id: string;
+    item_id?: string;
+    name?: string;
     delivery_number?: string;
     delivery_date?: string;
     detail?: string;
@@ -78,11 +80,11 @@ declare namespace MfInvoiceApi {
     posting_status?: string;
     created_at: string;
     updated_at?: string;
-    is_downloaded: boolean;
-    is_locked: boolean;
-    deduct_price: string;
-    tag_names: string[];
-    items: BillingItem[];
+    is_downloaded?: boolean;
+    is_locked?: boolean;
+    deduct_price?: string;
+    tag_names?: string[];
+    items?: BillingItem[];
     excise_price: string;
     excise_price_of_untaxable?: string;
     excise_price_of_non_taxable?: string;
@@ -109,7 +111,7 @@ declare namespace MfInvoiceApi {
     total_price: string;
     registration_code?: string;
     use_invoice_template: boolean;
-    config: BillingConfig;
+    config?: BillingConfig;
   }
 
   /**
@@ -121,7 +123,7 @@ declare namespace MfInvoiceApi {
     memo?: string;
     payment_condition?: string;
     billing_date: string;
-    due_date: string;
+    due_date?: string;
     sales_date?: string;
     billing_number?: string;
     note?: string;
@@ -198,7 +200,7 @@ declare namespace MfInvoiceApi {
     is_locked?: boolean;
     deduct_price?: string;
     tag_names?: string[];
-    items: QuoteItem[];
+    items: Item[];
     excise_price: string;
     excise_price_of_untaxable?: string;
     excise_price_of_non_taxable?: string;
@@ -220,9 +222,11 @@ declare namespace MfInvoiceApi {
 
   /**
    * 見積書作成の品目リクエストボディ
+   * item_id未指定の場合はname(+excise)を指定して新規品目として追加できる
    */
   interface QuoteItemReqBody {
-    item_id: string;
+    item_id?: string;
+    name?: string;
     detail?: string;
     unit?: string;
     price?: number;
@@ -280,10 +284,19 @@ declare namespace MfInvoiceApi {
     person_dept?: string;
     email?: string;
     cc_emails?: string;
+    peppol_id?: string;
     office_member_id?: string;
     office_member_name?: string;
     created_at?: string;
     updated_at?: string;
+  }
+
+  /**
+   * 取引先部署一覧レスポンス
+   */
+  interface DepartmentsResponse {
+    data: Department[];
+    pagination: PaginationData;
   }
 
   /**
@@ -319,6 +332,11 @@ declare namespace MfInvoiceApi {
   }
 
   /**
+   * 品目更新のリクエストボディ(全フィールド任意、部分更新可)
+   */
+  type ItemUpdateReqBody = Partial<ItemReqBody>;
+
+  /**
    * Office
    * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/Office
    */
@@ -339,29 +357,27 @@ declare namespace MfInvoiceApi {
   }
 
   /**
-   * Department
-   * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/Department
+   * 事業者情報更新のリクエストボディ(全フィールド任意)
    */
-  interface department {
-    id: string;
+  interface OfficeReqBody {
+    name?: string;
     zip?: string;
-    tel?: string;
     prefecture?: string;
     address1?: string;
     address2?: string;
-    person_name?: string;
-    person_title?: string;
-    person_dept: string;
-    email?: string;
-    cc_emails?: string;
-    office_member_id?: string;
-    office_member_name?: string;
-    created_at?: string;
-    updated_at?: string;
+    tel?: string;
+    fax?: string;
   }
 
   /**
-   * 取引先部署の作成のリクエストボディ
+   * 適格請求書発行事業者番号のレスポンス
+   */
+  interface RegistrationCodeResponse {
+    registration_code: string;
+  }
+
+  /**
+   * 取引先部署の作成・更新のリクエストボディ(全フィールド任意、少なくとも1項目指定)
    */
   interface DepartmentReqBody {
     zip?: string;
@@ -371,10 +387,28 @@ declare namespace MfInvoiceApi {
     address2?: string;
     person_name?: string;
     person_title?: string;
-    person_dept: string; // 担当者_部門は必須
+    person_dept?: string;
     office_member_name?: string;
     email?: string;
     cc_emails?: string;
+    peppol_id?: string;
+  }
+
+  /**
+   * 支払期日設定
+   * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/PaymentDeadlineSetting
+   */
+  interface PaymentDeadlineSetting {
+    due_month:
+      | 'this_month'
+      | 'next_month'
+      | 'two_months_after'
+      | 'three_months_after'
+      | 'four_months_after'
+      | 'five_months_after'
+      | 'six_months_after';
+    due_date: number;
+    contingency_day: 'move_to_earlier_day' | 'keep_as_is' | 'move_to_later_day';
   }
 
   /**
@@ -387,10 +421,11 @@ declare namespace MfInvoiceApi {
     name: string;
     name_kana?: string;
     name_suffix?: string;
-    memo: string;
+    memo?: string;
     created_at: string;
     updated_at: string;
     departments: Department[];
+    payment_deadline_setting?: PaymentDeadlineSetting | null;
   }
 
   /**
@@ -418,6 +453,32 @@ declare namespace MfInvoiceApi {
    */
   interface ItemsResponse {
     data: Item[];
+    pagination: PaginationData;
+  }
+
+  /**
+   * SentHistory(送付履歴)
+   * https://invoice.moneyforward.com/docs/api/v3/index.html#/schemas/SentHistory
+   */
+  interface SentHistory {
+    id: number;
+    type: string;
+    operator_id: string;
+    document_type: string;
+    document_id: string;
+    from: string;
+    to: string;
+    cc: string;
+    sender_name: string;
+    replay_to: string;
+    sent_at: string;
+  }
+
+  /**
+   * 送付履歴一覧レスポンス
+   */
+  interface SentHistoriesResponse {
+    data: SentHistory[];
     pagination: PaginationData;
   }
 }

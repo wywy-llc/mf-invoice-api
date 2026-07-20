@@ -196,7 +196,10 @@ describe('BillingService', () => {
       expect(() =>
         billingService.updatePaymentStatus(
           'billing_1',
-          undefined as unknown as MfInvoiceApi.PaymentStatus
+          undefined as unknown as Extract<
+            MfInvoiceApi.PaymentStatus,
+            '0' | '1' | '2'
+          >
         )
       ).toThrow('billingId and paymentStatus are required.');
     });
@@ -264,14 +267,11 @@ describe('BillingService', () => {
   });
 
   describe('attachBillingItem', () => {
-    it('billingIdとitemReqBodyを指定すると、追加した品目を返し、POSTリクエストを送信する', () => {
-      const item = billingItemFactory.build();
+    it('billingIdとitemReqBodyを指定すると、trueを返し、POSTリクエストを送信する', () => {
       const reqBody = billingItemReqBodyFactory.build();
-      const fetchMock = stubUrlFetchJson(item);
+      const fetchMock = stubUrlFetchEmpty();
 
-      expect(billingService.attachBillingItem('billing_1', reqBody)).toEqual(
-        item
-      );
+      expect(billingService.attachBillingItem('billing_1', reqBody)).toBe(true);
       expect(fetchMock).toHaveBeenCalledWith(
         `${BASE_URL}/billing_1/items`,
         expect.objectContaining({

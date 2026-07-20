@@ -42,6 +42,57 @@ declare namespace MfInvoiceApi {
      */
     deletePartner(partnerId: string): boolean;
     /**
+     * 取引先に紐づく部署一覧の取得
+     * @param {string} partnerId 取引先ID
+     * @param {number} page ページ番号
+     * @param {number} perPage 1ページあたりのデータ数
+     * @returns {MfInvoiceApi.DepartmentsResponse} 取引先部署一覧
+     */
+    getDepartments(
+      partnerId: string,
+      page?: number,
+      perPage?: number
+    ): MfInvoiceApi.DepartmentsResponse;
+    /**
+     * 取引先に部署を追加
+     * @param {string} partnerId 取引先ID
+     * @param {MfInvoiceApi.DepartmentReqBody} departmentReqBody 取引先部署リクエストボディ
+     * @returns {MfInvoiceApi.Department} 取引先部署
+     */
+    createDepartment(
+      partnerId: string,
+      departmentReqBody: MfInvoiceApi.DepartmentReqBody
+    ): MfInvoiceApi.Department;
+    /**
+     * 取引先に紐づく部署の取得
+     * @param {string} partnerId 取引先ID
+     * @param {string} departmentId 取引先部署ID
+     * @returns {MfInvoiceApi.Department} 取引先部署
+     */
+    getDepartment(
+      partnerId: string,
+      departmentId: string
+    ): MfInvoiceApi.Department;
+    /**
+     * 取引先に紐づく部署の更新
+     * @param {string} partnerId 取引先ID
+     * @param {string} departmentId 取引先部署ID
+     * @param {MfInvoiceApi.DepartmentReqBody} departmentReqBody 取引先部署リクエストボディ
+     * @returns {MfInvoiceApi.Department} 取引先部署
+     */
+    updateDepartment(
+      partnerId: string,
+      departmentId: string,
+      departmentReqBody: MfInvoiceApi.DepartmentReqBody
+    ): MfInvoiceApi.Department;
+    /**
+     * 取引先に紐づく部署の削除
+     * @param {string} partnerId 取引先ID
+     * @param {string} departmentId 取引先部署ID
+     * @returns {boolean} 削除成功時はtrue
+     */
+    deleteDepartment(partnerId: string, departmentId: string): boolean;
+    /**
      * 全ての取引先を取得
      * @returns {MfInvoiceApi.Partner[]} 取引先一覧
      */

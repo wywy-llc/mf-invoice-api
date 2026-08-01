@@ -86,6 +86,13 @@ export class ServiceBase {
   static readonly API_BASE_URL = 'https://invoice.moneyforward.com/api/v3';
 
   /**
+   * encodeURIComponentの出力形式(unreserved文字と%XX列のみ)。
+   * これに合致しない文字列は、区切り文字などの生文字を含むためエンコード済みではないと判定する。
+   */
+  private static readonly ENCODED_QUERY_PATTERN =
+    /^(?:[A-Za-z0-9\-_.!~*'()]|%[0-9A-Fa-f]{2})*$/;
+
+  /**
    * アクセストークンを取得する関数。リクエストの都度呼び出すことで、
    * OAuth2ライブラリ側の有効期限チェック・自動リフレッシュに追従させる。
    */
@@ -195,26 +202,28 @@ export class ServiceBase {
   }
 
   /**
-   * 検索文字列をURLエンコードする。すでにエンコード済みの文字列を受け取った場合は
-   * 二重エンコードを避けるためそのまま返す。
+   * 検索文字列をURLエンコードする。エンコード済みの文字列はそのまま返す。
    *
-   * 生の文字列を渡す利用者と、旧実装(エンコードなしでURLへ埋め込んでいた頃)に合わせて
-   * 呼び出し側でエンコードしてから渡す利用者の双方を壊さないための互換措置。
-   *
-   * 制約: `50%20OFF` のように「エンコード済みに見える生文字列」はエンコード済みと誤判定する。
-   * 生文字列として検索したい場合は `%` を `%25` にエスケープして渡す。
+   * 生の文字列を渡す利用者と、旧実装(エンコードせずURLへ埋め込んでいた頃)に合わせて
+   * 呼び出し側でエンコード済みの文字列を渡す利用者の双方を壊さないための互換措置。
+   * - 判定条件: エンコード形式に合致し、かつデコードで値が変わる場合のみエンコード済みとみなす
+   * - 形式判定が必要な理由: `a%3Db&c=1` のように区切り文字の生文字が混じる文字列をそのまま送ると、
+   *   `&c=1` が独立したクエリパラメータとして解釈されURL構造が壊れる
+   * - 残る制約: `50%20OFF` のようにエンコード形式と一致する生文字列は誤判定する
+   * - 回避策: 生文字列として検索する場合は `%` を `%25` にエスケープして渡す
    *
    * @param query 検索文字列
    * @returns URLエンコード済みの検索文字列
    */
   protected encodeSearchQuery(query: string): string {
-    try {
-      // デコードで値が変わる = すでにエンコード済みとみなし、再エンコードしない
-      if (decodeURIComponent(query) !== query) {
-        return query;
+    if (ServiceBase.ENCODED_QUERY_PATTERN.test(query)) {
+      try {
+        if (decodeURIComponent(query) !== query) {
+          return query;
+        }
+      } catch {
+        // 単独サロゲート等、形式は正しくてもデコードできない文字列は通常どおりエンコードする
       }
-    } catch {
-      // 不正な%シーケンスを含む生文字列(例: '100%OFF')はデコードできない → 通常どおりエンコードする
     }
     return encodeURIComponent(query);
   }
@@ -244,7 +253,8 @@ export class ServiceBase {
    * @param baseUrl リソースのベースURL
    * @param from 検索範囲_開始日
    * @param to 検索範囲_終了日
-   * @param query 検索文字列(URLエンコード済みの文字列を渡しても二重エンコードしない)
+   * @param query 検索文字列(URLエンコード済みの文字列を渡しても二重エンコードしない。
+   * ただし`50%20OFF`のようにエンコード形式と一致する生文字列は誤判定するため、`%`は`%25`にエスケープして渡す)
    * @param page ページ番号
    * @param perPage 1ページあたりの件数
    * @param rangeKey 検索範囲キー

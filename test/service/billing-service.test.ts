@@ -92,6 +92,23 @@ describe('BillingService', () => {
       );
     });
 
+    it('queryが区切り文字の生文字を含むと、エンコードしてqに設定する', () => {
+      const response = billingsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      // テストデータ: %エスケープと生の区切り文字(&・=)が混在する検索文字列
+      const mixedQuery = 'a%3Db&c=1';
+      billingService.getBillings('2024-06-01', '2024-06-30', mixedQuery);
+
+      // 検証: そのまま載せると`&c=1`が独立したクエリパラメータになるため、エンコードして混入を防ぐ
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&range_key=billing_date&from=2024-06-01&to=2024-06-30&q=${encodeURIComponent(
+          mixedQuery
+        )}`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
     it('fromまたはtoが未指定だと、"from and to are required."エラー', () => {
       expect(() => billingService.getBillings('', '2024-06-30')).toThrow(
         'from and to are required.'

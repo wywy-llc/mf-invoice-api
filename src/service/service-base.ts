@@ -100,6 +100,18 @@ export class ServiceBase {
     /^(?:[A-Za-z0-9\-_.!~*'()]|%[0-9A-Fa-f]{2})*$/;
 
   /**
+   * 実行ログ用にURLの検索語(qパラメータの値)を伏せ字へ置き換える。
+   * 検索語は利用者が入力した内容そのもので、取引先名や金額を含みうるため、
+   * リクエストの追跡に必要なURLの骨格だけを残して実行ログへ出力する。
+   *
+   * @param reqUrl リクエストURL
+   * @returns 検索語を伏せ字にしたURL
+   */
+  private static maskSearchQuery(reqUrl: string): string {
+    return reqUrl.replace(/([?&]q=)[^&]+/, '$1***');
+  }
+
+  /**
    * アクセストークンを取得する関数。リクエストの都度呼び出すことで、
    * OAuth2ライブラリ側の有効期限チェック・自動リフレッシュに追従させる。
    */
@@ -139,14 +151,16 @@ export class ServiceBase {
     }
     // GASの実行ログから実際のリクエスト内容を追跡できるようにする
     // - 認証情報はgetHeadersが組み立てるoptions.headers側のため、このログには出力されない
-    // - URLのクエリ文字列に含まれる検索語・各種IDは実行ログに残る
+    // - 利用者の入力そのものである検索語はマスクする(各種IDはログに残る)
     // - ログ量が問題になる利用者はrequestLogEnabledで抑止できる
     if (ServiceBase.requestLogEnabled) {
-      console.info(`Request URL: ${method} ${reqUrl}`);
+      console.info(
+        `Request URL: ${method} ${ServiceBase.maskSearchQuery(reqUrl)}`
+      );
     }
     const res = UrlFetchApp.fetch(reqUrl, options);
     if (res.getResponseCode() >= 400) {
-      // 検索語などの機密性が高いクエリ文字列を除き、失敗の事実とパスのみ記録する
+      // 失敗の事実とパスのみ記録する
       // (クエリ込みの全体は、有効時のみ出力される送信前のRequest URLログ側にある)
       console.error(`Request failed: ${method} ${reqUrl.split('?')[0]}`);
     }

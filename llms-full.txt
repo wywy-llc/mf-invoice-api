@@ -4,21 +4,37 @@
 
 - リポジトリ: https://github.com/wywy-llc/mf-invoice-api
 - ライセンス: Apache-2.0
-- 配布形態: npm パッケージではなく **GAS ライブラリ**(clasp push)。利用者は GAS エディタでスクリプトIDを検索して自分のプロジェクトへ追加する
+- 配布形態: npm パッケージではなく **GAS ライブラリ**(ライブラリ側は clasp push で公開)
 - スクリプトID: `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4`
-- 名前空間: `MfInvoiceApi`(ライブラリ追加時のデフォルト識別子)
+- 名前空間: `MfInvoiceApi`(ライブラリ追加時のデフォルト識別子。clasp では `userSymbol` の値)
+- 利用者側の開発形態は2ケースあり、以降の手順が分岐する
+  - **ケースA(GASエディタ)**: ブラウザのGASエディタで直接編集。ライブラリの「＋」でスクリプトIDを検索して追加。`mf-invoice-api.d.ts` は使えない(エディタが読まない)
+  - **ケースB(clasp)**: ローカルのリポジトリで編集 → `clasp push`。`appsscript.json` にライブラリを記述。`mf-invoice-api.d.ts` を置けば型補完・型チェックが効く
 - 詳細リファレンス: https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md
 - サンプルリポジトリ: https://github.com/wywy-llc/mf-Invoice-api-sample
 
 ## セットアップ手順
 
-1. スプレッドシートを準備し GAS エディタを起動する(拡張機能 > Apps Script)。準備を省略する場合は[完成版スプレッドシート](https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy)をコピーしてもよい
-2. GAS エディタ > ライブラリの「＋」> スクリプトID `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4` を検索 > 最新バージョンを追加 → `MfInvoiceApi` が使えるようになる
+1. スプレッドシートを準備し GAS エディタを起動する(拡張機能 > Apps Script)。準備を省略する場合は[完成版スプレッドシート](https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy)をコピーしてもよい(ケースA向け)
+2. ライブラリを追加する — 手順はケース別
+   - **ケースA**: GAS エディタ > ライブラリの「＋」> スクリプトID `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4` を検索 > 最新バージョンを追加
+   - **ケースB**: 利用者側プロジェクトの `appsscript.json`(`srcDir` 配下のマニフェスト)の `dependencies.libraries` 配列の要素として下記を追加(配列が無ければ配列ごと作成)→ `clasp push`
+
+     ```json
+     {
+       "userSymbol": "MfInvoiceApi",
+       "libraryId": "1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4",
+       "version": "19",
+       "developmentMode": false
+     }
+     ```
+
+     `version` はGASライブラリのバージョン番号(整数の文字列。`19` は 2026-08-01 時点の最新)で、GitHub の release タグ(semver)とは別系統。両者の対応は README の「バージョン対応表」にあり、ドキュメントのみの更新ではGAS版番号は変わらない。最新番号は `clasp list-versions`(clasp v3 の正式名、旧 `clasp versions` はエイリアス)をライブラリのスクリプトIDを指す `.clasp.json` のディレクトリで実行して確認する。`developmentMode: true` は対象スクリプトの編集権限が要るため利用者側は `false` 固定
 3. MFアプリポータルでアプリを新規登録し `Client ID` / `Client Secret` を取得
-   - リダイレクトURI: `https://script.google.com/macros/d/{このGASのスクリプトID}/usercallback`
+   - リダイレクトURI: `https://script.google.com/macros/d/{このGASのスクリプトID}/usercallback`。`{このGASのスクリプトID}` はライブラリのIDではなく利用者側プロジェクトのID(ケースA = `プロジェクトの設定 > スクリプト ID`、ケースB = `.clasp.json` の `scriptId`)
    - クライアント認証方式: `CLIENT_SECRET_POST` を選択(初期値の `CLIENT_SECRET_BASIC` のままだと認証に失敗する)
-4. GASのスクリプト プロパティに `CLIENT_ID` / `CLIENT_SECRET` を設定する
-5. 下記の「初期設定」「認証まわりの定型コード」を利用者側プロジェクトの `.gs` に配置し、`initialize` 実行 → 認証処理の順で実行する
+4. GASのスクリプト プロパティに `CLIENT_ID` / `CLIENT_SECRET` を設定する。スクリプト プロパティは clasp から設定できないため、ケースB でもこの操作だけはGASエディタの「プロジェクトの設定」画面で行う
+5. 下記の「初期設定」「認証まわりの定型コード」を利用者側プロジェクトに配置する(ケースA = GASエディタの `.gs` に貼る、ケースB = ローカルの `.js` に書いて `clasp push`)。配置後に `initialize` 実行 → 認証処理の順で実行する(関数の実行は両ケースともGASエディタから)
 
 ## 初期設定(トリガー・シート作成、利用者側プロジェクトに書くコード)
 
@@ -271,7 +287,7 @@ function getBillings() {
 
 ## 型定義・詳細ドキュメント
 
-- 統合TypeScript宣言: `examples/agent-context/mf-invoice-api.d.ts`(公開関数・6サービス・全DTO・enum)
+- 統合TypeScript宣言: `examples/agent-context/mf-invoice-api.d.ts`(公開関数・6サービス・全DTO・enum)。型補完に使えるのはケースB(clasp)のみ
 - 配布用使い方カンペ: `examples/agent-context/AGENTS.md`
 - 全メソッドの詳細リファレンス: https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md
 - 実装サンプル一式: https://github.com/wywy-llc/mf-Invoice-api-sample

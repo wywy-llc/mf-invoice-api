@@ -2,17 +2,28 @@
  * MfInvoiceApi — GAS ライブラリ公開API 統合型定義(配布用)
  *
  * このファイルは `src/@types/*.d.ts` を1ファイルへ集約した配布物です。
- * ライブラリを GAS プロジェクトへスクリプトIDで追加した利用者が、
- * 自分のプロジェクトの `.d.ts`(または `.ts`)としてコピーして使うことを想定しています。
- * ビルド成果物(dist/)ではなく手動生成物です — `src/@types/` を修正した際は本ファイルも追従してください。
+ * ビルド成果物(dist/)ではなく手動生成物です。
+ * `src/@types/` を修正した際は本ファイルも追従してください。
  *
- * 使い方: examples/agent-context/AGENTS.md を参照。
+ * 想定利用者: clasp でローカル開発する利用者(AGENTS.md のケースB)。
+ * 自分のプロジェクトへコピーし、型補完・型チェックに使います。
+ * ブラウザのGASエディタ(ケースA)はこのファイルを読み込みません。
  *
- * スクリプトID: 1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4
- * ライブラリ名前空間: MfInvoiceApi
+ * 配置と push:
+ * - clasp の push 対象は既定で .js / .gs / .html と appsscript.json です。
+ * - この .d.ts は push されませんが、srcDir の外に置くと確実です。
+ *
+ * ライブラリの追加方法(ケースB):
+ * - 利用者側の appsscript.json の dependencies.libraries に記述します。
+ * - userSymbol: MfInvoiceApi
+ * - libraryId: 1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4
+ * - version: GASライブラリのバージョン番号(clasp list-versions で確認)
+ * - developmentMode: false
+ *
+ * 使い方の詳細: examples/agent-context/AGENTS.md を参照。
  */
 declare namespace MfInvoiceApi {
-  //== トップレベル関数(GASエディタから `MfInvoiceApi.xxx` で呼び出す) ==//
+  //== トップレベル関数(利用者側のコードから `MfInvoiceApi.xxx` で呼び出す) ==//
 
   /**
    * MF請求書APIクライアントを生成します。

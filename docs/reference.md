@@ -53,7 +53,7 @@ const res = client.billings.getBillings(from, to, query, page, perPage, rangeKey
 |---|---|---|---|
 | `from` | string | ○ | 検索範囲の開始日(`YYYY-MM-DD`) |
 | `to` | string | ○ | 検索範囲の終了日 |
-| `query` | string | - | 検索文字列(例: `'入金済み'`) |
+| `query` | string | - | 検索文字列(例: `'入金済み'`)。URLエンコード済みの文字列を渡しても二重エンコードされない |
 | `page` | number | - | ページ番号 |
 | `perPage` | number | - | 1ページあたりの件数 |
 | `rangeKey` | `BillingRangeKey` | - | 期間の絞込対象(省略時は請求日) |
@@ -407,7 +407,7 @@ const res = client.quotes.getQuotes(from, to, query, page, perPage, rangeKey, fi
 |---|---|---|---|
 | `from` | string | ○ | 検索範囲の開始日 |
 | `to` | string | ○ | 検索範囲の終了日 |
-| `query` | string | - | 検索文字列(指定時は`filters`は無視される) |
+| `query` | string | - | 検索文字列(指定時は`filters`は無視される)。URLエンコード済みの文字列を渡しても二重エンコードされない |
 | `page` | number | - | ページ番号 |
 | `perPage` | number | - | 1ページあたりの件数 |
 | `rangeKey` | `QuoteRangeKey` | - | 期間の絞込対象(省略時は見積日) |

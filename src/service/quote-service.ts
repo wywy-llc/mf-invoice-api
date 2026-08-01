@@ -10,7 +10,7 @@ export class QuoteService extends ServiceBase {
    * 見積書一覧の取得
    * @param {string} from 検索範囲_開始日
    * @param {string} to 検索範囲_終了日
-   * @param {string} query 検索文字列
+   * @param {string} query 検索文字列(URLエンコード済みの文字列を渡しても二重エンコードしない)
    * @param {number} page ページ番号
    * @param {number} perPage 1ページあたりのデータ数
    * @param {QuoteRangeKey} rangeKey 検索範囲_キー

@@ -62,6 +62,36 @@ describe('BillingService', () => {
       );
     });
 
+    it('queryがURLエンコード済みだと、二重エンコードせずそのままqに設定する', () => {
+      const response = billingsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      // テストデータ: 呼び出し側でエンコード済みの検索文字列('入金済み')
+      const encodedQuery = encodeURIComponent('入金済み');
+      billingService.getBillings('2024-06-01', '2024-06-30', encodedQuery);
+
+      // 検証: %25E5... へ再エンコードされず、エンコード済みの値がそのままqに載る
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&range_key=billing_date&from=2024-06-01&to=2024-06-30&q=${encodedQuery}`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
+    it('queryが%を含む生文字列だと、エンコードしてqに設定する', () => {
+      const response = billingsResponseFactory.build();
+      const fetchMock = stubUrlFetchJson(response);
+
+      // テストデータ: デコード不能な%シーケンスを含む生文字列(エンコード済みではない)
+      billingService.getBillings('2024-06-01', '2024-06-30', '100%OFF');
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${BASE_URL}?page=1&per_page=100&range_key=billing_date&from=2024-06-01&to=2024-06-30&q=${encodeURIComponent(
+          '100%OFF'
+        )}`,
+        expect.objectContaining({ method: 'get' })
+      );
+    });
+
     it('fromまたはtoが未指定だと、"from and to are required."エラー', () => {
       expect(() => billingService.getBillings('', '2024-06-30')).toThrow(
         'from and to are required.'

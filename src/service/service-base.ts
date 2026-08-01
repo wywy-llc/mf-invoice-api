@@ -123,9 +123,14 @@ export class ServiceBase {
       options.payload = payload;
       options.contentType = 'application/json';
     }
+    // GASの実行ログから実際のリクエスト内容を追跡できるようにする。
+    // アクセストークンはgetHeadersが組み立てるoptions.headers側にあり、URLには載せていないため、
+    // このログに認証情報(アクセストークン・クライアントシークレット)は出力されない。
+    // ただしURLのクエリ文字列に含まれる検索語・各種IDは実行ログに残る。
+    console.info(`Request URL: ${method} ${reqUrl}`);
     const res = UrlFetchApp.fetch(reqUrl, options);
     if (res.getResponseCode() >= 400) {
-      // 機密情報を含むクエリ文字列を除いたパスのみを記録し、障害調査時の到達性を確保する
+      // 送信前のRequest URLログでクエリ込みの全体を記録済みのため、ここは失敗の事実とパスのみ記録する
       console.error(`Request failed: ${method} ${reqUrl.split('?')[0]}`);
     }
     return res;
@@ -190,6 +195,31 @@ export class ServiceBase {
   }
 
   /**
+   * 検索文字列をURLエンコードする。すでにエンコード済みの文字列を受け取った場合は
+   * 二重エンコードを避けるためそのまま返す。
+   *
+   * 生の文字列を渡す利用者と、旧実装(エンコードなしでURLへ埋め込んでいた頃)に合わせて
+   * 呼び出し側でエンコードしてから渡す利用者の双方を壊さないための互換措置。
+   *
+   * 制約: `50%20OFF` のように「エンコード済みに見える生文字列」はエンコード済みと誤判定する。
+   * 生文字列として検索したい場合は `%` を `%25` にエスケープして渡す。
+   *
+   * @param query 検索文字列
+   * @returns URLエンコード済みの検索文字列
+   */
+  protected encodeSearchQuery(query: string): string {
+    try {
+      // デコードで値が変わる = すでにエンコード済みとみなし、再エンコードしない
+      if (decodeURIComponent(query) !== query) {
+        return query;
+      }
+    } catch {
+      // 不正な%シーケンスを含む生文字列(例: '100%OFF')はデコードできない → 通常どおりエンコードする
+    }
+    return encodeURIComponent(query);
+  }
+
+  /**
    * 値が空でないクエリパラメータのみをURLに付与する
    * @param reqUrl 元のリクエストURL
    * @param query 付与するクエリ(値が空の場合は付与しない)
@@ -214,7 +244,7 @@ export class ServiceBase {
    * @param baseUrl リソースのベースURL
    * @param from 検索範囲_開始日
    * @param to 検索範囲_終了日
-   * @param query 検索文字列
+   * @param query 検索文字列(URLエンコード済みの文字列を渡しても二重エンコードしない)
    * @param page ページ番号
    * @param perPage 1ページあたりの件数
    * @param rangeKey 検索範囲キー
@@ -234,7 +264,7 @@ export class ServiceBase {
     const reqUrl = this.appendQuery(
       `${baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
         from
-      )}&to=${encodeURIComponent(to)}&q=${encodeURIComponent(query)}`,
+      )}&to=${encodeURIComponent(to)}&q=${this.encodeSearchQuery(query)}`,
       extraQuery ?? {}
     );
     return this.request<T>(reqUrl, ReqMethod.get);

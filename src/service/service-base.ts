@@ -86,6 +86,32 @@ export class ServiceBase {
   static readonly API_BASE_URL = 'https://invoice.moneyforward.com/api/v3';
 
   /**
+   * リクエストURLを実行ログへ出力するかどうか(既定は出力する)。
+   * getAll()のようなページング処理ではリクエスト数だけログが増えるため、
+   * MfInvoiceApi.setRequestLogEnabled()で利用者側から抑止できるようにしている。
+   */
+  static requestLogEnabled: boolean = true;
+
+  /**
+   * encodeURIComponentの出力形式(unreserved文字と%XX列のみ)。
+   * これに合致しない文字列は、区切り文字などの生文字を含むためエンコード済みではないと判定する。
+   */
+  private static readonly ENCODED_QUERY_PATTERN =
+    /^(?:[A-Za-z0-9\-_.!~*'()]|%[0-9A-Fa-f]{2})*$/;
+
+  /**
+   * 実行ログ用にURLの検索語(qパラメータの値)を伏せ字へ置き換える。
+   * 検索語は利用者が入力した内容そのもので、取引先名や金額を含みうるため、
+   * リクエストの追跡に必要なURLの骨格だけを残して実行ログへ出力する。
+   *
+   * @param reqUrl リクエストURL
+   * @returns 検索語を伏せ字にしたURL
+   */
+  private static maskSearchQuery(reqUrl: string): string {
+    return reqUrl.replace(/([?&]q=)[^&]+/, '$1***');
+  }
+
+  /**
    * アクセストークンを取得する関数。リクエストの都度呼び出すことで、
    * OAuth2ライブラリ側の有効期限チェック・自動リフレッシュに追従させる。
    */
@@ -123,9 +149,19 @@ export class ServiceBase {
       options.payload = payload;
       options.contentType = 'application/json';
     }
+    // GASの実行ログから実際のリクエスト内容を追跡できるようにする
+    // - 認証情報はgetHeadersが組み立てるoptions.headers側のため、このログには出力されない
+    // - 利用者の入力そのものである検索語はマスクする(各種IDはログに残る)
+    // - ログ量が問題になる利用者はrequestLogEnabledで抑止できる
+    if (ServiceBase.requestLogEnabled) {
+      console.info(
+        `Request URL: ${method} ${ServiceBase.maskSearchQuery(reqUrl)}`
+      );
+    }
     const res = UrlFetchApp.fetch(reqUrl, options);
     if (res.getResponseCode() >= 400) {
-      // 機密情報を含むクエリ文字列を除いたパスのみを記録し、障害調査時の到達性を確保する
+      // 失敗の事実とパスのみ記録する
+      // (クエリ込みの全体は、有効時のみ出力される送信前のRequest URLログ側にある)
       console.error(`Request failed: ${method} ${reqUrl.split('?')[0]}`);
     }
     return res;
@@ -190,6 +226,33 @@ export class ServiceBase {
   }
 
   /**
+   * 検索文字列をURLエンコードする。エンコード済みの文字列はそのまま返す。
+   *
+   * 生の文字列を渡す利用者と、旧実装(エンコードせずURLへ埋め込んでいた頃)に合わせて
+   * 呼び出し側でエンコード済みの文字列を渡す利用者の双方を壊さないための互換措置。
+   * - 判定条件: エンコード形式に合致し、かつデコードで値が変わる場合のみエンコード済みとみなす
+   * - 形式判定が必要な理由: `a%3Db&c=1` のように区切り文字の生文字が混じる文字列をそのまま送ると、
+   *   `&c=1` が独立したクエリパラメータとして解釈されURL構造が壊れる
+   * - 残る制約: `50%20OFF` のようにエンコード形式と一致する生文字列は誤判定する
+   * - 回避策: 生文字列として検索する場合は `%` を `%25` にエスケープして渡す
+   *
+   * @param query 検索文字列
+   * @returns URLエンコード済みの検索文字列
+   */
+  protected encodeSearchQuery(query: string): string {
+    if (ServiceBase.ENCODED_QUERY_PATTERN.test(query)) {
+      try {
+        if (decodeURIComponent(query) !== query) {
+          return query;
+        }
+      } catch {
+        // 単独サロゲート等、形式は正しくてもデコードできない文字列は通常どおりエンコードする
+      }
+    }
+    return encodeURIComponent(query);
+  }
+
+  /**
    * 値が空でないクエリパラメータのみをURLに付与する
    * @param reqUrl 元のリクエストURL
    * @param query 付与するクエリ(値が空の場合は付与しない)
@@ -214,7 +277,8 @@ export class ServiceBase {
    * @param baseUrl リソースのベースURL
    * @param from 検索範囲_開始日
    * @param to 検索範囲_終了日
-   * @param query 検索文字列
+   * @param query 検索文字列(URLエンコード済みの文字列を渡しても二重エンコードしない。
+   * ただし`50%20OFF`のようにエンコード形式と一致する生文字列は誤判定するため、`%`は`%25`にエスケープして渡す)
    * @param page ページ番号
    * @param perPage 1ページあたりの件数
    * @param rangeKey 検索範囲キー
@@ -234,7 +298,7 @@ export class ServiceBase {
     const reqUrl = this.appendQuery(
       `${baseUrl}?page=${page}&per_page=${perPage}&range_key=${rangeKey}&from=${encodeURIComponent(
         from
-      )}&to=${encodeURIComponent(to)}&q=${encodeURIComponent(query)}`,
+      )}&to=${encodeURIComponent(to)}&q=${this.encodeSearchQuery(query)}`,
       extraQuery ?? {}
     );
     return this.request<T>(reqUrl, ReqMethod.get);

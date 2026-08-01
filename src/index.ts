@@ -9,6 +9,7 @@ import {
   BillingRangeKey,
   OrderStatus,
   PaymentStatus,
+  ServiceBase,
 } from './service/service-base';
 
 //== 基本的な関数 ==//
@@ -29,6 +30,16 @@ function createClient(clientId: string, clientSecret: string): MfClient {
     throw new Error('アクセストークンが不正です');
   }
   return new MfClient(() => mfService.getAccessToken());
+}
+
+/**
+ * リクエストURLの実行ログ出力を切り替えます(既定は出力あり)。
+ * getAll()のようなページング処理ではリクエスト数だけログが増えるため、
+ * ログを抑えたい場合に false を指定します。
+ * @param {boolean} enabled 出力する場合はtrue
+ */
+function setRequestLogEnabled(enabled: boolean): void {
+  ServiceBase.requestLogEnabled = enabled;
 }
 
 /**

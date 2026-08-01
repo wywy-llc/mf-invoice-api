@@ -13,6 +13,7 @@
   - [office(事業所API)](#サービス-office事業所api)
   - [sentHistories(送付履歴API)](#サービス-senthistories送付履歴api)
 - [トップレベル関数](#トップレベル関数-mfinvoiceapi)
+  - [setRequestLogEnabled(実行ログの抑止)](#setrequestlogenabled)
 - [DateUtil](#dateutil)
 - [既知の注意点・仕様上の齟齬](#既知の注意点仕様上の齟齬)
 
@@ -53,7 +54,7 @@ const res = client.billings.getBillings(from, to, query, page, perPage, rangeKey
 |---|---|---|---|
 | `from` | string | ○ | 検索範囲の開始日(`YYYY-MM-DD`) |
 | `to` | string | ○ | 検索範囲の終了日 |
-| `query` | string | - | 検索文字列(例: `'入金済み'`) |
+| `query` | string | - | 検索文字列(例: `'入金済み'`)。URLエンコード済みの文字列を渡しても二重エンコードされない([誤判定条件](#既知の注意点仕様上の齟齬)あり) |
 | `page` | number | - | ページ番号 |
 | `perPage` | number | - | 1ページあたりの件数 |
 | `rangeKey` | `BillingRangeKey` | - | 期間の絞込対象(省略時は請求日) |
@@ -407,7 +408,7 @@ const res = client.quotes.getQuotes(from, to, query, page, perPage, rangeKey, fi
 |---|---|---|---|
 | `from` | string | ○ | 検索範囲の開始日 |
 | `to` | string | ○ | 検索範囲の終了日 |
-| `query` | string | - | 検索文字列(指定時は`filters`は無視される) |
+| `query` | string | - | 検索文字列(指定時は`filters`は無視される)。URLエンコード済みの文字列を渡しても二重エンコードされない([誤判定条件](#既知の注意点仕様上の齟齬)あり) |
 | `page` | number | - | ページ番号 |
 | `perPage` | number | - | 1ページあたりの件数 |
 | `rangeKey` | `QuoteRangeKey` | - | 期間の絞込対象(省略時は見積日) |
@@ -1431,6 +1432,35 @@ const dateUtil = MfInvoiceApi.getDateUtil(baseDate);
 
 [DateUtil](#dateutil)。
 
+### setRequestLogEnabled
+
+リクエストURLの実行ログ出力を切り替える(既定は出力あり)。[`getAll()`](#getall) のようなページング処理ではリクエスト数だけログが増えるため、抑止したい場合に使う。
+
+**構文**
+
+```javascript
+MfInvoiceApi.setRequestLogEnabled(enabled);
+```
+
+**引数**
+
+| 引数 | 型 | 必須 | 説明 |
+|---|---|---|---|
+| `enabled` | boolean | ○ | 出力する場合は `true`、抑止する場合は `false` |
+
+**戻り値**
+
+なし。
+
+**実装例**
+
+```javascript
+function example() {
+  MfInvoiceApi.setRequestLogEnabled(false);
+  const partners = client.partners.getAll(); // ページごとのURLログが出力されない
+}
+```
+
 ### getPaymentStatus
 
 入金ステータスのキー名を数値文字列へ変換する。
@@ -1592,3 +1622,5 @@ function getBillingRange() {
 - コールバック関数名は `mfCallback` に固定(ライブラリ内部が直接この名前を参照するため、リネーム不可)
 - 未認証状態で [`createClient()`](#createclient) を呼ぶと即 `Error` を投げる。先に [`showMfApiAuthDialog()`](#showmfapiauthdialog) での認証が必要
 - API呼び出しが成功すると実行ログに `Request success.` が出力される(動作確認の目印)
+- リクエスト送信前に実行ログへ `Request URL: {method} {URL}` が出力される。検索文字列は `q=***` に伏せられるが、認証情報以外の各種IDはURLに載るため実行ログに残る。抑止したい場合は [`setRequestLogEnabled(false)`](#setrequestlogenabled) を呼ぶ
+- [`getBillings()`](#getbillings)/[`getQuotes()`](#getquotes) の `query` は、URLエンコード済みの文字列をそのまま渡しても二重エンコードされない。ただし `'50%20OFF'` のようにエンコード済みと同じ形式を持つ生文字列はエンコード済みと誤判定し、MF側には `'50 OFF'` として渡る。生文字列として検索する場合は `%` を `%25` にエスケープして渡す(`'50%2520OFF'`)

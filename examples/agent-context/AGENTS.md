@@ -6,23 +6,86 @@
 
 - Claude Code 利用者: プロジェクトの `CLAUDE.md` から `@AGENTS.md` で import する
 - Codex / Cursor / Amp 等: `AGENTS.md` というファイル名のまま置けば自動で読み込まれる
-- 型補完・型チェックも使いたい場合は同ディレクトリの `mf-invoice-api.d.ts` も一緒にコピーする
 
 ライブラリ本体のソース: <https://github.com/wywy-llc/mf-invoice-api> / 詳細リファレンス: <https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md>
 
+## 前提となる2つの運用ケース
+
+以降の手順は運用ケースで分岐する。どちらで進めるかを最初に確定すること。
+
+| ケース | コードを書く場所 | ライブラリの追加方法 | `mf-invoice-api.d.ts` |
+|---|---|---|---|
+| **A. GASエディタ** | ブラウザのGASエディタで直接編集 | エディタの「ライブラリ ＋」でスクリプトIDを検索 | 使わない(GASエディタは `.d.ts` を読まない) |
+| **B. clasp** | ローカルのリポジトリで編集 → `clasp push` | `appsscript.json` の `dependencies.libraries` に記述 | リポジトリに置いて型補完・型チェックに使う |
+
+ケースA でも、ローカルにこの `AGENTS.md` だけ置いてエージェントにコードを生成させ、生成結果をGASエディタへ貼る運用は可能。ただし `.d.ts` の型はGASエディタ側には効かないため、型補完が目的なら ケースB を選ぶ。
+
 ## ライブラリの追加
 
-準備を省略したい場合は[完成版スプレッドシート](https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy)をコピーしてよい。
+### ケースA(GASエディタ)
+
+準備を省略したい場合は[完成版スプレッドシート](https://docs.google.com/spreadsheets/d/1tVfW1rHVow5GjmiuqtIpmDNxXp0AisnbvQ6eCdCEAWE/copy)をコピーしてよい(ライブラリ追加・雛形コード込み)。
 
 1. GAS エディタ > ライブラリの「＋」
 2. スクリプトID `1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4` を検索
 3. 最新バージョンを選択して追加 → 名前空間 `MfInvoiceApi` が使えるようになる
 
-Client ID / Client Secret は MFアプリポータルで発行し、GASのスクリプト プロパティ(`CLIENT_ID` / `CLIENT_SECRET`)に設定する。リダイレクトURIは `https://script.google.com/macros/d/{このGASのスクリプトID}/usercallback`。
+### ケースB(clasp)
+
+標準的な clasp プロジェクト(リポジトリ直下に `.clasp.json`、`srcDir`(旧 `rootDir`)配下にソースと `appsscript.json`)を前提とする。未作成なら `clasp login` → `clasp clone-script <スクリプトID>` で取得しておく。
+
+1. 利用者側プロジェクトの `appsscript.json`(= `srcDir` 配下のマニフェスト)に `MfInvoiceApi` を追加する
+
+```json
+{
+  "timeZone": "Asia/Tokyo",
+  "dependencies": {
+    "libraries": [
+      {
+        "userSymbol": "MfInvoiceApi",
+        "libraryId": "1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4",
+        "version": "19",
+        "developmentMode": false
+      }
+    ]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8"
+}
+```
+
+- `userSymbol` がコード上の名前空間(`MfInvoiceApi.xxx` の部分)。変更すると本AGENTS.mdのサンプルがそのまま動かない
+- `version` はGASライブラリのバージョン番号(整数の文字列)で、上記 `19` は 2026-08-01 時点の最新。GitHub の release タグ(`v1.2.0` 等の semver)とは別系統の番号なので、そちらを書いてはいけない。両者の対応は [README のバージョン対応表](https://github.com/wywy-llc/mf-invoice-api#バージョン対応表) にある(ドキュメントのみの更新ではGAS版番号は変わらない)
+- `developmentMode: true`(HEAD参照)は対象スクリプトの編集権限が前提のため、利用者側では `false` 固定
+- 上記はライブラリ側リポジトリの `appsscript.json` ではなく、**利用者側プロジェクトの** `appsscript.json`。`OAuth2` の依存はライブラリ内部で解決されるため利用者側に書く必要はない
+
+2. `clasp push` で反映 → 名前空間 `MfInvoiceApi` が使えるようになる
+3. `mf-invoice-api.d.ts` をリポジトリにコピーする。エディタの型補完・型チェック専用でGAS実行時には不要。clasp の push 対象は既定で `.js` / `.gs` / `.html` + `appsscript.json` のため `.d.ts` は送られないが、確実にするなら `srcDir` の外(例: `types/`)に置く
+
+#### 最新バージョン番号の調べ方
+
+`clasp list-versions`(clasp v3 の正式名。旧 `clasp versions` はエイリアス)で確認する。対象スクリプトは cwd の `.clasp.json` で決まるため、ライブラリIDを指す一時ディレクトリを作って実行する:
+
+```bash
+mkdir -p /tmp/mf-lib && cd /tmp/mf-lib
+echo '{"scriptId":"1kAOHBDg2JgIT2rRNKIK_x1iERg0Q4IF1uulKs7Q_g8jAn_Y75906TtQ4","srcDir":"."}' > .clasp.json
+clasp list-versions   # → Found 19 versions. / 1 - 初回リリース ... 19
+```
+
+- ライブラリのスクリプトへの閲覧権限がないアカウントでは失敗しうる。その場合はGASエディタのライブラリ追加ダイアログ(スクリプトID検索 → バージョン選択欄)で確認する
+- ライブラリのドキュメントURL `https://script.google.com/macros/library/d/{スクリプトID}/{バージョン}` は版番号を明示したときのみ開ける。`latest` のような別名や版番号なしのURLは「ページが見つかりません」になるため、最新版を開くにも番号の特定が先に必要
+
+### 両ケース共通(認証情報)
+
+Client ID / Client Secret は MFアプリポータルで発行し、GASのスクリプト プロパティ(`CLIENT_ID` / `CLIENT_SECRET`)に設定する。スクリプト プロパティは clasp から設定できないため、ケースB でもこの設定だけはGASエディタの「プロジェクトの設定」画面で行う。
+
+リダイレクトURIは `https://script.google.com/macros/d/{このGASのスクリプトID}/usercallback`。`{このGASのスクリプトID}` はライブラリのIDではなく利用者側プロジェクトのID — ケースA はGASエディタの `プロジェクトの設定 > スクリプト ID`、ケースB は `.clasp.json` の `scriptId` から取得する。
 
 ## 初期設定(トリガー・シート作成、コピペ雛形)
 
-`office`/`partners`/`items`/`billings`/`billingItems`/`quotes`/`quoteItems` の7シートを作成し、スプレッドシートを開いた時のメニューを登録する。列定義は各モデル(`Office`/`Partner`/`Item`/`Billing`/`BillingItem`/`Quote`/`QuoteItem`)のフィールド名(全列は `mf-invoice-api.d.ts` 参照)。
+`office`/`partners`/`items`/`billings`/`billingItems`/`quotes`/`quoteItems` の7シートを作成し、スプレッドシートを開いた時のメニューを登録する。列定義は各モデル(`Office`/`Partner`/`Item`/`Billing`/`BillingItem`/`Quote`/`QuoteItem`)のフィールド名(全列は ケースB なら `mf-invoice-api.d.ts`、ケースA なら [reference.md](https://github.com/wywy-llc/mf-invoice-api/blob/main/docs/reference.md) を参照)。
+
+以下のコードの置き場所はケースで異なる — ケースA はGASエディタのファイル(`コード.gs` 等)に貼る、ケースB はローカルの `.js` に書いて `clasp push` する。関数の実行(`initialize` など)は両ケースともGASエディタの実行ボタンから行う(`clasp run` は別途GCPプロジェクトの紐付けが必要)。
 
 ```javascript
 function initialize() {
@@ -62,7 +125,7 @@ function onOpen() {
 
 ## 認証まわりの定型コード(コピペ雛形)
 
-これらの関数(`getMfCredentials_` / `getMfClient_` など)は**利用者側のプロジェクトに書く**コード。名前空間 `MfInvoiceApi` はライブラリ側。
+これらの関数(`getMfCredentials_` / `getMfClient_` など)は**利用者側のプロジェクトに書く**コード(置き場所は上記と同じくケース別)。名前空間 `MfInvoiceApi` はライブラリ側。
 
 ```javascript
 /**

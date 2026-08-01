@@ -80,4 +80,11 @@ declare namespace MfInvoiceApi {
    * @returns {string} リダイレクトURI
    */
   declare function getRedirectUri(): string;
+  /**
+   * リクエストURLの実行ログ出力を切り替えます(既定は出力あり)。
+   * getAll()のようなページング処理ではリクエスト数だけログが増えるため、
+   * ログを抑えたい場合に false を指定します。
+   * @param {boolean} enabled 出力する場合はtrue
+   */
+  declare function setRequestLogEnabled(enabled: boolean): void;
 }

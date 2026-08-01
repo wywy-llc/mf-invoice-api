@@ -86,6 +86,13 @@ export class ServiceBase {
   static readonly API_BASE_URL = 'https://invoice.moneyforward.com/api/v3';
 
   /**
+   * リクエストURLを実行ログへ出力するかどうか(既定は出力する)。
+   * getAll()のようなページング処理ではリクエスト数だけログが増えるため、
+   * MfInvoiceApi.setRequestLogEnabled()で利用者側から抑止できるようにしている。
+   */
+  static requestLogEnabled: boolean = true;
+
+  /**
    * encodeURIComponentの出力形式(unreserved文字と%XX列のみ)。
    * これに合致しない文字列は、区切り文字などの生文字を含むためエンコード済みではないと判定する。
    */
@@ -130,14 +137,17 @@ export class ServiceBase {
       options.payload = payload;
       options.contentType = 'application/json';
     }
-    // GASの実行ログから実際のリクエスト内容を追跡できるようにする。
-    // アクセストークンはgetHeadersが組み立てるoptions.headers側にあり、URLには載せていないため、
-    // このログに認証情報(アクセストークン・クライアントシークレット)は出力されない。
-    // ただしURLのクエリ文字列に含まれる検索語・各種IDは実行ログに残る。
-    console.info(`Request URL: ${method} ${reqUrl}`);
+    // GASの実行ログから実際のリクエスト内容を追跡できるようにする
+    // - 認証情報はgetHeadersが組み立てるoptions.headers側のため、このログには出力されない
+    // - URLのクエリ文字列に含まれる検索語・各種IDは実行ログに残る
+    // - ログ量が問題になる利用者はrequestLogEnabledで抑止できる
+    if (ServiceBase.requestLogEnabled) {
+      console.info(`Request URL: ${method} ${reqUrl}`);
+    }
     const res = UrlFetchApp.fetch(reqUrl, options);
     if (res.getResponseCode() >= 400) {
-      // 送信前のRequest URLログでクエリ込みの全体を記録済みのため、ここは失敗の事実とパスのみ記録する
+      // 検索語などの機密性が高いクエリ文字列を除き、失敗の事実とパスのみ記録する
+      // (クエリ込みの全体は、有効時のみ出力される送信前のRequest URLログ側にある)
       console.error(`Request failed: ${method} ${reqUrl.split('?')[0]}`);
     }
     return res;
